@@ -1,31 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyApi2.Models;
 using MyApi2.Dtos;
+using MyApi2.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MyApi2.Controllers
 {
-    [Route("api/device")]
+    [Route("api/product_type_info")]
     [ApiController]
-    public class DevicesController : ControllerBase
+    public class ProductTypeInfosController : ControllerBase
     {
         private readonly test10Context _test10Context;
 
-        public DevicesController(test10Context test10Context)
+        public ProductTypeInfosController(test10Context test10Context)
         {
             _test10Context = test10Context;
         }
 
+        // GET: api/product_type_info
         [HttpGet]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string? searchword, string? UseYN)
+        public ActionResult<IEnumerable<ProductTypeInfosDto>> Get(string? searchword, string? UseYN, int? P_type)
         {
-            var result = from a in _test10Context.Device
-                         orderby a.Sort
+            var result = from a in _test10Context.Product_type_info
+                         join b in _test10Context.Product_type_class on a.P_type_class equals b.P_type_class
+                         orderby a.P_type_class, a.Sort
                          select new
                          {
-                             Device_id = a.Device_id,
+                             P_type_id = a.P_type_id,
+                             P_type_class = a.P_type_class,
+                             P_type_name = b.Name,
                              FullName = a.FullName,
                              ShortName = a.ShortName,
                              Content = a.Content,
+                             FullName_JP = a.FullName_JP,
+                             FullName_EN = a.FullName_EN,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              Upd_user = a.Upd_user,
@@ -36,9 +44,11 @@ namespace MyApi2.Controllers
             if (searchword != null)
             {
                 result = result.Where(
-                    a => a.Device_id.Contains(searchword) || 
-                         a.FullName.Contains(searchword) ||
-                         a.ShortName.Contains(searchword)
+                    a => a.FullName.Contains(searchword) ||
+                         a.FullName_JP.Contains(searchword) ||
+                         a.FullName_EN.Contains(searchword) ||
+                         a.ShortName.Contains(searchword) ||
+                         a.P_type_id.Contains(searchword)
                 );
             }
 
@@ -46,12 +56,17 @@ namespace MyApi2.Controllers
             {
                 if (UseYN == "Y")
                 {
-                    result = result.Where( a => a.Use_yn == true );
+                    result = result.Where(a => a.Use_yn == true);
                 }
-                else if (UseYN == "N") 
+                else if (UseYN == "N")
                 {
-                    result = result.Where( a => a.Use_yn == false );
+                    result = result.Where(a => a.Use_yn == false);
                 }
+            }
+
+            if (P_type != null)
+            {
+                result = result.Where(a => a.P_type_class == P_type);
             }
 
             if (result == null)
@@ -62,17 +77,23 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/devices
+        // GET api/product_type_info/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string id)
+        public ActionResult<IEnumerable<ProductTypeInfosDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Device
+            var result = from a in _test10Context.Product_type_info
+                         join b in _test10Context.Product_type_class on a.P_type_class equals b.P_type_class
+                         orderby a.P_type_class, a.Sort
                          select new
                          {
-                             Device_id = a.Device_id,
+                             P_type_id = a.P_type_id,
+                             P_type_class = a.P_type_class,
+                             P_type_name = b.Name,
                              FullName = a.FullName,
                              ShortName = a.ShortName,
                              Content = a.Content,
+                             FullName_JP = a.FullName_JP,
+                             FullName_EN = a.FullName_EN,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              Upd_user = a.Upd_user,
@@ -80,9 +101,9 @@ namespace MyApi2.Controllers
                              Create_dt = a.Create_dt,
                          };
 
-            if (id != null && id != "%")
+            if (id != null)
             {
-                result = result.Where(a => a.Device_id == id);
+                result = result.Where(a => a.P_type_id == id);
             }
 
             if (result == null)
@@ -93,29 +114,33 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-
-
-        // POST api/device
+        // POST api/product_type_info
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
+            "P_type_id": "A0016",
+            "P_type_class": 1,
+            "FullName": "111",
+            "ShortName": "222",
+            "FullName_JP": "333",
+            "FullName_EN": "444",
+            "Content": "test1",
             "use_yn": false,
-            "sort": 999
+            "sort": 0
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] Device value)
+        public IActionResult Post([FromBody] ProductTypeInfosDto value)
         {
             try
             {
-                Device insert = new Device
+                Product_type_info insert = new Product_type_info
                 {
-                    Device_id = value.Device_id,
+                    P_type_id = value.P_type_id,
+                    P_type_class = value.P_type_class,
                     FullName = value.FullName,
                     ShortName = value.ShortName,
+                    FullName_JP = value.FullName_JP,
+                    FullName_EN = value.FullName_EN,
                     Content = value.Content,
                     Use_yn = value.Use_yn,
                     Sort = value.Sort,
@@ -123,7 +148,7 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Device.Add(insert);
+                _test10Context.Product_type_info.Add(insert);
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
@@ -134,26 +159,28 @@ namespace MyApi2.Controllers
                 // 捕捉錯誤並回傳詳細的錯誤訊息
                 return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
             }
-            
         }
 
-        // PUT api/device/{id}
+        // PUT api/product_type_info/{id}
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
+            "P_type_id": "A0016",
+            "P_type_class": 1,
+            "FullName": "111",
+            "ShortName": "222",
+            "FullName_JP": "333",
+            "FullName_EN": "444",
+            "Content": "test1",
             "use_yn": false,
-            "sort": 999
+            "sort": 0
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody] Device value)
+        public IActionResult Put(string id, [FromBody] ProductTypeInfosDto value)
         {
-            var result = (from a in _test10Context.Device
-                         where a.Device_id == id
-                         select a).SingleOrDefault();
+            var result = (from a in _test10Context.Product_type_info
+                          where a.P_type_id == id
+                          select a).SingleOrDefault();
 
             if (result == null)
             {
@@ -163,8 +190,12 @@ namespace MyApi2.Controllers
             {
                 try
                 {
+                    result.P_type_id = value.P_type_id;
+                    result.P_type_class = value.P_type_class;
                     result.FullName = value.FullName;
                     result.ShortName = value.ShortName;
+                    result.FullName_JP = value.FullName_JP;
+                    result.FullName_EN = value.FullName_EN;
                     result.Content = value.Content;
                     result.Use_yn = value.Use_yn;
                     result.Sort = value.Sort;
@@ -172,7 +203,7 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Device.Update(result);
+                    _test10Context.Product_type_info.Update(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
@@ -186,12 +217,12 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/device/{id}
+        // DELETE api/product_type_info/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Device
-                          where a.Device_id == id
+            var result = (from a in _test10Context.Product_type_info
+                          where a.P_type_id == id
                           select a).SingleOrDefault();
 
             if (result == null)
@@ -202,7 +233,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Device.Remove(result);
+                    _test10Context.Product_type_info.Remove(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息

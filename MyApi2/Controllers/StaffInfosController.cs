@@ -1,33 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyApi2.Models;
 using MyApi2.Dtos;
+using MyApi2.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MyApi2.Controllers
 {
-    [Route("api/device")]
+    [Route("api/staff_info")]
     [ApiController]
-    public class DevicesController : ControllerBase
+    public class StaffInfosController : ControllerBase
     {
         private readonly test10Context _test10Context;
 
-        public DevicesController(test10Context test10Context)
+        public StaffInfosController(test10Context test10Context)
         {
             _test10Context = test10Context;
         }
 
+        // GET: api/staff_info
         [HttpGet]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string? searchword, string? UseYN)
+        public ActionResult<IEnumerable<StaffInfoDto>> Get(string? searchword)
         {
-            var result = from a in _test10Context.Device
-                         orderby a.Sort
+            var result = from a in _test10Context.Staff_info
+                         orderby a.Id
                          select new
                          {
-                             Device_id = a.Device_id,
-                             FullName = a.FullName,
-                             ShortName = a.ShortName,
+                             Id = a.Id,
+                             Staff_id = a.Staff_id,
+                             Name = a.Name,
                              Content = a.Content,
-                             Use_yn = a.Use_yn,
-                             Sort = a.Sort,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -36,22 +37,10 @@ namespace MyApi2.Controllers
             if (searchword != null)
             {
                 result = result.Where(
-                    a => a.Device_id.Contains(searchword) || 
-                         a.FullName.Contains(searchword) ||
-                         a.ShortName.Contains(searchword)
+                    a => a.Name.Contains(searchword) ||
+                         a.Content.Contains(searchword) ||
+                         a.Staff_id.Contains(searchword)
                 );
-            }
-
-            if (UseYN != null)
-            {
-                if (UseYN == "Y")
-                {
-                    result = result.Where( a => a.Use_yn == true );
-                }
-                else if (UseYN == "N") 
-                {
-                    result = result.Where( a => a.Use_yn == false );
-                }
             }
 
             if (result == null)
@@ -62,27 +51,26 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/devices
+        // GET api/staff_info/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string id)
+        public ActionResult<IEnumerable<StaffInfoDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Device
+            var result = from a in _test10Context.Staff_info
+                         orderby a.Id
                          select new
                          {
-                             Device_id = a.Device_id,
-                             FullName = a.FullName,
-                             ShortName = a.ShortName,
+                             Id = a.Id,
+                             Staff_id = a.Staff_id,
+                             Name = a.Name,
                              Content = a.Content,
-                             Use_yn = a.Use_yn,
-                             Sort = a.Sort,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
                          };
 
-            if (id != null && id != "%")
+            if (id != null)
             {
-                result = result.Where(a => a.Device_id == id);
+                result = result.Where(a => a.Staff_id == id);
             }
 
             if (result == null)
@@ -93,37 +81,29 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-
-
-        // POST api/device
+        // POST api/staff_info
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
-            "use_yn": false,
-            "sort": 999
+            "Staff_id": "S000000006",
+            "Name": "test",
+            "Content": "test1"
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] Device value)
+        public IActionResult Post([FromBody] StaffInfoDto value)
         {
             try
             {
-                Device insert = new Device
+                Staff_info insert = new Staff_info
                 {
-                    Device_id = value.Device_id,
-                    FullName = value.FullName,
-                    ShortName = value.ShortName,
+                    Staff_id = value.Staff_id,
+                    Name = value.Name,
                     Content = value.Content,
-                    Use_yn = value.Use_yn,
-                    Sort = value.Sort,
                     Upd_user = value.Upd_user,
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Device.Add(insert);
+                _test10Context.Staff_info.Add(insert);
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
@@ -134,26 +114,23 @@ namespace MyApi2.Controllers
                 // 捕捉錯誤並回傳詳細的錯誤訊息
                 return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
             }
-            
+
         }
 
-        // PUT api/device/{id}
+        // PUT api/staff_info/{id}
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
-            "use_yn": false,
-            "sort": 999
+            "Staff_id": "S000000006",
+            "Name": "test",
+            "Content": "test1"
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody] Device value)
+        public IActionResult Put(string id, [FromBody] StaffInfoDto value)
         {
-            var result = (from a in _test10Context.Device
-                         where a.Device_id == id
-                         select a).SingleOrDefault();
+            var result = (from a in _test10Context.Staff_info
+                          where a.Staff_id == id
+                          select a).SingleOrDefault();
 
             if (result == null)
             {
@@ -163,16 +140,14 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    result.FullName = value.FullName;
-                    result.ShortName = value.ShortName;
+                    result.Staff_id = value.Staff_id;
+                    result.Name = value.Name;
                     result.Content = value.Content;
-                    result.Use_yn = value.Use_yn;
-                    result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Device.Update(result);
+                    _test10Context.Staff_info.Update(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
@@ -186,12 +161,12 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/device/{id}
+        // DELETE api/staff_info/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Device
-                          where a.Device_id == id
+            var result = (from a in _test10Context.Staff_info
+                          where a.Staff_id == id
                           select a).SingleOrDefault();
 
             if (result == null)
@@ -202,7 +177,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Device.Remove(result);
+                    _test10Context.Staff_info.Remove(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息

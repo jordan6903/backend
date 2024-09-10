@@ -1,29 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyApi2.Models;
 using MyApi2.Dtos;
+using MyApi2.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MyApi2.Controllers
 {
-    [Route("api/device")]
+    [Route("api/rating_type")]
     [ApiController]
-    public class DevicesController : ControllerBase
+    public class RatingTypesController : ControllerBase
     {
         private readonly test10Context _test10Context;
 
-        public DevicesController(test10Context test10Context)
+        public RatingTypesController(test10Context test10Context)
         {
             _test10Context = test10Context;
         }
 
+        // GET: api/rating_type
         [HttpGet]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string? searchword, string? UseYN)
+        public ActionResult<IEnumerable<RatingTypesDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Device
+            var result = from a in _test10Context.Rating_type
                          orderby a.Sort
                          select new
                          {
-                             Device_id = a.Device_id,
-                             FullName = a.FullName,
+                             Rating_type = a.Rating_type1,
+                             Name = a.Name,
                              ShortName = a.ShortName,
                              Content = a.Content,
                              Use_yn = a.Use_yn,
@@ -36,8 +39,7 @@ namespace MyApi2.Controllers
             if (searchword != null)
             {
                 result = result.Where(
-                    a => a.Device_id.Contains(searchword) || 
-                         a.FullName.Contains(searchword) ||
+                    a => a.Name.Contains(searchword) ||
                          a.ShortName.Contains(searchword)
                 );
             }
@@ -46,11 +48,11 @@ namespace MyApi2.Controllers
             {
                 if (UseYN == "Y")
                 {
-                    result = result.Where( a => a.Use_yn == true );
+                    result = result.Where(a => a.Use_yn == true);
                 }
-                else if (UseYN == "N") 
+                else if (UseYN == "N")
                 {
-                    result = result.Where( a => a.Use_yn == false );
+                    result = result.Where(a => a.Use_yn == false);
                 }
             }
 
@@ -62,15 +64,16 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/devices
+        // GET api/rating_type/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string id)
+        public ActionResult<IEnumerable<RatingTypesDto>> Get(int id)
         {
-            var result = from a in _test10Context.Device
+            var result = from a in _test10Context.Rating_type
+                         orderby a.Sort
                          select new
                          {
-                             Device_id = a.Device_id,
-                             FullName = a.FullName,
+                             Rating_type = a.Rating_type1,
+                             Name = a.Name,
                              ShortName = a.ShortName,
                              Content = a.Content,
                              Use_yn = a.Use_yn,
@@ -80,9 +83,9 @@ namespace MyApi2.Controllers
                              Create_dt = a.Create_dt,
                          };
 
-            if (id != null && id != "%")
+            if (id != null)
             {
-                result = result.Where(a => a.Device_id == id);
+                result = result.Where(a => a.Rating_type == id);
             }
 
             if (result == null)
@@ -93,28 +96,26 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-
-
-        // POST api/device
+        // POST api/rating_type
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
+            "rating_type1": 4,
+            "name": "test",
+            "shortName": "test1",
+            "content": "123",
             "use_yn": false,
             "sort": 999
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] Device value)
+        public IActionResult Post([FromBody] RatingTypesDto value)
         {
             try
             {
-                Device insert = new Device
+                Rating_type insert = new Rating_type
                 {
-                    Device_id = value.Device_id,
-                    FullName = value.FullName,
+                    Rating_type1 = value.Rating_type1,
+                    Name = value.Name,
                     ShortName = value.ShortName,
                     Content = value.Content,
                     Use_yn = value.Use_yn,
@@ -123,7 +124,7 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Device.Add(insert);
+                _test10Context.Rating_type.Add(insert);
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
@@ -134,26 +135,26 @@ namespace MyApi2.Controllers
                 // 捕捉錯誤並回傳詳細的錯誤訊息
                 return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
             }
-            
+
         }
 
-        // PUT api/device/{id}
+        // PUT api/rating_type/{id}
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
+            "rating_type1": 4,
+            "name": "test",
+            "shortName": "test1",
+            "content": "123",
             "use_yn": false,
             "sort": 999
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody] Device value)
+        public IActionResult Put(int id, [FromBody] RatingTypesDto value)
         {
-            var result = (from a in _test10Context.Device
-                         where a.Device_id == id
-                         select a).SingleOrDefault();
+            var result = (from a in _test10Context.Rating_type
+                          where a.Rating_type1 == id
+                          select a).SingleOrDefault();
 
             if (result == null)
             {
@@ -163,7 +164,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    result.FullName = value.FullName;
+                    result.Rating_type1 = value.Rating_type1;
+                    result.Name = value.Name;
                     result.ShortName = value.ShortName;
                     result.Content = value.Content;
                     result.Use_yn = value.Use_yn;
@@ -172,7 +174,7 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Device.Update(result);
+                    _test10Context.Rating_type.Update(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
@@ -186,12 +188,12 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/device/{id}
+        // DELETE api/rating_type/{id}
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Device
-                          where a.Device_id == id
+            var result = (from a in _test10Context.Rating_type
+                          where a.Rating_type1 == id
                           select a).SingleOrDefault();
 
             if (result == null)
@@ -202,7 +204,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Device.Remove(result);
+                    _test10Context.Rating_type.Remove(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息

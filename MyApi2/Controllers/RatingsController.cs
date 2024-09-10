@@ -36,6 +36,9 @@ namespace MyApi2.Controllers
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              Type_Name = b.Name,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
                          };
 
             if (searchword != null)

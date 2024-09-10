@@ -1,30 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyApi2.Models;
 using MyApi2.Dtos;
+using MyApi2.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MyApi2.Controllers
 {
-    [Route("api/device")]
+    [Route("api/company_relation_info")]
     [ApiController]
-    public class DevicesController : ControllerBase
+    public class CompanyRelationInfosController : ControllerBase
     {
         private readonly test10Context _test10Context;
 
-        public DevicesController(test10Context test10Context)
+        public CompanyRelationInfosController(test10Context test10Context)
         {
             _test10Context = test10Context;
         }
 
+        // GET: api/company_relation_info
         [HttpGet]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string? searchword, string? UseYN)
+        public ActionResult<IEnumerable<CompanyRelationInfosDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Device
+            var result = from a in _test10Context.Company_relation_info
                          orderby a.Sort
                          select new
                          {
-                             Device_id = a.Device_id,
-                             FullName = a.FullName,
-                             ShortName = a.ShortName,
+                             Relation_id = a.Relation_id,
+                             Name = a.Name,
                              Content = a.Content,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
@@ -36,9 +38,7 @@ namespace MyApi2.Controllers
             if (searchword != null)
             {
                 result = result.Where(
-                    a => a.Device_id.Contains(searchword) || 
-                         a.FullName.Contains(searchword) ||
-                         a.ShortName.Contains(searchword)
+                    a => a.Name.Contains(searchword)
                 );
             }
 
@@ -46,11 +46,11 @@ namespace MyApi2.Controllers
             {
                 if (UseYN == "Y")
                 {
-                    result = result.Where( a => a.Use_yn == true );
+                    result = result.Where(a => a.Use_yn == true);
                 }
-                else if (UseYN == "N") 
+                else if (UseYN == "N")
                 {
-                    result = result.Where( a => a.Use_yn == false );
+                    result = result.Where(a => a.Use_yn == false);
                 }
             }
 
@@ -62,16 +62,16 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/devices
+        // GET api/company_relation_info/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<DevicesDto>> Get(string id)
+        public ActionResult<IEnumerable<CompanyRelationInfosDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Device
+            var result = from a in _test10Context.Company_relation_info
+                         orderby a.Sort
                          select new
                          {
-                             Device_id = a.Device_id,
-                             FullName = a.FullName,
-                             ShortName = a.ShortName,
+                             Relation_id = a.Relation_id,
+                             Name = a.Name,
                              Content = a.Content,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
@@ -80,9 +80,9 @@ namespace MyApi2.Controllers
                              Create_dt = a.Create_dt,
                          };
 
-            if (id != null && id != "%")
+            if (id != null)
             {
-                result = result.Where(a => a.Device_id == id);
+                result = result.Where(a => a.Relation_id == id);
             }
 
             if (result == null)
@@ -93,29 +93,25 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-
-
-        // POST api/device
+        // POST api/company_relation_info
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
+            "Relation_id": 8,
+            "Name": "test",
+            "Content": "test1",
             "use_yn": false,
-            "sort": 999
+            "sort": 0
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] Device value)
+        public IActionResult Post([FromBody] CompanyRelationInfosDto value)
         {
             try
             {
-                Device insert = new Device
+                Company_relation_info insert = new Company_relation_info
                 {
-                    Device_id = value.Device_id,
-                    FullName = value.FullName,
-                    ShortName = value.ShortName,
+                    Relation_id = value.Relation_id,
+                    Name = value.Name,
                     Content = value.Content,
                     Use_yn = value.Use_yn,
                     Sort = value.Sort,
@@ -123,7 +119,7 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Device.Add(insert);
+                _test10Context.Company_relation_info.Add(insert);
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
@@ -134,26 +130,25 @@ namespace MyApi2.Controllers
                 // 捕捉錯誤並回傳詳細的錯誤訊息
                 return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
             }
-            
+
         }
 
-        // PUT api/device/{id}
+        // PUT api/company_relation_info/{id}
         /*上傳json格式
         {
-            "device_id": "A0015",
-            "fullName": "123",
-            "shortName": "DOS",
-            "content": "test",
+            "Relation_id": 8,
+            "Name": "test",
+            "Content": "test1",
             "use_yn": false,
-            "sort": 999
+            "sort": 0
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody] Device value)
+        public IActionResult Put(int id, [FromBody] CompanyRelationInfosDto value)
         {
-            var result = (from a in _test10Context.Device
-                         where a.Device_id == id
-                         select a).SingleOrDefault();
+            var result = (from a in _test10Context.Company_relation_info
+                          where a.Relation_id == id
+                          select a).SingleOrDefault();
 
             if (result == null)
             {
@@ -163,8 +158,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    result.FullName = value.FullName;
-                    result.ShortName = value.ShortName;
+                    result.Relation_id = value.Relation_id;
+                    result.Name = value.Name;
                     result.Content = value.Content;
                     result.Use_yn = value.Use_yn;
                     result.Sort = value.Sort;
@@ -172,7 +167,7 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Device.Update(result);
+                    _test10Context.Company_relation_info.Update(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
@@ -186,12 +181,12 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/device/{id}
+        // DELETE api/company_relation_info/{id}
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Device
-                          where a.Device_id == id
+            var result = (from a in _test10Context.Company_relation_info
+                          where a.Relation_id == id
                           select a).SingleOrDefault();
 
             if (result == null)
@@ -202,7 +197,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Device.Remove(result);
+                    _test10Context.Company_relation_info.Remove(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
