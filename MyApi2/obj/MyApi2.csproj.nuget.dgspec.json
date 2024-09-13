@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\_jpg\\vue\\MyApi2\\MyApi2\\MyApi2.csproj": {}
+    "C:\\myproject\\backend\\MyApi2\\MyApi2.csproj": {}
   },
   "projects": {
-    "D:\\_jpg\\vue\\MyApi2\\MyApi2\\MyApi2.csproj": {
+    "C:\\myproject\\backend\\MyApi2\\MyApi2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\_jpg\\vue\\MyApi2\\MyApi2\\MyApi2.csproj",
+        "projectUniqueName": "C:\\myproject\\backend\\MyApi2\\MyApi2.csproj",
         "projectName": "MyApi2",
-        "projectPath": "D:\\_jpg\\vue\\MyApi2\\MyApi2\\MyApi2.csproj",
+        "projectPath": "C:\\myproject\\backend\\MyApi2\\MyApi2.csproj",
         "packagesPath": "C:\\Users\\s4072\\.nuget\\packages\\",
-        "outputPath": "D:\\_jpg\\vue\\MyApi2\\MyApi2\\obj\\",
+        "outputPath": "C:\\myproject\\backend\\MyApi2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\s4072\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -80,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

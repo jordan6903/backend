@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/5e6m3DleJw=",
+  "dgSpecHash": "rBeib9KYsJs=",
   "success": true,
-  "projectFilePath": "D:\\_jpg\\vue\\MyApi2\\MyApi2\\MyApi2.csproj",
+  "projectFilePath": "C:\\myproject\\backend\\MyApi2\\MyApi2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\s4072\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\s4072\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

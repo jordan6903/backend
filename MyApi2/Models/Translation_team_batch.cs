@@ -7,6 +7,8 @@ public partial class Translation_team_batch
 {
     public long Id { get; set; }
 
+    public long TT_id { get; set; }
+
     public string P_id { get; set; } = null!;
 
     public byte T_batch { get; set; }
@@ -19,7 +21,7 @@ public partial class Translation_team_batch
 
     public DateTime? Create_dt { get; set; }
 
-    public virtual Product P_idNavigation { get; set; } = null!;
+    public virtual Translation_team TT { get; set; } = null!;
 
     public virtual Translation_team_info T_idNavigation { get; set; } = null!;
 }

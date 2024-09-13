@@ -23,5 +23,7 @@ public partial class Translation_team
 
     public virtual Product P_idNavigation { get; set; } = null!;
 
+    public virtual ICollection<Translation_team_batch> Translation_team_batch { get; set; } = new List<Translation_team_batch>();
+
     public virtual Translation_team_type Type { get; set; } = null!;
 }

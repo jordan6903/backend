@@ -691,11 +691,10 @@ public partial class test10Context : DbContext
             entity.Property(e => e.Upd_date).HasColumnType("datetime");
             entity.Property(e => e.Upd_user).HasMaxLength(32);
 
-            entity.HasOne(d => d.P_idNavigation).WithMany(p => p.Translation_team_batch)
-                .HasPrincipalKey(p => p.P_id)
-                .HasForeignKey(d => d.P_id)
+            entity.HasOne(d => d.TT).WithMany(p => p.Translation_team_batch)
+                .HasForeignKey(d => d.TT_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Translation_team_batch_P_id");
+                .HasConstraintName("FK_Translation_team_batch_TT_id");
 
             entity.HasOne(d => d.T_idNavigation).WithMany(p => p.Translation_team_batch)
                 .HasPrincipalKey(p => p.T_id)

@@ -52,6 +52,4 @@ public partial class Product
     public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
 
     public virtual ICollection<Translation_team> Translation_team { get; set; } = new List<Translation_team>();
-
-    public virtual ICollection<Translation_team_batch> Translation_team_batch { get; set; } = new List<Translation_team_batch>();
 }
