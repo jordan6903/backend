@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyApi2.Dtos;
 using MyApi2.Models;
+using System.Data.Common;
+using System.Xml.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,36 +24,38 @@ namespace MyApi2.Controllers
         public ActionResult<IEnumerable<TranslationTeamBatchsDto>> Get(string? searchword)
         {
             var result = from a in _test10Context.Translation_team_batch
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Translation_team_info on a.T_id equals c.T_id
+                         join b in _test10Context.Translation_team_info on a.T_id equals b.T_id
+                         join c in _test10Context.Translation_team on a.TT_id equals c.Id
+                         join d in _test10Context.Product on c.P_id equals d.P_id
                          orderby a.P_id, a.T_batch
                          select new
                          {
                              Id = a.Id,
-                             P_id = a.P_id,
-                             P_Name = b.Name,
-                             T_batch = a.T_batch,
+                             TT_id = a.TT_id,
+                             P_id = c.P_id,
+                             T_batch = c.T_batch,
+                             P_Name = d.Name,
                              T_id = a.T_id,
-                             T_Name = c.Name,
+                             T_Name = b.Name,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
                          };
 
-            if (searchword != null)
-            {
-                result = result.Where(
-                    a => a.P_id.Contains(searchword) ||
-                         a.P_Name.Contains(searchword)
-                );
-            }
+            //if (searchword != null)
+            //{
+            //    result = result.Where(
+            //        a => a.P_id.Contains(searchword) ||
+            //             a.P_Name.Contains(searchword)
+            //    );
+            //}
 
             if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(result.Take(300));
         }
 
         // GET api/translation_team_batch/{id}
