@@ -1,43 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyApi2.Dtos;
 using MyApi2.Models;
-using System.Data.Common;
 using System.Xml.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MyApi2.Controllers
 {
-    [Route("api/translation_team_batch")]
+    [Route("api/staff")]
     [ApiController]
-    public class TranslationTeamBatchsController : ControllerBase
+    public class StaffsController : ControllerBase
     {
         private readonly test10Context _test10Context;
 
-        public TranslationTeamBatchsController(test10Context test10Context)
+        public StaffsController(test10Context test10Context)
         {
             _test10Context = test10Context;
         }
 
-        // GET: api/translation_team_batch
+        // GET: api/staff
         [HttpGet]
-        public ActionResult<IEnumerable<TranslationTeamBatchsDto>> Get(string? searchword)
+        public ActionResult<IEnumerable<StaffsDto>> Get(string? searchword, int? staff_typeid)
         {
-            var result = from a in _test10Context.Translation_team_batch
-                         join b in _test10Context.Translation_team_info on a.T_id equals b.T_id
-                         join c in _test10Context.Translation_team on a.TT_id equals c.Id
-                         join d in _test10Context.Product on c.P_id equals d.P_id
-                         orderby a.P_id, a.T_batch
+            var result = from a in _test10Context.Staff
+                         join b in _test10Context.Product on a.P_id equals b.P_id
+                         join c in _test10Context.Staff_info on a.Staff_id equals c.Staff_id
+                         join d in _test10Context.Staff_type on a.Staff_typeid equals d.Staff_typeid
+                         orderby a.P_id, a.Staff_typeid
                          select new
                          {
                              Id = a.Id,
-                             TT_id = a.TT_id,
-                             P_id = c.P_id,
-                             T_batch = c.T_batch,
-                             P_Name = d.Name,
-                             P_CName = d.C_Name,
-                             T_id = a.T_id,
-                             T_Name = b.Name,
+                             P_id = a.P_id,
+                             P_Name = b.Name,
+                             Staff_id = a.Staff_id,
+                             Staff_Name = c.Name,
+                             Staff_typeid = a.Staff_typeid,
+                             Staff_type_Name = d.Name,
+                             Remark = a.Remark,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -48,7 +47,15 @@ namespace MyApi2.Controllers
                 result = result.Where(
                     a => a.P_id.Contains(searchword) ||
                          a.P_Name.Contains(searchword) ||
-                         a.P_CName.Contains(searchword)
+                         a.Staff_id.Contains(searchword) ||
+                         a.Staff_Name.Contains(searchword)
+                );
+            }
+
+            if (staff_typeid != null)
+            {
+                result = result.Where(
+                    a => a.Staff_typeid == staff_typeid
                 );
             }
 
@@ -60,25 +67,25 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/translation_team_batch/{id}
+        // GET api/staff/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<TranslationTeamBatchsDto>> GetSingle(int id)
+        public ActionResult<IEnumerable<StaffsDto>> GetSingle(int? id)
         {
-            var result = from a in _test10Context.Translation_team_batch
-                         join b in _test10Context.Translation_team_info on a.T_id equals b.T_id
-                         join c in _test10Context.Translation_team on a.TT_id equals c.Id
-                         join d in _test10Context.Product on c.P_id equals d.P_id
-                         orderby a.P_id, a.T_batch
+            var result = from a in _test10Context.Staff
+                         join b in _test10Context.Product on a.P_id equals b.P_id
+                         join c in _test10Context.Staff_info on a.Staff_id equals c.Staff_id
+                         join d in _test10Context.Staff_type on a.Staff_typeid equals d.Staff_typeid
+                         orderby a.P_id, a.Staff_typeid
                          select new
                          {
                              Id = a.Id,
-                             TT_id = a.TT_id,
-                             P_id = c.P_id,
-                             T_batch = c.T_batch,
-                             P_Name = d.Name,
-                             P_CName = d.C_Name,
-                             T_id = a.T_id,
-                             T_Name = b.Name,
+                             P_id = a.P_id,
+                             P_Name = b.Name,
+                             Staff_id = a.Staff_id,
+                             Staff_Name = c.Name,
+                             Staff_typeid = a.Staff_typeid,
+                             Staff_type_Name = d.Name,
+                             Remark = a.Remark,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -86,7 +93,9 @@ namespace MyApi2.Controllers
 
             if (id != null)
             {
-                result = result.Where(a => a.Id == id);
+                result = result.Where(
+                    a => a.Id == id
+                );
             }
 
             if (result == null)
@@ -97,31 +106,31 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // POST api/translation_team_batch
+        // POST api/staff
         /*上傳json格式
         {
-            "TT_id": 1,
-            "P_id": "A000000001",
-            "T_batch": 2,
-            "T_id": "T00514"
+            "P_id": "A000000014",
+            "Staff_id": "S000000001",
+            "Staff_typeid": 1,
+            "Remark": "test"
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] TranslationTeamBatchsDto value)
+        public IActionResult Post([FromBody] StaffsDto value)
         {
             try
             {
-                Translation_team_batch insert = new Translation_team_batch
+                Staff insert = new Staff
                 {
-                    TT_id = value.TT_id,
                     P_id = value.P_id,
-                    T_batch = value.T_batch,
-                    T_id = value.T_id,
+                    Staff_id = value.Staff_id,
+                    Staff_typeid = value.Staff_typeid,
+                    Remark = value.Remark,
                     Upd_user = value.Upd_user,
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Translation_team_batch.Add(insert);
+                _test10Context.Staff.Add(insert);
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
@@ -134,19 +143,19 @@ namespace MyApi2.Controllers
             }
         }
 
-        // PUT api/translation_team_batch/{id}
+        // PUT api/staff/{id}
         /*上傳json格式
         {
-            "TT_id": 1,
-            "P_id": "A000000001",
-            "T_batch": 2,
-            "T_id": "T00514"
+            "P_id": "A000000014",
+            "Staff_id": "S000000001",
+            "Staff_typeid": 1,
+            "Remark": "test"
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] TranslationTeamBatchsDto value)
+        public IActionResult Put(int id, [FromBody] StaffsDto value)
         {
-            var result = (from a in _test10Context.Translation_team_batch
+            var result = (from a in _test10Context.Staff
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -158,15 +167,15 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    result.TT_id = value.TT_id;
                     result.P_id = value.P_id;
-                    result.T_batch = value.T_batch;
-                    result.T_id = value.T_id;
+                    result.Staff_id = value.Staff_id;
+                    result.Staff_typeid = value.Staff_typeid;
+                    result.Remark = value.Remark;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Translation_team_batch.Update(result);
+                    _test10Context.Staff.Update(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
@@ -180,11 +189,11 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/translation_team_batch/{id}
+        // DELETE api/staff/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Translation_team_batch
+            var result = (from a in _test10Context.Staff
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -196,7 +205,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Translation_team_batch.Remove(result);
+                    _test10Context.Staff.Remove(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
