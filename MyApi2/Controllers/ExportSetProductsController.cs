@@ -6,33 +6,29 @@ using MyApi2.Models;
 
 namespace MyApi2.Controllers
 {
-    [Route("api/product_website")]
+    [Route("api/export_set_product")]
     [ApiController]
-    public class ProductWebsitesController : ControllerBase
+    public class ExportSetProductsController : ControllerBase
     {
         private readonly test10Context _test10Context;
 
-        public ProductWebsitesController(test10Context test10Context)
+        public ExportSetProductsController(test10Context test10Context)
         {
             _test10Context = test10Context;
         }
 
-        // GET: api/product_website
+        // GET: api/export_set_product
         [HttpGet]
-        public ActionResult<IEnumerable<ProductWebsitesDto>> Get(string? searchword, string? UseYN, string? type_id)
+        public ActionResult<IEnumerable<ExportSetProductsDto>> Get(int? id, string? UseYN)
         {
-            var result = from a in _test10Context.Product_Website
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
-                         orderby a.P_id, a.Sort
+            var result = from a in _test10Context.Export_set_Product
+                         orderby a.Export_batch
                          select new
                          {
                              Id = a.Id,
+                             Export_batch = a.Export_batch,
+                             C_id = a.C_id,
                              P_id = a.P_id,
-                             Type_id = a.Type_id,
-                             Type_Name = b.Name,
-                             Name = a.Name,
-                             Url = a.Url,
-                             Remark = a.Remark,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              Upd_user = a.Upd_user,
@@ -40,10 +36,26 @@ namespace MyApi2.Controllers
                              Create_dt = a.Create_dt,
                          };
 
-            if (searchword != null)
+            //var result = from a in _test10Context.Export_set_batch
+            //             join b in _test10Context.Export_set_Company on a.Export_batch equals b.Export_batch
+            //             join c in _test10Context.Export_set_Product on new { b.Export_batch, b.C_id } equals new { c.Export_batch, c.C_id }
+            //             orderby a.Export_batch, b.C_id, c.P_id
+            //             select new
+            //             {
+            //                 Export_batch = a.Export_batch,
+            //                 C_id = b.C_id,
+            //                 P_id = c.P_id,
+            //                 Use_yn = a.Use_yn,
+            //                 Sort = c.Sort,
+            //                 Upd_user = a.Upd_user,
+            //                 Upd_date = a.Upd_date,
+            //                 Create_dt = a.Create_dt,
+            //             };
+
+            if (id != null)
             {
                 result = result.Where(
-                    a => a.P_id.Contains(searchword)
+                    a => a.Export_batch == id
                 );
             }
 
@@ -59,13 +71,6 @@ namespace MyApi2.Controllers
                 }
             }
 
-            if (type_id != null)
-            {
-                result = result.Where(
-                    a => a.Type_id == type_id
-                );
-            }
-
             if (result == null)
             {
                 return NotFound();
@@ -74,22 +79,18 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/product_website/{id}
+        // GET api/export_set_product/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<ProductWebsitesDto>> Get(string id)
+        public ActionResult<IEnumerable<ExportSetProductsDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Product_Website
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
-                         orderby a.P_id, a.Sort
+            var result = from a in _test10Context.Export_set_Product
+                         orderby a.Export_batch
                          select new
                          {
                              Id = a.Id,
+                             Export_batch = a.Export_batch,
+                             C_id = a.C_id,
                              P_id = a.P_id,
-                             Type_id = a.Type_id,
-                             Type_Name = b.Name,
-                             Name = a.Name,
-                             Url = a.Url,
-                             Remark = a.Remark,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              Upd_user = a.Upd_user,
@@ -100,7 +101,7 @@ namespace MyApi2.Controllers
             if (id != null)
             {
                 result = result.Where(
-                    a => a.P_id == id
+                    a => a.Id == id
                 );
             }
 
@@ -112,37 +113,33 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // POST api/product_website
+        // POST api/export_set_product
         /*上傳json格式
         {
-            "P_id": "A000000001",
-            "Type_id": "P04",
-            "Name": "test",
-            "Url": "https://www.ptt.cc/bbs/miHoYo/M.1715871687.A.E89.html",
-            "Remark": "test123",
+            "Export_batch": 2,
+            "C_id": "C000000001",
+            "P_id": "A000000003",
             "Use_yn": false,
             "Sort": 0
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] ProductWebsitesDto value)
+        public IActionResult Post([FromBody] ExportSetProductsDto value)
         {
             try
             {
-                Product_Website insert = new Product_Website
+                Export_set_Product insert = new Export_set_Product
                 {
+                    Export_batch = value.Export_batch,
+                    C_id = value.C_id,
                     P_id = value.P_id,
-                    Type_id = value.Type_id,
-                    Name = value.Name,
-                    Url = value.Url,
-                    Remark = value.Remark,
                     Use_yn = value.Use_yn,
                     Sort = value.Sort,
                     Upd_user = value.Upd_user,
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_Website.Add(insert);
+                _test10Context.Export_set_Product.Add(insert);
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
@@ -155,22 +152,20 @@ namespace MyApi2.Controllers
             }
         }
 
-        // PUT api/product_website/{id}
+        // PUT api/export_set_product/{id}
         /*上傳json格式
         {
-            "P_id": "A000000001",
-            "Type_id": "P04",
-            "Name": "test",
-            "Url": "https://www.ptt.cc/bbs/miHoYo/M.1715871687.A.E89.html",
-            "Remark": "test123",
+            "Export_batch": 2,
+            "C_id": "C000000001",
+            "P_id": "A000000003",
             "Use_yn": false,
             "Sort": 0
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ProductWebsitesDto value)
+        public IActionResult Put(int id, [FromBody] ExportSetProductsDto value)
         {
-            var result = (from a in _test10Context.Product_Website
+            var result = (from a in _test10Context.Export_set_Product
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -182,18 +177,16 @@ namespace MyApi2.Controllers
             {
                 try
                 {
+                    result.Export_batch = value.Export_batch;
+                    result.C_id = value.C_id;
                     result.P_id = value.P_id;
-                    result.Type_id = value.Type_id;
-                    result.Name = value.Name;
-                    result.Url = value.Url;
-                    result.Remark = value.Remark;
                     result.Use_yn = value.Use_yn;
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_Website.Update(result);
+                    _test10Context.Export_set_Product.Update(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
@@ -207,11 +200,11 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/product_website/{id}
+        // DELETE api/export_set_product/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_Website
+            var result = (from a in _test10Context.Export_set_Product
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -223,7 +216,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_Website.Remove(result);
+                    _test10Context.Export_set_Product.Remove(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息

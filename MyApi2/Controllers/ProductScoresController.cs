@@ -6,35 +6,33 @@ using MyApi2.Models;
 
 namespace MyApi2.Controllers
 {
-    [Route("api/product_website")]
+    [Route("api/product_score")]
     [ApiController]
-    public class ProductWebsitesController : ControllerBase
+    public class ProductScoresController : ControllerBase
     {
         private readonly test10Context _test10Context;
 
-        public ProductWebsitesController(test10Context test10Context)
+        public ProductScoresController(test10Context test10Context)
         {
             _test10Context = test10Context;
         }
 
-        // GET: api/product_website
+        // GET: api/product_score
         [HttpGet]
-        public ActionResult<IEnumerable<ProductWebsitesDto>> Get(string? searchword, string? UseYN, string? type_id)
+        public ActionResult<IEnumerable<ProductScoresDto>> Get(string? searchword, int? type_id)
         {
-            var result = from a in _test10Context.Product_Website
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
-                         orderby a.P_id, a.Sort
+            var result = from a in _test10Context.Product_score
+                         join b in _test10Context.Product_score_type on a.Type_id equals b.Type_id
+                         join c in _test10Context.Product on a.P_id equals c.P_id
+                         orderby a.P_id, a.Type_id
                          select new
                          {
                              Id = a.Id,
                              P_id = a.P_id,
+                             P_Name = c.Name,
                              Type_id = a.Type_id,
                              Type_Name = b.Name,
-                             Name = a.Name,
-                             Url = a.Url,
-                             Remark = a.Remark,
-                             Use_yn = a.Use_yn,
-                             Sort = a.Sort,
+                             Score = a.Score,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -43,20 +41,9 @@ namespace MyApi2.Controllers
             if (searchword != null)
             {
                 result = result.Where(
-                    a => a.P_id.Contains(searchword)
+                    a => a.P_id.Contains(searchword) ||
+                         a.P_Name.Contains(searchword)
                 );
-            }
-
-            if (UseYN != null)
-            {
-                if (UseYN == "Y")
-                {
-                    result = result.Where(a => a.Use_yn == true);
-                }
-                else if (UseYN == "N")
-                {
-                    result = result.Where(a => a.Use_yn == false);
-                }
             }
 
             if (type_id != null)
@@ -74,24 +61,22 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/product_website/{id}
+        // GET api/product_score/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<ProductWebsitesDto>> Get(string id)
+        public ActionResult<IEnumerable<StaffsDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Product_Website
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
-                         orderby a.P_id, a.Sort
+            var result = from a in _test10Context.Product_score
+                         join b in _test10Context.Product_score_type on a.Type_id equals b.Type_id
+                         join c in _test10Context.Product on a.P_id equals c.P_id
+                         orderby a.P_id, a.Type_id
                          select new
                          {
                              Id = a.Id,
                              P_id = a.P_id,
+                             P_Name = c.Name,
                              Type_id = a.Type_id,
                              Type_Name = b.Name,
-                             Name = a.Name,
-                             Url = a.Url,
-                             Remark = a.Remark,
-                             Use_yn = a.Use_yn,
-                             Sort = a.Sort,
+                             Score = a.Score,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -112,37 +97,29 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // POST api/product_website
+        // POST api/product_score
         /*上傳json格式
         {
-            "P_id": "A000000001",
-            "Type_id": "P04",
-            "Name": "test",
-            "Url": "https://www.ptt.cc/bbs/miHoYo/M.1715871687.A.E89.html",
-            "Remark": "test123",
-            "Use_yn": false,
-            "Sort": 0
+            "P_id": "A000000003",
+            "Type_id": 1,
+            "Score": 60
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] ProductWebsitesDto value)
+        public IActionResult Post([FromBody] ProductScoresDto value)
         {
             try
             {
-                Product_Website insert = new Product_Website
+                Product_score insert = new Product_score
                 {
                     P_id = value.P_id,
                     Type_id = value.Type_id,
-                    Name = value.Name,
-                    Url = value.Url,
-                    Remark = value.Remark,
-                    Use_yn = value.Use_yn,
-                    Sort = value.Sort,
+                    Score = value.Score,
                     Upd_user = value.Upd_user,
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_Website.Add(insert);
+                _test10Context.Product_score.Add(insert);
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
@@ -155,22 +132,18 @@ namespace MyApi2.Controllers
             }
         }
 
-        // PUT api/product_website/{id}
+        // PUT api/product_score/{id}
         /*上傳json格式
         {
-            "P_id": "A000000001",
-            "Type_id": "P04",
-            "Name": "test",
-            "Url": "https://www.ptt.cc/bbs/miHoYo/M.1715871687.A.E89.html",
-            "Remark": "test123",
-            "Use_yn": false,
-            "Sort": 0
+            "P_id": "A000000003",
+            "Type_id": 1,
+            "Score": 60
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ProductWebsitesDto value)
+        public IActionResult Put(int id, [FromBody] ProductScoresDto value)
         {
-            var result = (from a in _test10Context.Product_Website
+            var result = (from a in _test10Context.Product_score
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -184,16 +157,12 @@ namespace MyApi2.Controllers
                 {
                     result.P_id = value.P_id;
                     result.Type_id = value.Type_id;
-                    result.Name = value.Name;
-                    result.Url = value.Url;
-                    result.Remark = value.Remark;
-                    result.Use_yn = value.Use_yn;
-                    result.Sort = value.Sort;
+                    result.Score = value.Score;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_Website.Update(result);
+                    _test10Context.Product_score.Update(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
@@ -207,11 +176,11 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/product_website/{id}
+        // DELETE api/product_score/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_Website
+            var result = (from a in _test10Context.Product_score
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -223,7 +192,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_Website.Remove(result);
+                    _test10Context.Product_score.Remove(result);
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息

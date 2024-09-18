@@ -15,6 +15,8 @@ public partial class Export_set_batch
 
     public DateTime? Create_dt { get; set; }
 
+    public bool? Use_yn { get; set; }
+
     public virtual ICollection<Export_set_Company> Export_set_Company { get; set; } = new List<Export_set_Company>();
 
     public virtual ICollection<Export_set_Product> Export_set_Product { get; set; } = new List<Export_set_Product>();
