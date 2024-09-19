@@ -99,7 +99,7 @@ namespace MyApi2.Controllers
         // POST api/rating_type
         /*上傳json格式
         {
-            "rating_type1": 4,
+            "rating_type": 4,
             "name": "test",
             "shortName": "test1",
             "content": "123",
@@ -110,11 +110,18 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] RatingTypesDto value)
         {
+            var isExists = _test10Context.Rating_type.Any(a => a.Rating_type1 == value.Rating_type);
+
+            if (isExists)
+            {
+                return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
+            }
+
             try
             {
                 Rating_type insert = new Rating_type
                 {
-                    Rating_type1 = value.Rating_type1,
+                    Rating_type1 = value.Rating_type,
                     Name = value.Name,
                     ShortName = value.ShortName,
                     Content = value.Content,
@@ -128,12 +135,12 @@ namespace MyApi2.Controllers
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
-                return Ok(new { message = "資料上傳成功" });
+                return Ok(new { message = "Y#資料上傳成功" });
             }
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳詳細的錯誤訊息
-                return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
+                return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
             }
 
         }
@@ -141,7 +148,7 @@ namespace MyApi2.Controllers
         // PUT api/rating_type/{id}
         /*上傳json格式
         {
-            "rating_type1": 4,
+            "rating_type": 4,
             "name": "test",
             "shortName": "test1",
             "content": "123",
@@ -158,13 +165,13 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料更新失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料更新失敗，未搜尋到該id" });
             }
             else
             {
                 try
                 {
-                    result.Rating_type1 = value.Rating_type1;
+                    result.Rating_type1 = value.Rating_type;
                     result.Name = value.Name;
                     result.ShortName = value.ShortName;
                     result.Content = value.Content;
@@ -178,12 +185,12 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料更新成功" });
+                    return Ok(new { message = "Y#資料更新成功" });
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料更新失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料更新失敗", error = ex.Message });
                 }
             }
         }
@@ -198,7 +205,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料刪除失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料刪除失敗，未搜尋到該id" });
             }
             else
             {
@@ -208,12 +215,12 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料刪除成功" });
+                    return Ok(new { message = "Y#資料刪除成功" });
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料刪除失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料刪除失敗", error = ex.Message });
                 }
             }
         }

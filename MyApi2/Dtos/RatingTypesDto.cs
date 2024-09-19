@@ -4,7 +4,7 @@ namespace MyApi2.Dtos
 {
     public class RatingTypesDto
     {
-        public byte Rating_type1 { get; set; }
+        public byte Rating_type { get; set; }
 
         public string Name { get; set; } = null!;
 
