@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
 
@@ -19,7 +20,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_release_day
         [HttpGet]
-        public ActionResult<IEnumerable<ProductReleaseDaysDto>> Get(string? searchword)
+        public ActionResult<IEnumerable<ProductReleaseDaysDto>> Get(string? searchword, int? voice, string? currency, string? device, int? rating)
         {
             var result = from a in _test10Context.Product_Release_day
                          join b in _test10Context.Product on a.P_id equals b.P_id
@@ -39,12 +40,12 @@ namespace MyApi2.Controllers
                              Voice_id = a.Voice_id,
                              Voice_Name = c.Name,
                              Currency_id = a.Currency_id,
-                             Currency_Name = d.FullName,
+                             Currency_Name = d.ShortName,
                              Content = a.Content,
                              Device_id = a.Device_id,
-                             Device_Name = e.FullName,
+                             Device_Name = e.ShortName,
                              Rating_id = a.Rating_id,
-                             Rating_Name = f.Name,
+                             Rating_Name = f.ShortName,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -53,7 +54,36 @@ namespace MyApi2.Controllers
             if (searchword != null)
             {
                 result = result.Where(
-                    a => a.P_id.Contains(searchword)
+                    a => a.P_id.Contains(searchword) ||
+                         a.P_Name.Contains(searchword)
+                );
+            }
+
+            if (voice != null)
+            {
+                result = result.Where(
+                    a => a.Voice_id == voice
+                );
+            }
+
+            if (currency != null)
+            {
+                result = result.Where(
+                    a => a.Currency_id == currency
+                );
+            }
+
+            if (device != null)
+            {
+                result = result.Where(
+                    a => a.Device_id == device
+                );
+            }
+
+            if (rating != null)
+            {
+                result = result.Where(
+                    a => a.Rating_id == rating
                 );
             }
 
@@ -62,7 +92,7 @@ namespace MyApi2.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(result.Take(300));
         }
 
         // GET api/product_release_day/{id}
@@ -128,6 +158,13 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductReleaseDaysDto value)
         {
+            var isExists = _test10Context.Product_Release_day.Any(a => a.Id == value.Id);
+
+            if (isExists)
+            {
+                return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
+            }
+
             try
             {
                 Product_Release_day insert = new Product_Release_day
@@ -149,12 +186,27 @@ namespace MyApi2.Controllers
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
-                return Ok(new { message = "資料上傳成功" });
+                return Ok(new { message = "Y#資料上傳成功" });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // 解析內部例外狀況
+                var innerException = dbEx.InnerException?.Message;
+                if (innerException != null && innerException.Contains("REFERENCE"))
+                {
+                    // 如果內部訊息包含外鍵約束的提示，回傳更具體的錯誤訊息
+                    return Ok(new { message = "N#資料刪除失敗，此資料正在被其他表引用，無法刪除。" });
+                }
+                else
+                {
+                    // 捕捉其他例外並回傳詳細錯誤訊息
+                    return BadRequest(new { message = "N#資料刪除失敗", error = innerException ?? dbEx.Message });
+                }
             }
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳詳細的錯誤訊息
-                return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
+                return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
             }
         }
 
@@ -181,7 +233,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料更新失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料更新失敗，未搜尋到該id" });
             }
             else
             {
@@ -204,12 +256,12 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料更新成功" });
+                    return Ok(new { message = "Y#資料更新成功" });
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料更新失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料更新失敗", error = ex.Message });
                 }
             }
         }
@@ -224,7 +276,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料刪除失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料刪除失敗，未搜尋到該id" });
             }
             else
             {
@@ -234,12 +286,27 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料刪除成功" });
+                    return Ok(new { message = "Y#資料刪除成功" });
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    // 解析內部例外狀況
+                    var innerException = dbEx.InnerException?.Message;
+                    if (innerException != null && innerException.Contains("REFERENCE"))
+                    {
+                        // 如果內部訊息包含外鍵約束的提示，回傳更具體的錯誤訊息
+                        return Ok(new { message = "N#資料刪除失敗，此資料正在被其他表引用，無法刪除。" });
+                    }
+                    else
+                    {
+                        // 捕捉其他例外並回傳詳細錯誤訊息
+                        return BadRequest(new { message = "N#資料刪除失敗", error = innerException ?? dbEx.Message });
+                    }
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料刪除失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料刪除失敗", error = ex.Message });
                 }
             }
         }

@@ -2,6 +2,7 @@
 using MyApi2.Models;
 using MyApi2.Dtos;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyApi2.Controllers
 {
@@ -215,6 +216,21 @@ namespace MyApi2.Controllers
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    // 解析內部例外狀況
+                    var innerException = dbEx.InnerException?.Message;
+                    if (innerException != null && innerException.Contains("REFERENCE"))
+                    {
+                        // 如果內部訊息包含外鍵約束的提示，回傳更具體的錯誤訊息
+                        return Ok(new { message = "N#資料刪除失敗，此資料正在被其他表引用，無法刪除。" });
+                    }
+                    else
+                    {
+                        // 捕捉其他例外並回傳詳細錯誤訊息
+                        return BadRequest(new { message = "N#資料刪除失敗", error = innerException ?? dbEx.Message });
+                    }
                 }
                 catch (Exception ex)
                 {
