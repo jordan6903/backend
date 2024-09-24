@@ -20,7 +20,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_relation
         [HttpGet]
-        public ActionResult<IEnumerable<ProductRelationsDto>> Get(string? searchword)
+        public ActionResult<IEnumerable<ProductRelationsDto>> Get(string? searchword, int? relation_id)
         {
             var result = from a in _test10Context.Product_relation
                          join b in _test10Context.Product on a.P_id equals b.P_id
@@ -36,6 +36,7 @@ namespace MyApi2.Controllers
                              P_Name_to = c.Name,
                              Relation_id = a.Relation_id,
                              Relation_Name = d.Name,
+                             Content = a.Content,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -48,6 +49,13 @@ namespace MyApi2.Controllers
                          a.P_id_to.Contains(searchword) ||
                          a.P_Name.Contains(searchword) ||
                          a.P_Name_to.Contains(searchword)
+                );
+            }
+
+            if (relation_id != null)
+            {
+                result = result.Where(
+                    a => a.Relation_id == relation_id
                 );
             }
 
@@ -77,6 +85,7 @@ namespace MyApi2.Controllers
                              P_Name_to = c.Name,
                              Relation_id = a.Relation_id,
                              Relation_Name = d.Name,
+                             Content = a.Content,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -107,6 +116,17 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductRelationsDto value)
         {
+            var isExists = _test10Context.Product_relation.Any(
+                    a => a.P_id == value.P_id && 
+                         a.P_id_to == value.P_id_to &&
+                         a.Relation_id == value.Relation_id
+                );
+
+            if (isExists)
+            {
+                return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
+            }
+
             try
             {
                 Product_relation insert = new Product_relation
@@ -123,12 +143,12 @@ namespace MyApi2.Controllers
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
-                return Ok(new { message = "資料上傳成功" });
+                return Ok(new { message = "Y#資料上傳成功" });
             }
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳詳細的錯誤訊息
-                return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
+                return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
             }
         }
 
@@ -144,13 +164,24 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductRelationsDto value)
         {
+            var isExists = _test10Context.Product_relation.Any(
+                    a => a.P_id == value.P_id &&
+                         a.P_id_to == value.P_id_to &&
+                         a.Relation_id == value.Relation_id
+                );
+
+            if (isExists)
+            {
+                return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
+            }
+
             var result = (from a in _test10Context.Product_relation
                           where a.Id == id
                           select a).SingleOrDefault();
 
             if (result == null)
             {
-                return NotFound(new { message = "資料更新失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料更新失敗，未搜尋到該id" });
             }
             else
             {
@@ -168,12 +199,12 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料更新成功" });
+                    return Ok(new { message = "Y#資料更新成功" });
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料更新失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料更新失敗", error = ex.Message });
                 }
             }
         }
@@ -188,7 +219,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料刪除失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料刪除失敗，未搜尋到該id" });
             }
             else
             {
@@ -198,7 +229,7 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料刪除成功" });
+                    return Ok(new { message = "Y#資料刪除成功" });
                 }
                 catch (DbUpdateException dbEx)
                 {
@@ -218,7 +249,7 @@ namespace MyApi2.Controllers
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料刪除失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料刪除失敗", error = ex.Message });
                 }
             }
         }

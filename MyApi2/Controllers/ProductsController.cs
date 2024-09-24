@@ -161,6 +161,44 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/product/GetByCompany/{id}
+        [HttpGet("getbycompany/{id}")]
+        public ActionResult<IEnumerable<ProductsDto>> GetByCompany(string id)
+        {
+            var result = from a in _test10Context.Product
+                         join b in _test10Context.Company on a.C_id equals b.C_id
+                         orderby a.C_id, a.P_id
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             C_id = a.C_id,
+                             Name = a.Name,
+                             P_CName = a.C_Name,
+                             C_Name = b.Name,
+                             Content = a.Content,
+                             Content_style = a.Content_style,
+                             Play_time = a.Play_time,
+                             Remark = a.Remark,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                             Company_name = b.Name,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(a => a.C_id == id);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/product
         /*上傳json格式
         {

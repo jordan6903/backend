@@ -58,7 +58,7 @@ namespace MyApi2.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(result.Take(300));
         }
 
         // GET api/translation_team_batch/{id}
@@ -110,6 +110,16 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] TranslationTeamBatchsDto value)
         {
+            var isExists = _test10Context.Translation_team_batch.Any(
+                    a => a.T_id == value.T_id &&
+                         a.TT_id == value.TT_id 
+                );
+
+            if (isExists)
+            {
+                return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
+            }
+
             try
             {
                 Translation_team_batch insert = new Translation_team_batch
@@ -126,12 +136,12 @@ namespace MyApi2.Controllers
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
-                return Ok(new { message = "資料上傳成功" });
+                return Ok(new { message = "Y#資料上傳成功" });
             }
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳詳細的錯誤訊息
-                return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
+                return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
             }
         }
 
@@ -153,7 +163,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料更新失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料更新失敗，未搜尋到該id" });
             }
             else
             {
@@ -171,12 +181,12 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料更新成功" });
+                    return Ok(new { message = "Y#資料更新成功" });
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料更新失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料更新失敗", error = ex.Message });
                 }
             }
         }
@@ -191,7 +201,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料刪除失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料刪除失敗，未搜尋到該id" });
             }
             else
             {
@@ -201,7 +211,7 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料刪除成功" });
+                    return Ok(new { message = "Y#資料刪除成功" });
                 }
                 catch (DbUpdateException dbEx)
                 {
@@ -221,7 +231,52 @@ namespace MyApi2.Controllers
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料刪除失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料刪除失敗", error = ex.Message });
+                }
+            }
+        }
+
+        // DELETE api/translation_team_batch/deletebyttid/{id}
+        [HttpDelete("deletebyttid/{id}")]
+        public IActionResult DeleteByTTid(int id)
+        {
+            var result = (from a in _test10Context.Translation_team_batch
+                          where a.TT_id == id
+                          select a).ToList();
+
+            if (result == null || !result.Any())
+            {
+                return NotFound(new { message = "N#資料刪除失敗，未搜尋到該id" });
+            }
+            else
+            {
+                try
+                {
+                    _test10Context.Translation_team_batch.RemoveRange(result);
+                    _test10Context.SaveChanges();
+
+                    // 回傳成功訊息
+                    return Ok(new { message = "Y#資料刪除成功" });
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    // 解析內部例外狀況
+                    var innerException = dbEx.InnerException?.Message;
+                    if (innerException != null && innerException.Contains("REFERENCE"))
+                    {
+                        // 如果內部訊息包含外鍵約束的提示，回傳更具體的錯誤訊息
+                        return Ok(new { message = "N#資料刪除失敗，此資料正在被其他表引用，無法刪除。" });
+                    }
+                    else
+                    {
+                        // 捕捉其他例外並回傳詳細錯誤訊息
+                        return BadRequest(new { message = "N#資料刪除失敗", error = innerException ?? dbEx.Message });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 捕捉錯誤並回傳詳細的錯誤訊息
+                    return BadRequest(new { message = "N#資料刪除失敗", error = ex.Message });
                 }
             }
         }

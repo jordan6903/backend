@@ -6,7 +6,7 @@
 
         public long TT_id { get; set; }
 
-        public string P_id { get; set; } = null!;
+        public string? P_id { get; set; }
 
         public string? P_Name { get; set; }
 

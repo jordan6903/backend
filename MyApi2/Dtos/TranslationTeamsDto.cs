@@ -10,6 +10,10 @@
 
         public string? P_CName { get; set; }
 
+        public string? C_id { get; set; }
+
+        public string? C_Name { get; set; }
+
         public byte T_batch { get; set; }
 
         public string? T_id { get; set; }

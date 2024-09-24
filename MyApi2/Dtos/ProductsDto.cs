@@ -12,6 +12,8 @@
 
         public string? C_Name { get; set; }
 
+        public string? P_CName { get; set; }
+
         public string? Content { get; set; }
 
         public string? Content_style { get; set; }

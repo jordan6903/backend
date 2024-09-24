@@ -24,16 +24,19 @@ namespace MyApi2.Controllers
 
         // GET: api/translation_team
         [HttpGet]
-        public ActionResult<IEnumerable<TranslationTeamsDto>> Get(string? searchword, string? searchword2, int? type_id)
+        public ActionResult<IEnumerable<TranslationTeamsDto>> Get(string? c_search, string? p_search, string? t_search, int? type_id)
         {
             var result = from a in _test10Context.Product
                          join b in _test10Context.Translation_team on a.P_id equals b.P_id into TT
-                         orderby a.P_id
+                         join c in _test10Context.Company on a.C_id equals c.C_id
+                         orderby a.C_id, a.P_id
                          select new
                          {
                              P_id = a.P_id,
                              P_Name = a.Name,
                              P_CName = a.C_Name,
+                             C_id = a.C_id,
+                             C_Name = c.Name,
                              T_batch_data = TT.Select(b => new TTviewsDto1
                              {
                                  Id = b.Id,
@@ -47,32 +50,44 @@ namespace MyApi2.Controllers
                                             where b.Id == d.TT_id
                                             select new TTviewsDto2
                                             {
+                                                Id = d.Id,
+                                                TT_Id = d.TT_id,
                                                 T_id = d.T_id,
                                                 T_Name = (from e in _test10Context.Translation_team_info
                                                           where e.T_id == d.T_id
                                                           select e.Name).FirstOrDefault(),
+                                                P_id = "",
+                                                T_batch = 0
                                             }).ToList()
                              }).ToList(),
                          };
 
-            if (searchword != null)
+            if (c_search != null)
             {
                 result = result.Where(
-                    a => a.P_id.Contains(searchword) ||
-                         a.P_Name.Contains(searchword) ||
-                         a.P_CName.Contains(searchword)
+                    a => a.C_id.Contains(c_search) ||
+                         a.C_Name.Contains(c_search)
                 );
             }
 
-            var resultList = result.AsEnumerable();
+            if (p_search != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(p_search) ||
+                         a.P_Name.Contains(p_search) ||
+                         a.P_CName.Contains(p_search)
+                );
+            }
 
-            if (searchword2 != null)
+            var resultList = result.AsEnumerable().Where(a => a.T_batch_data != null && a.T_batch_data.Any()); //過濾掉空集合
+
+            if (t_search != null)
             {
                 resultList = resultList.Where(
                     a => a.T_batch_data.Any(
                         b => b.TT_info != null && b.TT_info.Any(
-                            c => (c.T_id != null && c.T_id.Contains(searchword2)) ||
-                                 (c.T_Name != null && c.T_Name.Contains(searchword2)))
+                            c => (c.T_id != null && c.T_id.Contains(t_search)) ||
+                                 (c.T_Name != null && c.T_Name.Contains(t_search)))
                         )
                 );
             }
@@ -89,71 +104,80 @@ namespace MyApi2.Controllers
                 return NotFound();
             }
 
-            return Ok(resultList);
-
-            //var result = from a in _test10Context.Product
-            //             join b in _test10Context.Translation_team on a.P_id equals b.P_id
-            //             join c in _test10Context.Translation_team_batch on b.Id equals c.TT_id
-            //             join d in _test10Context.Translation_team_info on c.T_id equals d.T_id
-            //             join e in _test10Context.Translation_team_type on b.Type_id equals e.Type_id
-            //             orderby a.P_id
-            //             select new
-            //             {
-            //                 P_id = a.P_id,
-            //                 P_Name = a.Name,
-            //                 P_CName = a.C_Name,
-            //                 T_batch = b.T_batch,
-            //                 T_id = c.T_id,
-            //                 T_Name = d.Name,
-            //                 Type_id = b.Type_id,
-            //                 Type_Name = e.Name,
-            //                 Remark = b.Remark,
-            //             };
-
-            //if (searchword != null)
-            //{
-            //    result = result.Where(
-            //        a => a.P_id.Contains(searchword) ||
-            //             a.P_Name.Contains(searchword) ||
-            //             a.P_CName.Contains(searchword)
-            //    );
-            //}
-
-            //if (searchword2 != null)
-            //{
-            //    result = result.Where(
-            //        a => a.T_id.Contains(searchword2) ||
-            //             a.T_Name.Contains(searchword2)
-            //    );
-            //}
-
-            //if (type_id != null)
-            //{
-            //    result = result.Where(
-            //        a => a.Type_id == type_id
-            //    );
-            //}
-
-            //if (result == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return Ok(result);
+            return Ok(resultList.Take(300));
         }
 
-        // GET api/translation_team/{id}
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<TranslationTeamsDto>> GetSingle(string id)
+        // GET: api/translation_team
+        [HttpGet]
+        [Route("normal")]
+        public ActionResult<IEnumerable<TranslationTeamsDto>> Getnormal(string? searchword, string? searchword2, int? type_id)
         {
             var result = from a in _test10Context.Product
-                         join b in _test10Context.Translation_team on a.P_id equals b.P_id into TT
+                         join b in _test10Context.Translation_team on a.P_id equals b.P_id
+                         join c in _test10Context.Translation_team_batch on b.Id equals c.TT_id
+                         join d in _test10Context.Translation_team_info on c.T_id equals d.T_id
+                         join e in _test10Context.Translation_team_type on b.Type_id equals e.Type_id
                          orderby a.P_id
                          select new
                          {
                              P_id = a.P_id,
                              P_Name = a.Name,
                              P_CName = a.C_Name,
+                             T_batch = b.T_batch,
+                             T_id = c.T_id,
+                             T_Name = d.Name,
+                             Type_id = b.Type_id,
+                             Type_Name = e.Name,
+                             Remark = b.Remark,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(searchword) ||
+                         a.P_Name.Contains(searchword) ||
+                         a.P_CName.Contains(searchword)
+                );
+            }
+
+            if (searchword2 != null)
+            {
+                result = result.Where(
+                    a => a.T_id.Contains(searchword2) ||
+                         a.T_Name.Contains(searchword2)
+                );
+            }
+
+            if (type_id != null)
+            {
+                result = result.Where(
+                    a => a.Type_id == type_id
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        // GET api/translation_team/single/{id}
+        [HttpGet("single/{id}")]
+        public ActionResult<IEnumerable<TranslationTeamsDto>> GetSingle(string id)
+        {
+            var result = from a in _test10Context.Product
+                         join b in _test10Context.Translation_team on a.P_id equals b.P_id into TT
+                         join c in _test10Context.Company on a.C_id equals c.C_id
+                         orderby a.P_id
+                         select new
+                         {
+                             P_id = a.P_id,
+                             P_Name = a.Name,
+                             P_CName = a.C_Name,
+                             C_id = a.C_id,
+                             C_Name = c.Name,
                              T_batch_data = TT.Select(b => new TTviewsDto1
                              {
                                  Id = b.Id,
@@ -192,6 +216,96 @@ namespace MyApi2.Controllers
             return Ok(resultList);
         }
 
+        // GET api/translation_team/singlebyid/{id}
+        [HttpGet("singlebyid/{id}")]
+        public ActionResult<IEnumerable<TranslationTeamsDto>> GetSingleById(int id)
+        {
+            var result = from a in _test10Context.Product
+                         join b in _test10Context.Translation_team on a.P_id equals b.P_id into TT
+                         join c in _test10Context.Company on a.C_id equals c.C_id
+                         orderby a.P_id
+                         select new
+                         {
+                             P_id = a.P_id,
+                             P_Name = a.Name,
+                             P_CName = a.C_Name,
+                             C_id = a.C_id,
+                             C_Name = c.Name,
+                             T_batch_data = TT.Select(b => new TTviewsDto1
+                             {
+                                 Id = b.Id,
+                                 T_batch = b.T_batch,
+                                 Type_id = b.Type_id,
+                                 Remark = b.Remark,
+                                 Type_Name = (from c in _test10Context.Translation_team_type
+                                              where c.Type_id == b.Type_id
+                                              select c.Name).FirstOrDefault(),
+                                 TT_info = (from d in _test10Context.Translation_team_batch
+                                            where b.Id == d.TT_id
+                                            select new TTviewsDto2
+                                            {
+                                                T_id = d.T_id,
+                                                T_Name = (from e in _test10Context.Translation_team_info
+                                                          where e.T_id == d.T_id
+                                                          select e.Name).FirstOrDefault(),
+                                            }).ToList()
+                             }).ToList(),
+                         };
+
+            var resultList = result.AsEnumerable();
+
+            if (id != null)
+            {
+                resultList = resultList.Where(
+                    a => a.T_batch_data.Any( b => b.Id == id)
+                );
+            }
+
+            if (resultList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(resultList);
+        }
+
+        // GET api/translation_team/getnewid
+        [HttpGet("getnewid")]
+        public ActionResult<string> GetMaxTbatch()
+        {
+            try
+            {
+                var maxId = _test10Context.Translation_team
+                            .Max(t => t.Id);
+
+                return Ok(maxId);
+            }
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳詳細的錯誤訊息
+                return Ok(0);
+            }
+        }
+
+        // GET api/translation_team/getmaxtbatch/{id}
+        [HttpGet("getmaxtbatch/{id}")]
+        public ActionResult<string> GetMaxTbatch(string id)
+        {
+            try
+            {
+                var maxTbatch = _test10Context.Translation_team
+                            .Where(t => t.P_id == id)
+                            .Max(t => t.T_batch);
+
+                return Ok(maxTbatch);
+            }
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳詳細的錯誤訊息
+                return Ok(0);
+            }
+        }
+
         // POST api/translation_team
         /*上傳json格式
         {
@@ -204,6 +318,16 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] TranslationTeamsDto value)
         {
+            var isExists = _test10Context.Translation_team.Any(
+                a => a.P_id == value.P_id &&
+                     a.T_batch == value.T_batch
+             );
+
+            if (isExists)
+            {
+                return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
+            }
+
             try
             {
                 Translation_team insert = new Translation_team
@@ -220,12 +344,12 @@ namespace MyApi2.Controllers
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
-                return Ok(new { message = "資料上傳成功" });
+                return Ok(new { message = "Y#資料上傳成功" });
             }
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳詳細的錯誤訊息
-                return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
+                return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
             }
         }
 
@@ -247,7 +371,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料更新失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料更新失敗，未搜尋到該id" });
             }
             else
             {
@@ -265,12 +389,12 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料更新成功" });
+                    return Ok(new { message = "Y#資料更新成功" });
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料更新失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料更新失敗", error = ex.Message });
                 }
             }
         }
@@ -285,7 +409,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料刪除失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料刪除失敗，未搜尋到該id" });
             }
             else
             {
@@ -295,7 +419,7 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料刪除成功" });
+                    return Ok(new { message = "Y#資料刪除成功" });
                 }
                 catch (DbUpdateException dbEx)
                 {
@@ -315,7 +439,7 @@ namespace MyApi2.Controllers
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料刪除失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料刪除失敗", error = ex.Message });
                 }
             }
         }
