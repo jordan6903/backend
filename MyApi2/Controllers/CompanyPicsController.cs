@@ -24,11 +24,13 @@ namespace MyApi2.Controllers
         {
             var result = from a in _test10Context.Company_Pic
                          join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
+                         join c in _test10Context.Company on a.C_id equals c.C_id
                          orderby a.C_id, a.Sort
                          select new
                          {
                              Id = a.Id,
                              C_id = a.C_id,
+                             C_Name = c.Name,
                              Type_id = a.Type_id,
                              Type_Name = b.Name,
                              Name = a.Name,
@@ -46,7 +48,8 @@ namespace MyApi2.Controllers
             if (searchword != null)
             {
                 result = result.Where(
-                    a => a.C_id.Contains(searchword)
+                    a => a.C_id.Contains(searchword) ||
+                         a.C_Name.Contains(searchword)
                 );
             }
 
@@ -74,7 +77,7 @@ namespace MyApi2.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(result.Take(500));
         }
 
         // GET api/company_pic/{id}
@@ -155,12 +158,12 @@ namespace MyApi2.Controllers
                 _test10Context.SaveChanges();
 
                 // 回傳成功訊息
-                return Ok(new { message = "資料上傳成功" });
+                return Ok(new { message = "Y#資料上傳成功" });
             }
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳詳細的錯誤訊息
-                return BadRequest(new { message = "資料上傳失敗", error = ex.Message });
+                return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
             }
         }
 
@@ -187,7 +190,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料更新失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料更新失敗，未搜尋到該id" });
             }
             else
             {
@@ -210,12 +213,12 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料更新成功" });
+                    return Ok(new { message = "Y#資料更新成功" });
                 }
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料更新失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料更新失敗", error = ex.Message });
                 }
             }
         }
@@ -230,7 +233,7 @@ namespace MyApi2.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "資料刪除失敗，未搜尋到該id" });
+                return NotFound(new { message = "N#資料刪除失敗，未搜尋到該id" });
             }
             else
             {
@@ -240,7 +243,7 @@ namespace MyApi2.Controllers
                     _test10Context.SaveChanges();
 
                     // 回傳成功訊息
-                    return Ok(new { message = "資料刪除成功" });
+                    return Ok(new { message = "Y#資料刪除成功" });
                 }
                 catch (DbUpdateException dbEx)
                 {
@@ -260,7 +263,7 @@ namespace MyApi2.Controllers
                 catch (Exception ex)
                 {
                     // 捕捉錯誤並回傳詳細的錯誤訊息
-                    return BadRequest(new { message = "資料刪除失敗", error = ex.Message });
+                    return BadRequest(new { message = "N#資料刪除失敗", error = ex.Message });
                 }
             }
         }

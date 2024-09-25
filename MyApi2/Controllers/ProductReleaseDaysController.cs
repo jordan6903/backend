@@ -141,6 +141,52 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/product_release_day/getbypid
+        [HttpGet("getbypid")]
+        public ActionResult<IEnumerable<ProductReleaseDaysDto>> GetByPid(string id)
+        {
+            var result = from a in _test10Context.Product_Release_day
+                         join b in _test10Context.Product on a.P_id equals b.P_id
+                         join c in _test10Context.Voice_type on a.Voice_id equals c.Voice_id
+                         join d in _test10Context.Currency on a.Currency_id equals d.Currency_id
+                         join e in _test10Context.Device on a.Device_id equals e.Device_id
+                         join f in _test10Context.Rating on a.Rating_id equals f.Rating_id
+                         orderby a.P_id, a.Sale_Date
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             P_Name = b.Name,
+                             Sale_Date = a.Sale_Date,
+                             Presale_Date = a.Presale_Date,
+                             Price = a.Price,
+                             Voice_id = a.Voice_id,
+                             Voice_Name = c.Name,
+                             Currency_id = a.Currency_id,
+                             Currency_Name = d.FullName,
+                             Content = a.Content,
+                             Device_id = a.Device_id,
+                             Device_Name = e.FullName,
+                             Rating_id = a.Rating_id,
+                             Rating_Name = f.Name,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(a => a.P_id == id);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/product_release_day
         /*上傳json格式
         {

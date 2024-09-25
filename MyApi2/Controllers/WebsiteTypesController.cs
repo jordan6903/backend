@@ -61,7 +61,7 @@ namespace MyApi2.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(result.Take(500));
         }
 
         // GET api/website_type/{id}
@@ -142,7 +142,7 @@ namespace MyApi2.Controllers
 
         }
 
-        // PUT api/website_type/5
+        // PUT api/website_type/{id}
         /*上傳json格式
         {
             "Type_id": "C03",

@@ -104,6 +104,22 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/company/getnewcid
+        [HttpGet("getnewcid")]
+        public ActionResult<string> GetNewcid()
+        {
+            var result = (from a in _test10Context.Company
+                          orderby a.C_id descending
+                          select a.C_id).FirstOrDefault();
+
+            if (result == null)
+            {
+                return "NAN";
+            }
+
+            return result;
+        }
+
         // POST api/company
         /*上傳json格式
         {

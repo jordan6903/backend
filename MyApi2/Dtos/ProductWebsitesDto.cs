@@ -6,6 +6,8 @@
 
         public string P_id { get; set; } = null!;
 
+        public string? P_Name { get; set; }
+
         public string Type_id { get; set; } = null!;
 
         public string? Type_Name { get; set; }
