@@ -107,6 +107,45 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/staff/getbypid
+        [HttpGet("getbypid")]
+        public ActionResult<IEnumerable<StaffsDto>> GetByPid(string id)
+        {
+            var result = from a in _test10Context.Staff
+                         join b in _test10Context.Product on a.P_id equals b.P_id
+                         join c in _test10Context.Staff_info on a.Staff_id equals c.Staff_id
+                         join d in _test10Context.Staff_type on a.Staff_typeid equals d.Staff_typeid
+                         orderby a.P_id, a.Staff_typeid
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             P_Name = b.Name,
+                             Staff_id = a.Staff_id,
+                             Staff_Name = c.Name,
+                             Staff_typeid = a.Staff_typeid,
+                             Staff_type_Name = d.Name,
+                             Remark = a.Remark,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(
+                    a => a.P_id == id
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/staff
         /*上傳json格式
         {

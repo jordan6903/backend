@@ -104,6 +104,43 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/product_relation/getbypid
+        [HttpGet("getbypid")]
+        public ActionResult<IEnumerable<ProductRelationsDto>> GetByPid(string id)
+        {
+            var result = from a in _test10Context.Product_relation
+                         join b in _test10Context.Product on a.P_id equals b.P_id
+                         join c in _test10Context.Product on a.P_id_to equals c.P_id
+                         join d in _test10Context.Product_relation_info on a.Relation_id equals d.Relation_id
+                         orderby a.P_id, a.Relation_id
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             P_Name = b.Name,
+                             P_id_to = a.P_id_to,
+                             P_Name_to = c.Name,
+                             Relation_id = a.Relation_id,
+                             Relation_Name = d.Name,
+                             Content = a.Content,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(a => a.P_id == id);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/product_relation
         /*上傳json格式
         {

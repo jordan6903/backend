@@ -82,6 +82,22 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/staff_info/getmaxstaffid
+        [HttpGet("getmaxstaffid")]
+        public ActionResult<string> GetMaxStaffId()
+        {
+            var result = (from a in _test10Context.Staff_info
+                         orderby a.Staff_id descending
+                         select a.Staff_id).FirstOrDefault();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/staff_info
         /*上傳json格式
         {

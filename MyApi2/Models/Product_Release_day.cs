@@ -31,6 +31,8 @@ public partial class Product_Release_day
 
     public DateTime? Create_dt { get; set; }
 
+    public string? Name { get; set; }
+
     public virtual Currency? Currency { get; set; }
 
     public virtual Device? Device { get; set; }

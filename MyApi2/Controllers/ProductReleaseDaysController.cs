@@ -34,6 +34,7 @@ namespace MyApi2.Controllers
                              Id = a.Id,
                              P_id = a.P_id,
                              P_Name = b.Name,
+                             Name = a.Name,
                              Sale_Date = a.Sale_Date,
                              Presale_Date = a.Presale_Date,
                              Price = a.Price,
@@ -55,7 +56,8 @@ namespace MyApi2.Controllers
             {
                 result = result.Where(
                     a => a.P_id.Contains(searchword) ||
-                         a.P_Name.Contains(searchword)
+                         a.P_Name.Contains(searchword) ||
+                         a.Name.Contains(searchword)
                 );
             }
 
@@ -111,6 +113,7 @@ namespace MyApi2.Controllers
                              Id = a.Id,
                              P_id = a.P_id,
                              P_Name = b.Name,
+                             Name = a.Name,
                              Sale_Date = a.Sale_Date,
                              Presale_Date = a.Presale_Date,
                              Price = a.Price,
@@ -157,6 +160,7 @@ namespace MyApi2.Controllers
                              Id = a.Id,
                              P_id = a.P_id,
                              P_Name = b.Name,
+                             Name = a.Name,
                              Sale_Date = a.Sale_Date,
                              Presale_Date = a.Presale_Date,
                              Price = a.Price,
@@ -191,6 +195,7 @@ namespace MyApi2.Controllers
         /*上傳json格式
         {
             "P_id": "A000000001",
+            "Name": "",
             "Sale_Date": "20030223",
             "Presale_Date": "",
             "Price": 0,
@@ -216,6 +221,7 @@ namespace MyApi2.Controllers
                 Product_Release_day insert = new Product_Release_day
                 {
                     P_id = value.P_id,
+                    Name = value.Name,
                     Sale_Date = value.Sale_Date,
                     Presale_Date = value.Presale_Date,
                     Price = value.Price,
@@ -260,6 +266,7 @@ namespace MyApi2.Controllers
         /*上傳json格式
         {
             "P_id": "A000000001",
+            "Name": "",
             "Sale_Date": "20030223",
             "Presale_Date": "",
             "Price": 0,
@@ -286,6 +293,7 @@ namespace MyApi2.Controllers
                 try
                 {
                     result.P_id = value.P_id;
+                    result.Name = value.Name;
                     result.Sale_Date = value.Sale_Date;
                     result.Presale_Date = value.Presale_Date;
                     result.Price = value.Price;

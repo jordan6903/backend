@@ -95,6 +95,40 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/product_type/getbypid
+        [HttpGet("getbypid")]
+        public ActionResult<IEnumerable<ProductTypesDto>> GetByPid(string id)
+        {
+            var result = from a in _test10Context.Product_type
+                         join b in _test10Context.Product on a.P_id equals b.P_id
+                         join c in _test10Context.Product_type_info on a.P_type_id equals c.P_type_id
+                         orderby a.P_id, a.P_type_id
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             P_Name = b.Name,
+                             P_type_id = a.P_type_id,
+                             P_type_Name = c.FullName,
+                             Remark = a.Remark,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(a => a.P_id == id);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/product_type
         /*上傳json格式
         {

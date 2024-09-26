@@ -410,6 +410,7 @@ public partial class test10Context : DbContext
             entity.Property(e => e.Create_dt).HasColumnType("datetime");
             entity.Property(e => e.Currency_id).HasMaxLength(3);
             entity.Property(e => e.Device_id).HasMaxLength(5);
+            entity.Property(e => e.Name).HasMaxLength(200);
             entity.Property(e => e.P_id).HasMaxLength(10);
             entity.Property(e => e.Presale_Date).HasMaxLength(8);
             entity.Property(e => e.Price).HasColumnType("smallmoney");

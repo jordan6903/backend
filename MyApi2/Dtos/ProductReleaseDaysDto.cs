@@ -8,6 +8,8 @@
 
         public string? P_Name { get; set; } = null!;
 
+        public string? Name { get; set; }
+
         public string Sale_Date { get; set; } = null!;
 
         public string? Presale_Date { get; set; }
