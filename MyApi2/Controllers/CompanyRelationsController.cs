@@ -12,21 +12,21 @@ namespace MyApi2.Controllers
     [ApiController]
     public class CompanyRelationsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public CompanyRelationsController(test10Context test10Context)
+        public CompanyRelationsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/company_relation
         [HttpGet]
         public ActionResult<IEnumerable<CompanyRelationsDto>> Get(string? searchword, int? relation_id)
         {
-            var result = from a in _test10Context.Company_relation
-                         join b in _test10Context.Company on a.C_id equals b.C_id
-                         join c in _test10Context.Company on a.C_id_to equals c.C_id
-                         join d in _test10Context.Company_relation_info on a.Relation_id equals d.Relation_id
+            var result = from a in _GalDBContext.Company_relation
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
+                         join c in _GalDBContext.Company on a.C_id_to equals c.C_id
+                         join d in _GalDBContext.Company_relation_info on a.Relation_id equals d.Relation_id
                          orderby a.C_id, a.Relation_id
                          select new
                          {
@@ -72,10 +72,10 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<CompanyRelationsDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Company_relation
-                         join b in _test10Context.Company on a.C_id equals b.C_id
-                         join c in _test10Context.Company on a.C_id_to equals c.C_id
-                         join d in _test10Context.Company_relation_info on a.Relation_id equals d.Relation_id
+            var result = from a in _GalDBContext.Company_relation
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
+                         join c in _GalDBContext.Company on a.C_id_to equals c.C_id
+                         join d in _GalDBContext.Company_relation_info on a.Relation_id equals d.Relation_id
                          orderby a.C_id, a.Relation_id
                          select new
                          {
@@ -117,7 +117,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] CompanyRelationsDto value)
         {
-            var isExists = _test10Context.Company_relation.Any(
+            var isExists = _GalDBContext.Company_relation.Any(
                     a => a.C_id == value.C_id &&
                          a.C_id_to == value.C_id_to &&
                          a.Relation_id == value.Relation_id
@@ -140,8 +140,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Company_relation.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Company_relation.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -165,7 +165,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] CompanyRelationsDto value)
         {
-            var result = (from a in _test10Context.Company_relation
+            var result = (from a in _GalDBContext.Company_relation
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -185,8 +185,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Company_relation.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company_relation.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -203,7 +203,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Company_relation
+            var result = (from a in _GalDBContext.Company_relation
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -215,8 +215,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Company_relation.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company_relation.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

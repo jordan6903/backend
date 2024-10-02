@@ -11,20 +11,20 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductPicsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductPicsController(test10Context test10Context)
+        public ProductPicsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_pic
         [HttpGet]
         public ActionResult<IEnumerable<ProductPicsDto>> Get(string? searchword, string? UseYN, string? type_id)
         {
-            var result = from a in _test10Context.Product_Pic
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
-                         join c in _test10Context.Product on a.P_id equals c.P_id
+            var result = from a in _GalDBContext.Product_Pic
+                         join b in _GalDBContext.Website_Type on a.Type_id equals b.Type_id
+                         join c in _GalDBContext.Product on a.P_id equals c.P_id
                          orderby a.P_id, a.Sort
                          select new
                          {
@@ -84,8 +84,8 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductPicsDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Product_Pic
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
+            var result = from a in _GalDBContext.Product_Pic
+                         join b in _GalDBContext.Website_Type on a.Type_id equals b.Type_id
                          orderby a.P_id, a.Sort
                          select new
                          {
@@ -154,8 +154,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_Pic.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_Pic.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -184,7 +184,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductPicsDto value)
         {
-            var result = (from a in _test10Context.Product_Pic
+            var result = (from a in _GalDBContext.Product_Pic
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -209,8 +209,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_Pic.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_Pic.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -227,7 +227,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_Pic
+            var result = (from a in _GalDBContext.Product_Pic
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -239,8 +239,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_Pic.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_Pic.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

@@ -12,21 +12,21 @@ namespace MyApi2.Controllers
     [ApiController]
     public class StaffsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public StaffsController(test10Context test10Context)
+        public StaffsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/staff
         [HttpGet]
         public ActionResult<IEnumerable<StaffsDto>> Get(string? searchword, int? staff_typeid)
         {
-            var result = from a in _test10Context.Staff
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Staff_info on a.Staff_id equals c.Staff_id
-                         join d in _test10Context.Staff_type on a.Staff_typeid equals d.Staff_typeid
+            var result = from a in _GalDBContext.Staff
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Staff_info on a.Staff_id equals c.Staff_id
+                         join d in _GalDBContext.Staff_type on a.Staff_typeid equals d.Staff_typeid
                          orderby a.P_id, a.Staff_typeid
                          select new
                          {
@@ -72,10 +72,10 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<StaffsDto>> GetSingle(int? id)
         {
-            var result = from a in _test10Context.Staff
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Staff_info on a.Staff_id equals c.Staff_id
-                         join d in _test10Context.Staff_type on a.Staff_typeid equals d.Staff_typeid
+            var result = from a in _GalDBContext.Staff
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Staff_info on a.Staff_id equals c.Staff_id
+                         join d in _GalDBContext.Staff_type on a.Staff_typeid equals d.Staff_typeid
                          orderby a.P_id, a.Staff_typeid
                          select new
                          {
@@ -111,10 +111,10 @@ namespace MyApi2.Controllers
         [HttpGet("getbypid")]
         public ActionResult<IEnumerable<StaffsDto>> GetByPid(string id)
         {
-            var result = from a in _test10Context.Staff
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Staff_info on a.Staff_id equals c.Staff_id
-                         join d in _test10Context.Staff_type on a.Staff_typeid equals d.Staff_typeid
+            var result = from a in _GalDBContext.Staff
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Staff_info on a.Staff_id equals c.Staff_id
+                         join d in _GalDBContext.Staff_type on a.Staff_typeid equals d.Staff_typeid
                          orderby a.P_id, a.Staff_typeid
                          select new
                          {
@@ -170,8 +170,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Staff.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Staff.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -195,7 +195,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] StaffsDto value)
         {
-            var result = (from a in _test10Context.Staff
+            var result = (from a in _GalDBContext.Staff
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -215,8 +215,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Staff.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Staff.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -233,7 +233,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Staff
+            var result = (from a in _GalDBContext.Staff
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -245,8 +245,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Staff.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Staff.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

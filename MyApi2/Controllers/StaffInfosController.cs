@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class StaffInfosController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public StaffInfosController(test10Context test10Context)
+        public StaffInfosController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/staff_info
         [HttpGet]
         public ActionResult<IEnumerable<StaffInfoDto>> Get(string? searchword)
         {
-            var result = from a in _test10Context.Staff_info
+            var result = from a in _GalDBContext.Staff_info
                          orderby a.Id
                          select new
                          {
@@ -56,7 +56,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<StaffInfoDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Staff_info
+            var result = from a in _GalDBContext.Staff_info
                          orderby a.Id
                          select new
                          {
@@ -86,7 +86,7 @@ namespace MyApi2.Controllers
         [HttpGet("getmaxstaffid")]
         public ActionResult<string> GetMaxStaffId()
         {
-            var result = (from a in _test10Context.Staff_info
+            var result = (from a in _GalDBContext.Staff_info
                          orderby a.Staff_id descending
                          select a.Staff_id).FirstOrDefault();
 
@@ -109,7 +109,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] StaffInfoDto value)
         {
-            var isExists = _test10Context.Staff_info.Any(a => a.Staff_id == value.Staff_id);
+            var isExists = _GalDBContext.Staff_info.Any(a => a.Staff_id == value.Staff_id);
 
             if (isExists)
             {
@@ -127,8 +127,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Staff_info.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Staff_info.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -152,7 +152,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] StaffInfoDto value)
         {
-            var result = (from a in _test10Context.Staff_info
+            var result = (from a in _GalDBContext.Staff_info
                           where a.Staff_id == id
                           select a).SingleOrDefault();
 
@@ -171,8 +171,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Staff_info.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Staff_info.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -189,7 +189,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Staff_info
+            var result = (from a in _GalDBContext.Staff_info
                           where a.Staff_id == id
                           select a).SingleOrDefault();
 
@@ -201,8 +201,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Staff_info.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Staff_info.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

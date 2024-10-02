@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ExportSetBatchsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ExportSetBatchsController(test10Context test10Context)
+        public ExportSetBatchsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/export_set_batch
         [HttpGet]
         public ActionResult<IEnumerable<ExportSetBatchsDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Export_set_batch
+            var result = from a in _GalDBContext.Export_set_batch
                          orderby a.Export_batch
                          select new
                          {
@@ -65,7 +65,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ExportSetBatchsDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Export_set_batch
+            var result = from a in _GalDBContext.Export_set_batch
                          orderby a.Export_batch
                          select new
                          {
@@ -114,8 +114,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Export_set_batch.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Export_set_batch.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "資料上傳成功" });
@@ -138,7 +138,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ExportSetBatchsDto value)
         {
-            var result = (from a in _test10Context.Export_set_batch
+            var result = (from a in _GalDBContext.Export_set_batch
                           where a.Export_batch == id
                           select a).SingleOrDefault();
 
@@ -156,8 +156,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Export_set_batch.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Export_set_batch.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "資料更新成功" });
@@ -174,7 +174,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Export_set_batch
+            var result = (from a in _GalDBContext.Export_set_batch
                           where a.Export_batch == id
                           select a).SingleOrDefault();
 
@@ -186,8 +186,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Export_set_batch.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Export_set_batch.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "資料刪除成功" });

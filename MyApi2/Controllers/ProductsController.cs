@@ -13,11 +13,11 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductsController(test10Context test10Context)
+        public ProductsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
         /*
         // GET: api/product
@@ -43,7 +43,7 @@ namespace MyApi2.Controllers
 
                 order by [A].[C_id], [B].[P_id];
                 ";
-            var device = _test10Context.Product.FromSqlRaw(ls_sql);
+            var device = _GalDBContext.Product.FromSqlRaw(ls_sql);
 
             if (device == null)
             {
@@ -57,7 +57,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
-            var device = _test10Context.Device
+            var device = _GalDBContext.Device
                     .FromSqlRaw("SELECT Device_id,FullName,ShortName FROM Device WHERE device_id = {0}", id)
                     .Select(d => new
                     {
@@ -80,8 +80,8 @@ namespace MyApi2.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ProductsDto>> Get(string? searchword, string? searchword2)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Company on a.C_id equals b.C_id
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
                          orderby a.C_id, a.P_id
                          select new
                          {
@@ -129,8 +129,8 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductsDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Company on a.C_id equals b.C_id
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
                          orderby a.C_id, a.P_id
                          select new
                          {
@@ -166,8 +166,8 @@ namespace MyApi2.Controllers
         [HttpGet("getbycompany/{id}")]
         public ActionResult<IEnumerable<ProductsDto>> GetByCompany(string id)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Company on a.C_id equals b.C_id
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
                          orderby a.C_id, a.P_id
                          select new
                          {
@@ -261,7 +261,7 @@ namespace MyApi2.Controllers
 		        [I2].[Name] AS [Staff_type_Name],
 		        [I].[Remark] AS [Staff_Remark]
 
-          FROM [test10].[dbo].[Product] AS [A]
+          FROM [GalDB].[dbo].[Product] AS [A]
           INNER JOIN [Company] AS [B] ON [A].[C_id]=[B].[C_id]
 
           LEFT JOIN [Product_Release_day] AS [C] ON [A].[P_id]=[C].[P_id] --發售日 多筆
@@ -297,10 +297,10 @@ namespace MyApi2.Controllers
         [HttpGet("View1")]
         public ActionResult<IEnumerable<ProductsView1Dto>> GetView1(string? searchword, string? searchword2)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Company on a.C_id equals b.C_id
-                         //join c in _test10Context.Product_Release_day on a.P_id equals c.P_id into Release
-                         //join d in _test10Context.Product_Website on a.P_id equals d.P_id into Website
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
+                         //join c in _GalDBContext.Product_Release_day on a.P_id equals c.P_id into Release
+                         //join d in _GalDBContext.Product_Website on a.P_id equals d.P_id into Website
                          orderby a.C_id, a.P_id
                          select new
                          {
@@ -321,20 +321,20 @@ namespace MyApi2.Controllers
                              //    Presale_Date = c.Presale_Date,
                              //    Price = c.Price,
                              //    Voice_id = c.Voice_id,
-                             //    Voice_Name = (from c1 in _test10Context.Voice_type
+                             //    Voice_Name = (from c1 in _GalDBContext.Voice_type
                              //                 where c1.Voice_id == c.Voice_id
                              //                  select c1.Name).FirstOrDefault(),
                              //    Currency_id = c.Currency_id,
-                             //    Currency_Name = (from c2 in _test10Context.Currency
+                             //    Currency_Name = (from c2 in _GalDBContext.Currency
                              //                     where c2.Currency_id == c.Currency_id
                              //                     select c2.ShortName).FirstOrDefault(),
                              //    Content = c.Content,
                              //    Device_id = c.Device_id,
-                             //    Device_Name = (from c3 in _test10Context.Device
+                             //    Device_Name = (from c3 in _GalDBContext.Device
                              //                   where c3.Device_id == c.Device_id
                              //                   select c3.FullName).FirstOrDefault(),
                              //    Rating_id = c.Rating_id,
-                             //    Rating_Name = (from c4 in _test10Context.Rating_type
+                             //    Rating_Name = (from c4 in _GalDBContext.Rating_type
                              //                   where c4.Rating_type1 == c.Rating_id
                              //                   select c4.Name).FirstOrDefault(),
                              //}).ToList(),
@@ -343,7 +343,7 @@ namespace MyApi2.Controllers
                              //{
                              //    Id = d.Id,
                              //    Type_id = d.Type_id,
-                             //    Type_Name = (from d1 in _test10Context.Website_Type
+                             //    Type_Name = (from d1 in _GalDBContext.Website_Type
                              //                 where d1.Type_id == d.Type_id
                              //                 select d1.Name).FirstOrDefault(),
                              //    Name = d.Name,
@@ -381,7 +381,7 @@ namespace MyApi2.Controllers
         [HttpGet("getnewpid")]
         public ActionResult<string> GetNewpid(string searchword)
         {
-            var result = (from a in _test10Context.Product
+            var result = (from a in _GalDBContext.Product
                          where a.P_id.Contains(searchword)
                          orderby a.P_id descending
                          select a.P_id).FirstOrDefault();
@@ -410,7 +410,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductsDto value)
         {
-            var isExists = _test10Context.Product.Any(a => a.P_id == value.P_id);
+            var isExists = _GalDBContext.Product.Any(a => a.P_id == value.P_id);
 
             if (isExists)
             {
@@ -433,8 +433,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -462,7 +462,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] ProductsDto value)
         {
-            var result = (from a in _test10Context.Product
+            var result = (from a in _GalDBContext.Product
                           where a.P_id == id
                           select a).SingleOrDefault();
 
@@ -486,8 +486,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -504,7 +504,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Product
+            var result = (from a in _GalDBContext.Product
                           where a.P_id == id
                           select a).SingleOrDefault();
 
@@ -516,8 +516,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

@@ -11,19 +11,19 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductTypeInfosController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductTypeInfosController(test10Context test10Context)
+        public ProductTypeInfosController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_type_info
         [HttpGet]
         public ActionResult<IEnumerable<ProductTypeInfosDto>> Get(string? searchword, string? UseYN, int? P_type)
         {
-            var result = from a in _test10Context.Product_type_info
-                         join b in _test10Context.Product_type_class on a.P_type_class equals b.P_type_class
+            var result = from a in _GalDBContext.Product_type_info
+                         join b in _GalDBContext.Product_type_class on a.P_type_class equals b.P_type_class
                          orderby a.P_type_class, a.Sort
                          select new
                          {
@@ -82,8 +82,8 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductTypeInfosDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Product_type_info
-                         join b in _test10Context.Product_type_class on a.P_type_class equals b.P_type_class
+            var result = from a in _GalDBContext.Product_type_info
+                         join b in _GalDBContext.Product_type_class on a.P_type_class equals b.P_type_class
                          orderby a.P_type_class, a.Sort
                          select new
                          {
@@ -132,7 +132,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductTypeInfosDto value)
         {
-            var isExists = _test10Context.Product_type_info.Any(a => a.P_type_id == value.P_type_id);
+            var isExists = _GalDBContext.Product_type_info.Any(a => a.P_type_id == value.P_type_id);
 
             if (isExists)
             {
@@ -156,8 +156,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_type_info.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_type_info.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -186,7 +186,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] ProductTypeInfosDto value)
         {
-            var result = (from a in _test10Context.Product_type_info
+            var result = (from a in _GalDBContext.Product_type_info
                           where a.P_type_id == id
                           select a).SingleOrDefault();
 
@@ -211,8 +211,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_type_info.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_type_info.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -229,7 +229,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Product_type_info
+            var result = (from a in _GalDBContext.Product_type_info
                           where a.P_type_id == id
                           select a).SingleOrDefault();
 
@@ -241,8 +241,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_type_info.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_type_info.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

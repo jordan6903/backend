@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class CurrencysController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public CurrencysController(test10Context test10Context)
+        public CurrencysController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/currency
         [HttpGet]
         public ActionResult<IEnumerable<CurrencysDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Currency
+            var result = from a in _GalDBContext.Currency
                          orderby a.Sort
                          select new
                          {
@@ -69,7 +69,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<CurrencysDto>> Get(string id)
         {
-            var result = from a in _test10Context.Currency
+            var result = from a in _GalDBContext.Currency
                          orderby a.Sort
                          select new
                          {
@@ -109,7 +109,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] CurrencysDto value)
         {
-            var isExists = _test10Context.Currency.Any(a => a.Currency_id == value.Currency_id);
+            var isExists = _GalDBContext.Currency.Any(a => a.Currency_id == value.Currency_id);
 
             if (isExists)
             {
@@ -129,8 +129,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Currency.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Currency.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -156,7 +156,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] CurrencysDto value)
         {
-            var result = (from a in _test10Context.Currency
+            var result = (from a in _GalDBContext.Currency
                           where a.Currency_id == id
                           select a).SingleOrDefault();
 
@@ -177,8 +177,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Currency.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Currency.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -195,7 +195,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Currency
+            var result = (from a in _GalDBContext.Currency
                           where a.Currency_id == id
                           select a).SingleOrDefault();
 
@@ -207,8 +207,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Currency.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Currency.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

@@ -13,18 +13,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class RatingsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public RatingsController(test10Context test10Context)
+        public RatingsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<RatingsDto>> Get(string? searchword, string? UseYN, int? Rating_type)
         {
-            var result = from a in _test10Context.Rating
-                         join b in _test10Context.Rating_type on a.Rating_type equals b.Rating_type1
+            var result = from a in _GalDBContext.Rating
+                         join b in _GalDBContext.Rating_type on a.Rating_type equals b.Rating_type1
                          orderby a.Rating_type, a.Sort
                          select new
                          {
@@ -84,8 +84,8 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<DevicesDto>> Get(int id)
         {
-            var result = from a in _test10Context.Rating
-                         join b in _test10Context.Rating_type on a.Rating_type equals b.Rating_type1
+            var result = from a in _GalDBContext.Rating
+                         join b in _GalDBContext.Rating_type on a.Rating_type equals b.Rating_type1
                          orderby a.Rating_type, a.Sort
                          select new
                          {
@@ -136,7 +136,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] RatingsDto value)
         {
-            var isExists = _test10Context.Rating.Any(a => a.Rating_id == value.Rating_id);
+            var isExists = _GalDBContext.Rating.Any(a => a.Rating_id == value.Rating_id);
 
             if (isExists)
             {
@@ -160,8 +160,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Rating.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Rating.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -191,7 +191,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] RatingsDto value)
         {
-            var result = (from a in _test10Context.Rating
+            var result = (from a in _GalDBContext.Rating
                           where a.Rating_id == id
                           select a).SingleOrDefault();
 
@@ -216,8 +216,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Rating.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Rating.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -234,7 +234,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Rating
+            var result = (from a in _GalDBContext.Rating
                           where a.Rating_id == id
                           select a).SingleOrDefault();
 
@@ -246,8 +246,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Rating.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Rating.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

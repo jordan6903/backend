@@ -33,8 +33,6 @@ public partial class Product
 
     public virtual ICollection<Export_set_Product> Export_set_Product { get; set; } = new List<Export_set_Product>();
 
-    public virtual ICollection<Export_set_Product_series> Export_set_Product_series { get; set; } = new List<Export_set_Product_series>();
-
     public virtual ICollection<Product_Pic> Product_Pic { get; set; } = new List<Product_Pic>();
 
     public virtual ICollection<Product_Release_day> Product_Release_day { get; set; } = new List<Product_Release_day>();

@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
-builder.Services.AddDbContext<test10Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WebDatabase")));
+builder.Services.AddDbContext<GalDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WebDatabase")));
 
 var app = builder.Build();
 

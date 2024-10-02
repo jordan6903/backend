@@ -11,19 +11,19 @@ namespace MyApi2.Controllers
     [ApiController]
     public class CompanysController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public CompanysController(test10Context test10Context)
+        public CompanysController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/company
         [HttpGet]
         public ActionResult<IEnumerable<CompanysDto>> Get(string? searchword, int? C_type)
         {
-            var result = from a in _test10Context.Company
-                         join b in _test10Context.Company_type on a.C_type equals b.C_type
+            var result = from a in _GalDBContext.Company
+                         join b in _GalDBContext.Company_type on a.C_type equals b.C_type
                          orderby a.C_type, a.C_id
                          select new
                          {
@@ -70,8 +70,8 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<CompanysDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Company
-                         join b in _test10Context.Company_type on a.C_type equals b.C_type
+            var result = from a in _GalDBContext.Company
+                         join b in _GalDBContext.Company_type on a.C_type equals b.C_type
                          orderby a.C_type, a.C_id
                          select new
                          {
@@ -108,7 +108,7 @@ namespace MyApi2.Controllers
         [HttpGet("getnewcid")]
         public ActionResult<string> GetNewcid()
         {
-            var result = (from a in _test10Context.Company
+            var result = (from a in _GalDBContext.Company
                           orderby a.C_id descending
                           select a.C_id).FirstOrDefault();
 
@@ -137,7 +137,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] CompanysDto value)
         {
-            var isExists = _test10Context.Company.Any(a => a.C_id == value.C_id);
+            var isExists = _GalDBContext.Company.Any(a => a.C_id == value.C_id);
 
             if (isExists)
             {
@@ -161,8 +161,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Company.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Company.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -191,7 +191,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] CompanysDto value)
         {
-            var result = (from a in _test10Context.Company
+            var result = (from a in _GalDBContext.Company
                           where a.C_id == id
                           select a).SingleOrDefault();
 
@@ -216,8 +216,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Company.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -234,7 +234,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Company
+            var result = (from a in _GalDBContext.Company
                           where a.C_id == id
                           select a).SingleOrDefault();
 
@@ -246,8 +246,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Company.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

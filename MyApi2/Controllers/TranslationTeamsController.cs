@@ -15,20 +15,20 @@ namespace MyApi2.Controllers
     [ApiController]
     public class TranslationTeamsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public TranslationTeamsController(test10Context test10Context)
+        public TranslationTeamsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/translation_team
         [HttpGet]
         public ActionResult<IEnumerable<TranslationTeamsDto>> Get(string? c_search, string? p_search, string? t_search, int? type_id)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Translation_team on a.P_id equals b.P_id into TT
-                         join c in _test10Context.Company on a.C_id equals c.C_id
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Translation_team on a.P_id equals b.P_id into TT
+                         join c in _GalDBContext.Company on a.C_id equals c.C_id
                          orderby a.C_id, a.P_id
                          select new
                          {
@@ -43,17 +43,17 @@ namespace MyApi2.Controllers
                                  T_batch = b.T_batch,
                                  Type_id = b.Type_id,
                                  Remark = b.Remark,
-                                 Type_Name = (from c in _test10Context.Translation_team_type
+                                 Type_Name = (from c in _GalDBContext.Translation_team_type
                                               where c.Type_id == b.Type_id
                                               select c.Name).FirstOrDefault(),
-                                 TT_info = (from d in _test10Context.Translation_team_batch
+                                 TT_info = (from d in _GalDBContext.Translation_team_batch
                                             where b.Id == d.TT_id
                                             select new TTviewsDto2
                                             {
                                                 Id = d.Id,
                                                 TT_Id = d.TT_id,
                                                 T_id = d.T_id,
-                                                T_Name = (from e in _test10Context.Translation_team_info
+                                                T_Name = (from e in _GalDBContext.Translation_team_info
                                                           where e.T_id == d.T_id
                                                           select e.Name).FirstOrDefault(),
                                                 P_id = "",
@@ -112,11 +112,11 @@ namespace MyApi2.Controllers
         [Route("normal")]
         public ActionResult<IEnumerable<TranslationTeamsDto>> Getnormal(string? searchword, string? searchword2, int? type_id)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Translation_team on a.P_id equals b.P_id
-                         join c in _test10Context.Translation_team_batch on b.Id equals c.TT_id
-                         join d in _test10Context.Translation_team_info on c.T_id equals d.T_id
-                         join e in _test10Context.Translation_team_type on b.Type_id equals e.Type_id
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Translation_team on a.P_id equals b.P_id
+                         join c in _GalDBContext.Translation_team_batch on b.Id equals c.TT_id
+                         join d in _GalDBContext.Translation_team_info on c.T_id equals d.T_id
+                         join e in _GalDBContext.Translation_team_type on b.Type_id equals e.Type_id
                          orderby a.P_id
                          select new
                          {
@@ -167,9 +167,9 @@ namespace MyApi2.Controllers
         [HttpGet("single/{id}")]
         public ActionResult<IEnumerable<TranslationTeamsDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Translation_team on a.P_id equals b.P_id into TT
-                         join c in _test10Context.Company on a.C_id equals c.C_id
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Translation_team on a.P_id equals b.P_id into TT
+                         join c in _GalDBContext.Company on a.C_id equals c.C_id
                          orderby a.P_id
                          select new
                          {
@@ -184,15 +184,15 @@ namespace MyApi2.Controllers
                                  T_batch = b.T_batch,
                                  Type_id = b.Type_id,
                                  Remark = b.Remark,
-                                 Type_Name = (from c in _test10Context.Translation_team_type
+                                 Type_Name = (from c in _GalDBContext.Translation_team_type
                                               where c.Type_id == b.Type_id
                                               select c.Name).FirstOrDefault(),
-                                 TT_info = (from d in _test10Context.Translation_team_batch
+                                 TT_info = (from d in _GalDBContext.Translation_team_batch
                                             where b.Id == d.TT_id
                                             select new TTviewsDto2
                                             {
                                                 T_id = d.T_id,
-                                                T_Name = (from e in _test10Context.Translation_team_info
+                                                T_Name = (from e in _GalDBContext.Translation_team_info
                                                           where e.T_id == d.T_id
                                                           select e.Name).FirstOrDefault(),
                                             }).ToList()
@@ -220,9 +220,9 @@ namespace MyApi2.Controllers
         [HttpGet("singlebyid/{id}")]
         public ActionResult<IEnumerable<TranslationTeamsDto>> GetSingleById(int id)
         {
-            var result = from a in _test10Context.Product
-                         join b in _test10Context.Translation_team on a.P_id equals b.P_id into TT
-                         join c in _test10Context.Company on a.C_id equals c.C_id
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Translation_team on a.P_id equals b.P_id into TT
+                         join c in _GalDBContext.Company on a.C_id equals c.C_id
                          orderby a.P_id
                          select new
                          {
@@ -237,15 +237,15 @@ namespace MyApi2.Controllers
                                  T_batch = b.T_batch,
                                  Type_id = b.Type_id,
                                  Remark = b.Remark,
-                                 Type_Name = (from c in _test10Context.Translation_team_type
+                                 Type_Name = (from c in _GalDBContext.Translation_team_type
                                               where c.Type_id == b.Type_id
                                               select c.Name).FirstOrDefault(),
-                                 TT_info = (from d in _test10Context.Translation_team_batch
+                                 TT_info = (from d in _GalDBContext.Translation_team_batch
                                             where b.Id == d.TT_id
                                             select new TTviewsDto2
                                             {
                                                 T_id = d.T_id,
-                                                T_Name = (from e in _test10Context.Translation_team_info
+                                                T_Name = (from e in _GalDBContext.Translation_team_info
                                                           where e.T_id == d.T_id
                                                           select e.Name).FirstOrDefault(),
                                             }).ToList()
@@ -275,7 +275,7 @@ namespace MyApi2.Controllers
         {
             try
             {
-                var maxId = _test10Context.Translation_team
+                var maxId = _GalDBContext.Translation_team
                             .Max(t => t.Id);
 
                 return Ok(maxId);
@@ -293,7 +293,7 @@ namespace MyApi2.Controllers
         {
             try
             {
-                var maxTbatch = _test10Context.Translation_team
+                var maxTbatch = _GalDBContext.Translation_team
                             .Where(t => t.P_id == id)
                             .Max(t => t.T_batch);
 
@@ -318,7 +318,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] TranslationTeamsDto value)
         {
-            var isExists = _test10Context.Translation_team.Any(
+            var isExists = _GalDBContext.Translation_team.Any(
                 a => a.P_id == value.P_id &&
                      a.T_batch == value.T_batch
              );
@@ -340,8 +340,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Translation_team.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Translation_team.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -365,7 +365,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] TranslationTeamsDto value)
         {
-            var result = (from a in _test10Context.Translation_team
+            var result = (from a in _GalDBContext.Translation_team
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -385,8 +385,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Translation_team.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Translation_team.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -403,7 +403,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Translation_team
+            var result = (from a in _GalDBContext.Translation_team
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -415,8 +415,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Translation_team.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Translation_team.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

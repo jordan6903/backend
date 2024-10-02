@@ -5,15 +5,11 @@ namespace MyApi2.Models;
 
 public partial class Export_set_Product_series
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public int Export_batch { get; set; }
+    public int ESC_id { get; set; }
 
     public string Name { get; set; } = null!;
-
-    public string C_id { get; set; } = null!;
-
-    public string P_id { get; set; } = null!;
 
     public bool? Use_yn { get; set; }
 
@@ -25,9 +21,7 @@ public partial class Export_set_Product_series
 
     public DateTime? Create_dt { get; set; }
 
-    public virtual Company C_idNavigation { get; set; } = null!;
+    public virtual Export_set_Company ESC { get; set; } = null!;
 
-    public virtual Export_set_batch Export_batchNavigation { get; set; } = null!;
-
-    public virtual Product P_idNavigation { get; set; } = null!;
+    public virtual ICollection<Export_set_Product> Export_set_Product { get; set; } = new List<Export_set_Product>();
 }

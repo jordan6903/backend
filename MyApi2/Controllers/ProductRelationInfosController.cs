@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductRelationInfosController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductRelationInfosController(test10Context test10Context)
+        public ProductRelationInfosController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_relation_info
         [HttpGet]
         public ActionResult<IEnumerable<ProductRelationInfosDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Product_relation_info
+            var result = from a in _GalDBContext.Product_relation_info
                          orderby a.Sort
                          select new
                          {
@@ -67,7 +67,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductRelationInfosDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Product_relation_info
+            var result = from a in _GalDBContext.Product_relation_info
                          orderby a.Sort
                          select new
                          {
@@ -107,7 +107,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductRelationInfosDto value)
         {
-            var isExists = _test10Context.Product_relation_info.Any(a => a.Relation_id == value.Relation_id);
+            var isExists = _GalDBContext.Product_relation_info.Any(a => a.Relation_id == value.Relation_id);
 
             if (isExists)
             {
@@ -127,8 +127,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_relation_info.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_relation_info.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -153,7 +153,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductRelationInfosDto value)
         {
-            var result = (from a in _test10Context.Product_relation_info
+            var result = (from a in _GalDBContext.Product_relation_info
                           where a.Relation_id == id
                           select a).SingleOrDefault();
 
@@ -174,8 +174,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_relation_info.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_relation_info.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -192,7 +192,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_relation_info
+            var result = (from a in _GalDBContext.Product_relation_info
                           where a.Relation_id == id
                           select a).SingleOrDefault();
 
@@ -204,8 +204,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_relation_info.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_relation_info.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

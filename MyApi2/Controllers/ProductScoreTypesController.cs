@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductScoreTypesController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductScoreTypesController(test10Context test10Context)
+        public ProductScoreTypesController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_score_type
         [HttpGet]
         public ActionResult<IEnumerable<ProductScoreTypesDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Product_score_type
+            var result = from a in _GalDBContext.Product_score_type
                          orderby a.Sort
                          select new
                          {
@@ -67,7 +67,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductScoreTypesDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Product_score_type
+            var result = from a in _GalDBContext.Product_score_type
                          orderby a.Sort
                          select new
                          {
@@ -107,7 +107,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductScoreTypesDto value)
         {
-            var isExists = _test10Context.Product_score_type.Any(a => a.Type_id == value.Type_id);
+            var isExists = _GalDBContext.Product_score_type.Any(a => a.Type_id == value.Type_id);
 
             if (isExists)
             {
@@ -127,8 +127,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_score_type.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_score_type.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -154,7 +154,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductScoreTypesDto value)
         {
-            var result = (from a in _test10Context.Product_score_type
+            var result = (from a in _GalDBContext.Product_score_type
                           where a.Type_id == id
                           select a).SingleOrDefault();
 
@@ -175,8 +175,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_score_type.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_score_type.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -193,7 +193,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_score_type
+            var result = (from a in _GalDBContext.Product_score_type
                           where a.Type_id == id
                           select a).SingleOrDefault();
 
@@ -205,8 +205,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_score_type.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_score_type.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

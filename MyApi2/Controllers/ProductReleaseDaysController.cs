@@ -11,23 +11,23 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductReleaseDaysController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductReleaseDaysController(test10Context test10Context)
+        public ProductReleaseDaysController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_release_day
         [HttpGet]
         public ActionResult<IEnumerable<ProductReleaseDaysDto>> Get(string? searchword, int? voice, string? currency, string? device, int? rating)
         {
-            var result = from a in _test10Context.Product_Release_day
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Voice_type on a.Voice_id equals c.Voice_id
-                         join d in _test10Context.Currency on a.Currency_id equals d.Currency_id
-                         join e in _test10Context.Device on a.Device_id equals e.Device_id
-                         join f in _test10Context.Rating on a.Rating_id equals f.Rating_id
+            var result = from a in _GalDBContext.Product_Release_day
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Voice_type on a.Voice_id equals c.Voice_id
+                         join d in _GalDBContext.Currency on a.Currency_id equals d.Currency_id
+                         join e in _GalDBContext.Device on a.Device_id equals e.Device_id
+                         join f in _GalDBContext.Rating on a.Rating_id equals f.Rating_id
                          orderby a.P_id, a.Sale_Date
                          select new
                          {
@@ -101,12 +101,12 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductReleaseDaysDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Product_Release_day
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Voice_type on a.Voice_id equals c.Voice_id
-                         join d in _test10Context.Currency on a.Currency_id equals d.Currency_id
-                         join e in _test10Context.Device on a.Device_id equals e.Device_id
-                         join f in _test10Context.Rating on a.Rating_id equals f.Rating_id
+            var result = from a in _GalDBContext.Product_Release_day
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Voice_type on a.Voice_id equals c.Voice_id
+                         join d in _GalDBContext.Currency on a.Currency_id equals d.Currency_id
+                         join e in _GalDBContext.Device on a.Device_id equals e.Device_id
+                         join f in _GalDBContext.Rating on a.Rating_id equals f.Rating_id
                          orderby a.P_id, a.Sale_Date
                          select new
                          {
@@ -148,12 +148,12 @@ namespace MyApi2.Controllers
         [HttpGet("getbypid")]
         public ActionResult<IEnumerable<ProductReleaseDaysDto>> GetByPid(string id)
         {
-            var result = from a in _test10Context.Product_Release_day
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Voice_type on a.Voice_id equals c.Voice_id
-                         join d in _test10Context.Currency on a.Currency_id equals d.Currency_id
-                         join e in _test10Context.Device on a.Device_id equals e.Device_id
-                         join f in _test10Context.Rating on a.Rating_id equals f.Rating_id
+            var result = from a in _GalDBContext.Product_Release_day
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Voice_type on a.Voice_id equals c.Voice_id
+                         join d in _GalDBContext.Currency on a.Currency_id equals d.Currency_id
+                         join e in _GalDBContext.Device on a.Device_id equals e.Device_id
+                         join f in _GalDBContext.Rating on a.Rating_id equals f.Rating_id
                          orderby a.P_id, a.Sale_Date
                          select new
                          {
@@ -209,7 +209,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductReleaseDaysDto value)
         {
-            var isExists = _test10Context.Product_Release_day.Any(a => a.Id == value.Id);
+            var isExists = _GalDBContext.Product_Release_day.Any(a => a.Id == value.Id);
 
             if (isExists)
             {
@@ -234,8 +234,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_Release_day.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_Release_day.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -280,7 +280,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductReleaseDaysDto value)
         {
-            var result = (from a in _test10Context.Product_Release_day
+            var result = (from a in _GalDBContext.Product_Release_day
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -306,8 +306,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_Release_day.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_Release_day.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -324,7 +324,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_Release_day
+            var result = (from a in _GalDBContext.Product_Release_day
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -336,8 +336,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_Release_day.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_Release_day.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

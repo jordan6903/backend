@@ -11,20 +11,20 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductScoresController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductScoresController(test10Context test10Context)
+        public ProductScoresController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_score
         [HttpGet]
         public ActionResult<IEnumerable<ProductScoresDto>> Get(string? searchword, int? type_id)
         {
-            var result = from a in _test10Context.Product_score
-                         join b in _test10Context.Product_score_type on a.Type_id equals b.Type_id
-                         join c in _test10Context.Product on a.P_id equals c.P_id
+            var result = from a in _GalDBContext.Product_score
+                         join b in _GalDBContext.Product_score_type on a.Type_id equals b.Type_id
+                         join c in _GalDBContext.Product on a.P_id equals c.P_id
                          orderby a.P_id, a.Type_id
                          select new
                          {
@@ -66,9 +66,9 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<StaffsDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Product_score
-                         join b in _test10Context.Product_score_type on a.Type_id equals b.Type_id
-                         join c in _test10Context.Product on a.P_id equals c.P_id
+            var result = from a in _GalDBContext.Product_score
+                         join b in _GalDBContext.Product_score_type on a.Type_id equals b.Type_id
+                         join c in _GalDBContext.Product on a.P_id equals c.P_id
                          orderby a.P_id, a.Type_id
                          select new
                          {
@@ -109,7 +109,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductScoresDto value)
         {
-            var isExists = _test10Context.Product_score.Any(
+            var isExists = _GalDBContext.Product_score.Any(
                     a => a.P_id == value.P_id &&
                          a.Type_id == value.Type_id
                 );
@@ -130,8 +130,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_score.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_score.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -154,7 +154,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductScoresDto value)
         {
-            var result = (from a in _test10Context.Product_score
+            var result = (from a in _GalDBContext.Product_score
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -173,8 +173,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_score.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_score.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -191,7 +191,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_score
+            var result = (from a in _GalDBContext.Product_score
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -203,8 +203,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_score.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_score.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

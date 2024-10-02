@@ -13,21 +13,21 @@ namespace MyApi2.Controllers
     [ApiController]
     public class TranslationTeamBatchsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public TranslationTeamBatchsController(test10Context test10Context)
+        public TranslationTeamBatchsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/translation_team_batch
         [HttpGet]
         public ActionResult<IEnumerable<TranslationTeamBatchsDto>> Get(string? searchword)
         {
-            var result = from a in _test10Context.Translation_team_batch
-                         join b in _test10Context.Translation_team_info on a.T_id equals b.T_id
-                         join c in _test10Context.Translation_team on a.TT_id equals c.Id
-                         join d in _test10Context.Product on c.P_id equals d.P_id
+            var result = from a in _GalDBContext.Translation_team_batch
+                         join b in _GalDBContext.Translation_team_info on a.T_id equals b.T_id
+                         join c in _GalDBContext.Translation_team on a.TT_id equals c.Id
+                         join d in _GalDBContext.Product on c.P_id equals d.P_id
                          orderby a.P_id, a.T_batch
                          select new
                          {
@@ -65,10 +65,10 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<TranslationTeamBatchsDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Translation_team_batch
-                         join b in _test10Context.Translation_team_info on a.T_id equals b.T_id
-                         join c in _test10Context.Translation_team on a.TT_id equals c.Id
-                         join d in _test10Context.Product on c.P_id equals d.P_id
+            var result = from a in _GalDBContext.Translation_team_batch
+                         join b in _GalDBContext.Translation_team_info on a.T_id equals b.T_id
+                         join c in _GalDBContext.Translation_team on a.TT_id equals c.Id
+                         join d in _GalDBContext.Product on c.P_id equals d.P_id
                          orderby a.P_id, a.T_batch
                          select new
                          {
@@ -110,7 +110,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] TranslationTeamBatchsDto value)
         {
-            var isExists = _test10Context.Translation_team_batch.Any(
+            var isExists = _GalDBContext.Translation_team_batch.Any(
                     a => a.T_id == value.T_id &&
                          a.TT_id == value.TT_id 
                 );
@@ -132,8 +132,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Translation_team_batch.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Translation_team_batch.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -157,7 +157,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] TranslationTeamBatchsDto value)
         {
-            var result = (from a in _test10Context.Translation_team_batch
+            var result = (from a in _GalDBContext.Translation_team_batch
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -177,8 +177,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Translation_team_batch.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Translation_team_batch.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -195,7 +195,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Translation_team_batch
+            var result = (from a in _GalDBContext.Translation_team_batch
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -207,8 +207,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Translation_team_batch.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Translation_team_batch.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });
@@ -240,7 +240,7 @@ namespace MyApi2.Controllers
         [HttpDelete("deletebyttid/{id}")]
         public IActionResult DeleteByTTid(int id)
         {
-            var result = (from a in _test10Context.Translation_team_batch
+            var result = (from a in _GalDBContext.Translation_team_batch
                           where a.TT_id == id
                           select a).ToList();
 
@@ -252,8 +252,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Translation_team_batch.RemoveRange(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Translation_team_batch.RemoveRange(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

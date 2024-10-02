@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class AccountInfosController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public AccountInfosController(test10Context test10Context)
+        public AccountInfosController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/account_info
         [HttpGet]
         public ActionResult<IEnumerable<AccountInfosDto>> Get(string? searchword)
         {
-            var result = from a in _test10Context.Account_info
+            var result = from a in _GalDBContext.Account_info
                          orderby a.Account_id
                          select new
                          {
@@ -54,7 +54,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<AccountInfosDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Account_info
+            var result = from a in _GalDBContext.Account_info
                          orderby a.Account_id
                          select new
                          {
@@ -101,8 +101,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Account_info.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Account_info.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "資料上傳成功" });
@@ -125,7 +125,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] AccountInfosDto value)
         {
-            var result = (from a in _test10Context.Account_info
+            var result = (from a in _GalDBContext.Account_info
                           where a.Account_id == id
                           select a).SingleOrDefault();
 
@@ -144,8 +144,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Account_info.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Account_info.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "資料更新成功" });
@@ -162,7 +162,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Account_info
+            var result = (from a in _GalDBContext.Account_info
                           where a.Account_id == id
                           select a).SingleOrDefault();
 
@@ -174,8 +174,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Account_info.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Account_info.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "資料刪除成功" });

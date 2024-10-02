@@ -11,20 +11,20 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductTypesController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductTypesController(test10Context test10Context)
+        public ProductTypesController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_type
         [HttpGet]
         public ActionResult<IEnumerable<ProductTypesDto>> Get(string? searchword, string? P_type_id)
         {
-            var result = from a in _test10Context.Product_type
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Product_type_info on a.P_type_id equals c.P_type_id
+            var result = from a in _GalDBContext.Product_type
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Product_type_info on a.P_type_id equals c.P_type_id
                          orderby a.P_id, a.P_type_id
                          select new
                          {
@@ -65,9 +65,9 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductTypesDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Product_type
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Product_type_info on a.P_type_id equals c.P_type_id
+            var result = from a in _GalDBContext.Product_type
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Product_type_info on a.P_type_id equals c.P_type_id
                          orderby a.P_id, a.P_type_id
                          select new
                          {
@@ -99,9 +99,9 @@ namespace MyApi2.Controllers
         [HttpGet("getbypid")]
         public ActionResult<IEnumerable<ProductTypesDto>> GetByPid(string id)
         {
-            var result = from a in _test10Context.Product_type
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Product_type_info on a.P_type_id equals c.P_type_id
+            var result = from a in _GalDBContext.Product_type
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Product_type_info on a.P_type_id equals c.P_type_id
                          orderby a.P_id, a.P_type_id
                          select new
                          {
@@ -140,7 +140,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductTypesDto value)
         {
-            var isExists = _test10Context.Product_type.Any(a => a.Id == value.Id);
+            var isExists = _GalDBContext.Product_type.Any(a => a.Id == value.Id);
 
             if (isExists)
             {
@@ -158,8 +158,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_type.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_type.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -182,7 +182,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductTypesDto value)
         {
-            var result = (from a in _test10Context.Product_type
+            var result = (from a in _GalDBContext.Product_type
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -201,8 +201,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_type.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_type.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -219,7 +219,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_type
+            var result = (from a in _GalDBContext.Product_type
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -231,8 +231,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_type.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_type.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

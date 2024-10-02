@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyApi2.Models;
 
-public partial class test10Context : DbContext
+public partial class GalDBContext : DbContext
 {
-    public test10Context(DbContextOptions<test10Context> options)
+    public GalDBContext(DbContextOptions<GalDBContext> options)
         : base(options)
     {
     }
@@ -283,58 +283,37 @@ public partial class test10Context : DbContext
                 .HasConstraintName("FK_Export_set_Company_Export_batch");
         });
 
-        //modelBuilder.Entity<Export_set_Product>(entity =>
-        //{
-        //    entity.Property(e => e.C_id).HasMaxLength(10);
-        //    entity.Property(e => e.Create_dt).HasColumnType("datetime");
-        //    entity.Property(e => e.P_id).HasMaxLength(10);
-        //    entity.Property(e => e.Upd_date).HasColumnType("datetime");
-        //    entity.Property(e => e.Upd_user).HasMaxLength(32);
+        modelBuilder.Entity<Export_set_Product>(entity =>
+        {
+            entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.P_id).HasMaxLength(10);
+            entity.Property(e => e.Upd_date).HasColumnType("datetime");
+            entity.Property(e => e.Upd_user).HasMaxLength(32);
 
-        //    entity.HasOne(d => d.C_idNavigation).WithMany(p => p.Export_set_Product)
-        //        .HasPrincipalKey(p => p.C_id)
-        //        .HasForeignKey(d => d.C_id)
-        //        .OnDelete(DeleteBehavior.ClientSetNull)
-        //        .HasConstraintName("FK_Export_set_Product_C_id");
+            entity.HasOne(d => d.ESPS).WithMany(p => p.Export_set_Product)
+                .HasForeignKey(d => d.ESPS_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Export_set_Product_ESPS_id");
 
-        //    entity.HasOne(d => d.Export_batchNavigation).WithMany(p => p.Export_set_Product)
-        //        .HasForeignKey(d => d.Export_batch)
-        //        .OnDelete(DeleteBehavior.ClientSetNull)
-        //        .HasConstraintName("FK_Export_set_Product_Export_batch");
+            entity.HasOne(d => d.P_idNavigation).WithMany(p => p.Export_set_Product)
+                .HasPrincipalKey(p => p.P_id)
+                .HasForeignKey(d => d.P_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Export_set_Product_P_id");
+        });
 
-        //    entity.HasOne(d => d.P_idNavigation).WithMany(p => p.Export_set_Product)
-        //        .HasPrincipalKey(p => p.P_id)
-        //        .HasForeignKey(d => d.P_id)
-        //        .OnDelete(DeleteBehavior.ClientSetNull)
-        //        .HasConstraintName("FK_Export_set_Product_P_id");
-        //});
+        modelBuilder.Entity<Export_set_Product_series>(entity =>
+        {
+            entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Upd_date).HasColumnType("datetime");
+            entity.Property(e => e.Upd_user).HasMaxLength(32);
 
-        //modelBuilder.Entity<Export_set_Product_series>(entity =>
-        //{
-        //    entity.Property(e => e.C_id).HasMaxLength(10);
-        //    entity.Property(e => e.Create_dt).HasColumnType("datetime");
-        //    entity.Property(e => e.Name).HasMaxLength(50);
-        //    entity.Property(e => e.P_id).HasMaxLength(10);
-        //    entity.Property(e => e.Upd_date).HasColumnType("datetime");
-        //    entity.Property(e => e.Upd_user).HasMaxLength(32);
-
-        //    entity.HasOne(d => d.C_idNavigation).WithMany(p => p.Export_set_Product_series)
-        //        .HasPrincipalKey(p => p.C_id)
-        //        .HasForeignKey(d => d.C_id)
-        //        .OnDelete(DeleteBehavior.ClientSetNull)
-        //        .HasConstraintName("FK_Export_set_Product_series_C_id");
-
-        //    entity.HasOne(d => d.Export_batchNavigation).WithMany(p => p.Export_set_Product_series)
-        //        .HasForeignKey(d => d.Export_batch)
-        //        .OnDelete(DeleteBehavior.ClientSetNull)
-        //        .HasConstraintName("FK_Export_set_Product_series_Export_batch");
-
-        //    entity.HasOne(d => d.P_idNavigation).WithMany(p => p.Export_set_Product_series)
-        //        .HasPrincipalKey(p => p.P_id)
-        //        .HasForeignKey(d => d.P_id)
-        //        .OnDelete(DeleteBehavior.ClientSetNull)
-        //        .HasConstraintName("FK_Export_set_Product_series_P_id");
-        //});
+            entity.HasOne(d => d.ESC).WithMany(p => p.Export_set_Product_series)
+                .HasForeignKey(d => d.ESC_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Export_set_Product_series_ESC_id");
+        });
 
         modelBuilder.Entity<Export_set_batch>(entity =>
         {

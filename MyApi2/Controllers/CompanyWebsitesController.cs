@@ -11,20 +11,20 @@ namespace MyApi2.Controllers
     [ApiController]
     public class CompanyWebsitesController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public CompanyWebsitesController(test10Context test10Context)
+        public CompanyWebsitesController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/company_website
         [HttpGet]
         public ActionResult<IEnumerable<CompanyWebsitesDto>> Get(string? searchword, string? UseYN, string? type_id)
         {
-            var result = from a in _test10Context.Company_Website
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
-                         join c in _test10Context.Company on a.C_id equals c.C_id
+            var result = from a in _GalDBContext.Company_Website
+                         join b in _GalDBContext.Website_Type on a.Type_id equals b.Type_id
+                         join c in _GalDBContext.Company on a.C_id equals c.C_id
                          orderby a.C_id, a.Sort
                          select new
                          {
@@ -82,8 +82,8 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<CompanyWebsitesDto>> Get(string id)
         {
-            var result = from a in _test10Context.Company_Website
-                         join b in _test10Context.Website_Type on a.Type_id equals b.Type_id
+            var result = from a in _GalDBContext.Company_Website
+                         join b in _GalDBContext.Website_Type on a.Type_id equals b.Type_id
                          orderby a.C_id, a.Sort
                          select new
                          {
@@ -146,8 +146,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Company_Website.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Company_Website.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -174,7 +174,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] CompanyWebsitesDto value)
         {
-            var result = (from a in _test10Context.Company_Website
+            var result = (from a in _GalDBContext.Company_Website
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -197,8 +197,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Company_Website.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company_Website.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -215,7 +215,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Company_Website
+            var result = (from a in _GalDBContext.Company_Website
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -227,8 +227,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Company_Website.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company_Website.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

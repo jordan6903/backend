@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class RatingTypesController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public RatingTypesController(test10Context test10Context)
+        public RatingTypesController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/rating_type
         [HttpGet]
         public ActionResult<IEnumerable<RatingTypesDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Rating_type
+            var result = from a in _GalDBContext.Rating_type
                          orderby a.Sort
                          select new
                          {
@@ -69,7 +69,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<RatingTypesDto>> Get(int id)
         {
-            var result = from a in _test10Context.Rating_type
+            var result = from a in _GalDBContext.Rating_type
                          orderby a.Sort
                          select new
                          {
@@ -111,7 +111,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] RatingTypesDto value)
         {
-            var isExists = _test10Context.Rating_type.Any(a => a.Rating_type1 == value.Rating_type);
+            var isExists = _GalDBContext.Rating_type.Any(a => a.Rating_type1 == value.Rating_type);
 
             if (isExists)
             {
@@ -132,8 +132,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Rating_type.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Rating_type.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -160,7 +160,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] RatingTypesDto value)
         {
-            var result = (from a in _test10Context.Rating_type
+            var result = (from a in _GalDBContext.Rating_type
                           where a.Rating_type1 == id
                           select a).SingleOrDefault();
 
@@ -182,8 +182,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Rating_type.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Rating_type.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -200,7 +200,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Rating_type
+            var result = (from a in _GalDBContext.Rating_type
                           where a.Rating_type1 == id
                           select a).SingleOrDefault();
 
@@ -212,8 +212,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Rating_type.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Rating_type.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

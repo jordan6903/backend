@@ -11,20 +11,20 @@ namespace MyApi2.Controllers
     [ApiController]
     public class AccountPersController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public AccountPersController(test10Context test10Context)
+        public AccountPersController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/account_per
         [HttpGet]
         public ActionResult<IEnumerable<AccountPersDto>> Get(string? searchword, int? Permission_id)
         {
-            var result = from a in _test10Context.Account_per
-                         join b in _test10Context.Account_info on a.Account_id equals b.Account_id
-                         join c in _test10Context.Permission_set on a.Permission_id equals c.Permission_id
+            var result = from a in _GalDBContext.Account_per
+                         join b in _GalDBContext.Account_info on a.Account_id equals b.Account_id
+                         join c in _GalDBContext.Permission_set on a.Permission_id equals c.Permission_id
                          orderby a.Permission_id, a.Account_id
                          select new
                          {
@@ -68,9 +68,9 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<AccountPersDto>> GetSingle(string id)
         {
-            var result = from a in _test10Context.Account_per
-                         join b in _test10Context.Account_info on a.Account_id equals b.Account_id
-                         join c in _test10Context.Permission_set on a.Permission_id equals c.Permission_id
+            var result = from a in _GalDBContext.Account_per
+                         join b in _GalDBContext.Account_info on a.Account_id equals b.Account_id
+                         join c in _GalDBContext.Permission_set on a.Permission_id equals c.Permission_id
                          orderby a.Permission_id, a.Account_id
                          select new
                          {
@@ -126,8 +126,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Account_per.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Account_per.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "資料上傳成功" });
@@ -152,7 +152,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] AccountPersDto value)
         {
-            var result = (from a in _test10Context.Account_per
+            var result = (from a in _GalDBContext.Account_per
                           where a.Account_id == id
                           select a).SingleOrDefault();
 
@@ -173,8 +173,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Account_per.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Account_per.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "資料更新成功" });
@@ -191,7 +191,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var result = (from a in _test10Context.Account_per
+            var result = (from a in _GalDBContext.Account_per
                           where a.Account_id == id
                           select a).SingleOrDefault();
 
@@ -203,8 +203,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Account_per.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Account_per.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "資料刪除成功" });

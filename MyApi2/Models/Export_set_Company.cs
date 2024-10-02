@@ -24,4 +24,6 @@ public partial class Export_set_Company
     public virtual Company C_idNavigation { get; set; } = null!;
 
     public virtual Export_set_batch Export_batchNavigation { get; set; } = null!;
+
+    public virtual ICollection<Export_set_Product_series> Export_set_Product_series { get; set; } = new List<Export_set_Product_series>();
 }

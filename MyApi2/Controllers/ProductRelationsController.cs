@@ -11,21 +11,21 @@ namespace MyApi2.Controllers
     [ApiController]
     public class ProductRelationsController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public ProductRelationsController(test10Context test10Context)
+        public ProductRelationsController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/product_relation
         [HttpGet]
         public ActionResult<IEnumerable<ProductRelationsDto>> Get(string? searchword, int? relation_id)
         {
-            var result = from a in _test10Context.Product_relation
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Product on a.P_id_to equals c.P_id
-                         join d in _test10Context.Product_relation_info on a.Relation_id equals d.Relation_id
+            var result = from a in _GalDBContext.Product_relation
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Product on a.P_id_to equals c.P_id
+                         join d in _GalDBContext.Product_relation_info on a.Relation_id equals d.Relation_id
                          orderby a.P_id, a.Relation_id
                          select new
                          {
@@ -71,10 +71,10 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductRelationsDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Product_relation
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Product on a.P_id_to equals c.P_id
-                         join d in _test10Context.Product_relation_info on a.Relation_id equals d.Relation_id
+            var result = from a in _GalDBContext.Product_relation
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Product on a.P_id_to equals c.P_id
+                         join d in _GalDBContext.Product_relation_info on a.Relation_id equals d.Relation_id
                          orderby a.P_id, a.Relation_id
                          select new
                          {
@@ -108,10 +108,10 @@ namespace MyApi2.Controllers
         [HttpGet("getbypid")]
         public ActionResult<IEnumerable<ProductRelationsDto>> GetByPid(string id)
         {
-            var result = from a in _test10Context.Product_relation
-                         join b in _test10Context.Product on a.P_id equals b.P_id
-                         join c in _test10Context.Product on a.P_id_to equals c.P_id
-                         join d in _test10Context.Product_relation_info on a.Relation_id equals d.Relation_id
+            var result = from a in _GalDBContext.Product_relation
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Product on a.P_id_to equals c.P_id
+                         join d in _GalDBContext.Product_relation_info on a.Relation_id equals d.Relation_id
                          orderby a.P_id, a.Relation_id
                          select new
                          {
@@ -153,7 +153,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProductRelationsDto value)
         {
-            var isExists = _test10Context.Product_relation.Any(
+            var isExists = _GalDBContext.Product_relation.Any(
                     a => a.P_id == value.P_id && 
                          a.P_id_to == value.P_id_to &&
                          a.Relation_id == value.Relation_id
@@ -176,8 +176,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Product_relation.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Product_relation.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -201,7 +201,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] ProductRelationsDto value)
         {
-            var isExists = _test10Context.Product_relation.Any(
+            var isExists = _GalDBContext.Product_relation.Any(
                     a => a.P_id == value.P_id &&
                          a.P_id_to == value.P_id_to &&
                          a.Relation_id == value.Relation_id
@@ -212,7 +212,7 @@ namespace MyApi2.Controllers
                 return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
             }
 
-            var result = (from a in _test10Context.Product_relation
+            var result = (from a in _GalDBContext.Product_relation
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -232,8 +232,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Product_relation.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_relation.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -250,7 +250,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Product_relation
+            var result = (from a in _GalDBContext.Product_relation
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -262,8 +262,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Product_relation.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Product_relation.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });

@@ -11,18 +11,18 @@ namespace MyApi2.Controllers
     [ApiController]
     public class CompanyTypesController : ControllerBase
     {
-        private readonly test10Context _test10Context;
+        private readonly GalDBContext _GalDBContext;
 
-        public CompanyTypesController(test10Context test10Context)
+        public CompanyTypesController(GalDBContext GalDBContext)
         {
-            _test10Context = test10Context;
+            _GalDBContext = GalDBContext;
         }
 
         // GET: api/company_type
         [HttpGet]
         public ActionResult<IEnumerable<CompanyTypesDto>> Get(string? searchword, string? UseYN)
         {
-            var result = from a in _test10Context.Company_type
+            var result = from a in _GalDBContext.Company_type
                          orderby a.Sort
                          select new
                          {
@@ -67,7 +67,7 @@ namespace MyApi2.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<CompanyTypesDto>> GetSingle(int id)
         {
-            var result = from a in _test10Context.Company_type
+            var result = from a in _GalDBContext.Company_type
                          orderby a.Sort
                          select new
                          {
@@ -107,7 +107,7 @@ namespace MyApi2.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] CompanyTypesDto value)
         {
-            var isExists = _test10Context.Company_type.Any(a => a.C_type == value.C_type);
+            var isExists = _GalDBContext.Company_type.Any(a => a.C_type == value.C_type);
 
             if (isExists)
             {
@@ -127,8 +127,8 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _test10Context.Company_type.Add(insert);
-                _test10Context.SaveChanges();
+                _GalDBContext.Company_type.Add(insert);
+                _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
                 return Ok(new { message = "Y#資料上傳成功" });
@@ -154,7 +154,7 @@ namespace MyApi2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] CompanyTypesDto value)
         {
-            var result = (from a in _test10Context.Company_type
+            var result = (from a in _GalDBContext.Company_type
                           where a.C_type == id
                           select a).SingleOrDefault();
 
@@ -175,8 +175,8 @@ namespace MyApi2.Controllers
                     result.Upd_date = DateTime.Now;
                     result.Create_dt = DateTime.Now;
 
-                    _test10Context.Company_type.Update(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company_type.Update(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料更新成功" });
@@ -193,7 +193,7 @@ namespace MyApi2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _test10Context.Company_type
+            var result = (from a in _GalDBContext.Company_type
                           where a.C_type == id
                           select a).SingleOrDefault();
 
@@ -205,8 +205,8 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _test10Context.Company_type.Remove(result);
-                    _test10Context.SaveChanges();
+                    _GalDBContext.Company_type.Remove(result);
+                    _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
                     return Ok(new { message = "Y#資料刪除成功" });
