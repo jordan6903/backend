@@ -2,13 +2,15 @@
 {
     public class ExportSetProductsDto
     {
-        public int Id { get; set; }
+        public long? esc_id { get; set; }
 
-        public int Export_batch { get; set; }
+        public long esps_id { get; set; }
 
-        public string C_id { get; set; } = null!;
+        public long? esp_id { get; set; }
 
-        public string P_id { get; set; } = null!;
+        public string? P_id { get; set; }
+
+        public string? P_Name { get; set; }
 
         public bool? Use_yn { get; set; }
 

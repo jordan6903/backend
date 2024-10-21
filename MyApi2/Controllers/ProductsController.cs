@@ -122,7 +122,7 @@ namespace MyApi2.Controllers
                 return NotFound();
             }
 
-            return Ok(result.Take(300));
+            return Ok(result);
         }
 
         // GET api/company/{id}
