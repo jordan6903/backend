@@ -1,12 +1,12 @@
 ﻿namespace MyApi2.Dtos
 {
-    public class ExportViewsP
+    public class ExportViewsPOther
     {
         public long Export_batch { get; set; }
 
         public long Id { get; set; }
 
-        public long ESPS_id { get; set; }
+        public long esos_id { get; set; }
 
         public string? C_id { get; set; }
 

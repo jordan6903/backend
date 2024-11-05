@@ -14,6 +14,16 @@
 
         public short? Sort { get; set; }
 
+        public bool? Repeat_chk { get; set; }
+
+        public bool? Count_chk { get; set; }
+
+        public int? Count_export { get; set; }
+
+        public int? Count_exportall { get; set; }
+
+        public int? Count_all { get; set; }
+
         public DateTime? Upd_date { get; set; }
 
         public string? Upd_user { get; set; }

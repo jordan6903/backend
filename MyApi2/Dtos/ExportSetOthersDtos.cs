@@ -1,20 +1,18 @@
-﻿namespace MyApi2.Dtos
+﻿using MyApi2.Models;
+
+namespace MyApi2.Dtos
 {
-    public class ExportSetCompanysDto
+    public class ExportSetOthersDtos
     {
         public int Id { get; set; }
 
         public int Export_batch { get; set; }
 
-        public string? C_id { get; set; } = null!;
-
-        public string? C_Name { get; set; } 
+        public string? Name { get; set; }
 
         public bool? Use_yn { get; set; }
 
         public short? Sort { get; set; }
-
-        public bool? DragShow { get; set; }
 
         public string? Series_data { get; set; }
 

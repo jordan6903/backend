@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using MyApi2.Dtos;
 using MyApi2.Models;
 
@@ -8,28 +7,28 @@ using MyApi2.Models;
 
 namespace MyApi2.Controllers
 {
-    [Route("api/export_set_product_series")]
+    [Route("api/export_set_other_series")]
     [ApiController]
-    public class ExportSetProductSeriessController : ControllerBase
+    public class ExportSetOtherSeriessController : ControllerBase
     {
         private readonly GalDBContext _GalDBContext;
 
-        public ExportSetProductSeriessController(GalDBContext GalDBContext)
+        public ExportSetOtherSeriessController(GalDBContext GalDBContext)
         {
             _GalDBContext = GalDBContext;
         }
 
-        // GET: api/export_set_product_series/{id}
+        // GET: api/export_set_other_series/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<ExportSetProductSeriesDto>> GetSingle(int id)
+        public ActionResult<IEnumerable<ExportSetOtherSeriesDto>> GetSingle(int id)
         {
-            var result = from a in _GalDBContext.Export_set_Company
-                         join b in _GalDBContext.Export_set_Product_series on a.Id equals b.ESC_id
+            var result = from a in _GalDBContext.Export_set_Other
+                         join b in _GalDBContext.Export_set_Other_series on a.Id equals b.ESO_id
                          orderby b.Sort
                          select new
                          {
-                             esc_id = b.ESC_id,
-                             esps_Id = b.Id,
+                             eso_id = b.ESO_id,
+                             esos_Id = b.Id,
                              Name = b.Name,
                              Use_yn = b.Use_yn,
                              Sort = b.Sort,
@@ -40,7 +39,7 @@ namespace MyApi2.Controllers
                          };
 
             result = result.Where(
-                a => a.esc_id == id
+                a => a.eso_id == id
             );
 
             if (result == null)
@@ -51,16 +50,16 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET: api/export_set_product_series/getall
+        // GET: api/export_set_other_series/getall
         [HttpGet("getall")]
-        public ActionResult<IEnumerable<ExportSetProductSeriesDto>> GetAll()
+        public ActionResult<IEnumerable<ExportSetOtherSeriesDto>> GetAll()
         {
-            var result = from b in _GalDBContext.Export_set_Product_series
+            var result = from b in _GalDBContext.Export_set_Other_series
                          orderby b.Sort
                          select new
                          {
-                             esc_id = b.ESC_id,
-                             esps_Id = b.Id,
+                             eso_id = b.ESO_id,
+                             esos_Id = b.Id,
                              Name = b.Name,
                              Use_yn = b.Use_yn,
                              Sort = b.Sort,
@@ -78,23 +77,23 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // POST api/export_set_product_series
+        // POST api/export_set_other_series
         /*上傳json格式
         {
-            "ESC_id": 2,
+            "ESO_id": 2,
             "Name" : "test",
             "Use_yn": false,
             "Sort": 0
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] ExportSetProductSeriesDto value)
+        public IActionResult Post([FromBody] ExportSetOtherSeriesDto value)
         {
             try
             {
-                Export_set_Product_series insert = new Export_set_Product_series
+                Export_set_Other_series insert = new Export_set_Other_series
                 {
-                    ESC_id = value.esc_id,
+                    ESO_id = value.eso_id,
                     Name = value.Name,
                     Use_yn = value.Use_yn,
                     Sort = value.Sort,
@@ -102,7 +101,7 @@ namespace MyApi2.Controllers
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _GalDBContext.Export_set_Product_series.Add(insert);
+                _GalDBContext.Export_set_Other_series.Add(insert);
                 _GalDBContext.SaveChanges();
 
                 // 取得自動產生的 ID
@@ -118,19 +117,19 @@ namespace MyApi2.Controllers
             }
         }
 
-        // PUT api/export_set_product_series/{id}
+        // PUT api/export_set_other_series/{id}
         /*上傳json格式
         {
-            "ESC_id": 2,
+            "ESO_id": 2,
             "Name" : "test",
             "Use_yn": false,
             "Sort": 0
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ExportSetProductSeriesDto value)
+        public IActionResult Put(int id, [FromBody] ExportSetOtherSeriesDto value)
         {
-            var result = (from a in _GalDBContext.Export_set_Product_series
+            var result = (from a in _GalDBContext.Export_set_Other_series
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -142,14 +141,14 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    result.ESC_id = value.esc_id;
+                    result.ESO_id = value.eso_id;
                     result.Name = value.Name;
                     result.Use_yn = value.Use_yn;
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
 
-                    _GalDBContext.Export_set_Product_series.Update(result);
+                    _GalDBContext.Export_set_Other_series.Update(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
@@ -163,29 +162,29 @@ namespace MyApi2.Controllers
             }
         }
 
-        // PUT api/export_set_product_series/{id}
+        // PUT api/export_set_other_series/{id}
         /*上傳json格式
         [
             {
-                "esps_id": 1
-                "Sort": 0
+                "esos_id": 1,
+                "Sort": 1
             },
             {
-                "esps_id": 2
-                "Sort": 0
-            },
+                "esos_id": 2,
+                "Sort": 2
+            }
         ]
         */
         [HttpPut("several")]
-        public IActionResult Put([FromBody] List<ExportSetProductSeries2Dto> values)
+        public IActionResult Put([FromBody] List<ExportSetOtherSeries2Dto> values)
         {
             try
             {
                 // 遍歷每一筆資料，新增到資料庫中
                 foreach (var value in values)
                 {
-                    var result = (from a in _GalDBContext.Export_set_Product_series
-                                  where a.Id == value.esps_Id
+                    var result = (from a in _GalDBContext.Export_set_Other_series
+                                  where a.Id == value.esos_Id
                                   select a).SingleOrDefault();
 
                     if (result == null)
@@ -198,7 +197,7 @@ namespace MyApi2.Controllers
                         result.Upd_user = value.Upd_user;
                         result.Upd_date = DateTime.Now;
 
-                        _GalDBContext.Export_set_Product_series.Update(result);
+                        _GalDBContext.Export_set_Other_series.Update(result);
                     }
                 }
                 // 一次性保存所有更改
@@ -214,11 +213,11 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/export_set_product_series/{id}
+        // DELETE api/export_set_other_series/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _GalDBContext.Export_set_Product_series
+            var result = (from a in _GalDBContext.Export_set_Other_series
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -230,16 +229,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    var result2 = from a in _GalDBContext.Export_set_Product
-                                  where a.ESPS_id == id
-                                  select a;
-
-                    if (result2.Any())
-                    {
-                        _GalDBContext.Export_set_Product.RemoveRange(result2);
-                    }
-
-                    _GalDBContext.Export_set_Product_series.Remove(result);
+                    _GalDBContext.Export_set_Other_series.Remove(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息

@@ -33,11 +33,19 @@ public partial class GalDBContext : DbContext
 
     public virtual DbSet<Export_set_Company> Export_set_Company { get; set; }
 
+    public virtual DbSet<Export_set_Other> Export_set_Other { get; set; }
+
+    public virtual DbSet<Export_set_Other_Product> Export_set_Other_Product { get; set; }
+
+    public virtual DbSet<Export_set_Other_series> Export_set_Other_series { get; set; }
+
     public virtual DbSet<Export_set_Product> Export_set_Product { get; set; }
 
     public virtual DbSet<Export_set_Product_series> Export_set_Product_series { get; set; }
 
     public virtual DbSet<Export_set_batch> Export_set_batch { get; set; }
+
+    public virtual DbSet<Export_type> Export_type { get; set; }
 
     public virtual DbSet<Permission_set> Permission_set { get; set; }
 
@@ -283,6 +291,51 @@ public partial class GalDBContext : DbContext
                 .HasConstraintName("FK_Export_set_Company_Export_batch");
         });
 
+        modelBuilder.Entity<Export_set_Other>(entity =>
+        {
+            entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Upd_date).HasColumnType("datetime");
+            entity.Property(e => e.Upd_user).HasMaxLength(32);
+
+            entity.HasOne(d => d.Export_batchNavigation).WithMany(p => p.Export_set_Other)
+                .HasForeignKey(d => d.Export_batch)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Export_set_Other_Export_batch");
+        });
+
+        modelBuilder.Entity<Export_set_Other_Product>(entity =>
+        {
+            entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.P_id).HasMaxLength(10);
+            entity.Property(e => e.Upd_date).HasColumnType("datetime");
+            entity.Property(e => e.Upd_user).HasMaxLength(32);
+
+            entity.HasOne(d => d.ESOS).WithMany(p => p.Export_set_Other_Product)
+                .HasForeignKey(d => d.ESOS_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Export_set_Other_Product_ESOS_id");
+
+            entity.HasOne(d => d.P_idNavigation).WithMany(p => p.Export_set_Other_Product)
+                .HasPrincipalKey(p => p.P_id)
+                .HasForeignKey(d => d.P_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Export_set_Other_Product_P_id");
+        });
+
+        modelBuilder.Entity<Export_set_Other_series>(entity =>
+        {
+            entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Upd_date).HasColumnType("datetime");
+            entity.Property(e => e.Upd_user).HasMaxLength(32);
+
+            entity.HasOne(d => d.ESO).WithMany(p => p.Export_set_Other_series)
+                .HasForeignKey(d => d.ESO_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Export_set_Other_series_ESO_id");
+        });
+
         modelBuilder.Entity<Export_set_Product>(entity =>
         {
             entity.Property(e => e.Create_dt).HasColumnType("datetime");
@@ -322,6 +375,15 @@ public partial class GalDBContext : DbContext
             entity.Property(e => e.Export_batch).ValueGeneratedNever();
             entity.Property(e => e.Content).HasMaxLength(100);
             entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.Upd_date).HasColumnType("datetime");
+            entity.Property(e => e.Upd_user).HasMaxLength(32);
+        });
+
+        modelBuilder.Entity<Export_type>(entity =>
+        {
+            entity.Property(e => e.Content).HasMaxLength(300);
+            entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Upd_date).HasColumnType("datetime");
             entity.Property(e => e.Upd_user).HasMaxLength(32);
         });

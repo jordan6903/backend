@@ -2,34 +2,33 @@
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
-using System.Xml.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MyApi2.Controllers
 {
-    [Route("api/export_set_company")]
+    [Route("api/export_set_other")]
     [ApiController]
-    public class ExportSetCompanysController : ControllerBase
+    public class ExportSetOthersController : ControllerBase
     {
         private readonly GalDBContext _GalDBContext;
 
-        public ExportSetCompanysController(GalDBContext GalDBContext)
+        public ExportSetOthersController(GalDBContext GalDBContext)
         {
             _GalDBContext = GalDBContext;
         }
 
-        // GET: api/export_set_company
+        // GET: api/export_set_other
         [HttpGet]
-        public ActionResult<IEnumerable<ExportSetCompanysDto>> Get(int? id, string? UseYN)
+        public ActionResult<IEnumerable<ExportSetOthersDtos>> Get(int? id, string? UseYN)
         {
-            var result = from a in _GalDBContext.Export_set_Company
+            var result = from a in _GalDBContext.Export_set_Other
                          orderby a.Export_batch
                          select new
                          {
                              Id = a.Id,
                              Export_batch = a.Export_batch,
-                             C_id = a.C_id,
+                             Name = a.Name,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              Series_data = "",
@@ -67,67 +66,17 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/export_set_company/{id}
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<ExportSetCompanysDto>> GetSingle(int id, string? UseYN)
-        {
-            var result = from a in _GalDBContext.Export_set_Company
-                         join b in _GalDBContext.Company on a.C_id equals b.C_id
-                         orderby a.Export_batch, a.Sort
-                         select new
-                         {
-                             Id = a.Id,
-                             Export_batch = a.Export_batch,
-                             C_id = a.C_id,
-                             C_Name = b.Name,
-                             Use_yn = a.Use_yn,
-                             Sort = a.Sort,
-                             DragShow = false,
-                             Upd_user = a.Upd_user,
-                             Upd_date = a.Upd_date,
-                             Create_dt = a.Create_dt,
-                         };
-
-            if (id != null)
-            {
-                result = result.Where(
-                    a => a.Export_batch == id
-                );
-            }
-
-            if (UseYN != null)
-            {
-                if (UseYN == "Y")
-                {
-                    result = result.Where(a => a.Use_yn == true);
-                }
-                else if (UseYN == "N")
-                {
-                    result = result.Where(a => a.Use_yn == false);
-                }
-            }
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
-        // GET api/export_set_company/GetById/{id}
+        // GET api/export_set_other/{id}
         [HttpGet("getbyid/{id}")]
-        public ActionResult<IEnumerable<ExportSetCompanysDto>> GetById(int id)
+        public ActionResult<IEnumerable<ExportSetOthersDtos>> GetById(int id)
         {
-            var result = from a in _GalDBContext.Export_set_Company
-                         join b in _GalDBContext.Company on a.C_id equals b.C_id
+            var result = from a in _GalDBContext.Export_set_Other
                          orderby a.Export_batch, a.Sort
                          select new
                          {
                              Id = a.Id,
                              Export_batch = a.Export_batch,
-                             C_id = a.C_id,
-                             C_Name = b.Name,
+                             Name = a.Name,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              Upd_user = a.Upd_user,
@@ -147,32 +96,29 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET: api/export_set_company/view
+        // GET: api/export_set_other/view
         [HttpGet("view/{id}")]
-        public ActionResult<IEnumerable<ExportViews>> GetView(int id, string? UseYN)
+        public ActionResult<IEnumerable<ExportViewsOther>> GetView(int id, string? UseYN)
         {
-            var result = from a in _GalDBContext.Export_set_Company
-                         join a1 in _GalDBContext.Company on a.C_id equals a1.C_id
-                         join b in _GalDBContext.Export_set_Product_series on a.Id equals b.ESC_id into Series
+            var result = from a in _GalDBContext.Export_set_Other
+                         join b in _GalDBContext.Export_set_Other_series on a.Id equals b.ESO_id into Series
                          orderby a.Export_batch, a.Sort
                          select new
                          {
                              Id = a.Id,
                              Export_batch = a.Export_batch,
-                             C_id = a.C_id,
-                             C_Name = a1.Name,
+                             Name = a.Name,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
-                             Repeat_chk = true,
-                             Count_chk = false,
+                             Count_chk = true,
                              Count_export = 0,
                              Count_exportall = 0,
                              Count_all = 0,
-                             Series_data = Series.Select(b => new ExportViews2
+                             Series_data = Series.Select(b => new ExportViews2Other
                              {
                                  Id = b.Id,
                                  Name = b.Name,
-                                 Use_yn = b.Use_yn, 
+                                 Use_yn = b.Use_yn,
                                  Sort = b.Sort,
                                  P_data = "",
                              }).ToList(),
@@ -205,21 +151,21 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET: api/export_set_company/viewp
+        // GET: api/export_set_other/viewp
         [HttpGet("viewp/{id}")]
-        public ActionResult<IEnumerable<ExportViewsP>> GetViewP(int id, string? UseYN)
+        public ActionResult<IEnumerable<ExportViewsPOther>> GetViewP(int id, string? UseYN)
         {
-            var result = from a in _GalDBContext.Export_set_Product
+            var result = from a in _GalDBContext.Export_set_Other_Product
                          join a1 in _GalDBContext.Product on a.P_id equals a1.P_id
                          join a2 in _GalDBContext.Company on a1.C_id equals a2.C_id
-                         join b in _GalDBContext.Export_set_Product_series on a.ESPS_id equals b.Id
-                         join c in _GalDBContext.Export_set_Company on b.ESC_id equals c.Id
+                         join b in _GalDBContext.Export_set_Other_series on a.ESOS_id equals b.Id
+                         join c in _GalDBContext.Export_set_Other on b.ESO_id equals c.Id
                          orderby c.Export_batch
                          select new
                          {
                              Export_batch = c.Export_batch,
                              Id = a.Id,
-                             ESPS_id = a.ESPS_id,
+                             esos_id = a.ESOS_id,
                              C_id = a2.C_id,
                              C_Name = a2.Name,
                              P_id = a.P_id,
@@ -256,71 +202,21 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET: api/export_set_company/viewcount/{id}
-        [HttpGet("viewcount/{id}")]
-        public ActionResult<IEnumerable<ExportViewsCount>> GetViewCount(int id)
-        {
-            var result = from a in _GalDBContext.Export_set_Company
-                         orderby a.Sort
-                         select new
-                         {
-                             Id = a.Id,
-                             C_id = a.C_id,
-                             Export_batch = a.Export_batch,
-                             Sort = a.Sort,
-
-                             // Count_export: 已編排數
-                             Count_export = (from b in _GalDBContext.Export_set_Product_series
-                                             join c in _GalDBContext.Export_set_Product on b.Id equals c.ESPS_id
-                                             where b.ESC_id == a.Id
-                                             select b).Count(),
-
-                             // Count_exportALL: 可編排數
-                             Count_exportALL = (from d in _GalDBContext.Company
-                                                join e in _GalDBContext.Product on d.C_id equals e.C_id
-                                                where d.C_id == a.C_id &&
-                                                      (from f in _GalDBContext.Translation_team
-                                                       where f.P_id == e.P_id
-                                                       select f).Any()
-                                                select d).Count(),
-
-                             // Count_ALL: 所有遊戲總數
-                             Count_ALL = (from d in _GalDBContext.Company
-                                          join e in _GalDBContext.Product on d.C_id equals e.C_id
-                                          where d.C_id == a.C_id
-                                          select d).Count()
-                         };
-
-            if (id != null)
-            {
-                result = result.Where(
-                    a => a.Export_batch == id
-                );
-            }
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
-        // POST api/export_set_company
+        // POST api/export_set_other
         /*上傳json格式
         {
-            "Export_batch": 2,
-            "C_id": "C000000004",
+            "Export_batch": 1,
+            "Name": "測試",
             "Use_yn": false,
             "Sort": 0
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] ExportSetCompanysDto value)
+        public IActionResult Post([FromBody] ExportSetOthersDtos value)
         {
-            var isExists = _GalDBContext.Export_set_Company.Any(
+            var isExists = _GalDBContext.Export_set_Other.Any(
                     a => a.Export_batch == value.Export_batch &&
-                         a.C_id == value.C_id
+                         a.Name == value.Name
                 );
 
             if (isExists)
@@ -330,17 +226,17 @@ namespace MyApi2.Controllers
 
             try
             {
-                Export_set_Company insert = new Export_set_Company
+                Export_set_Other insert = new Export_set_Other
                 {
                     Export_batch = value.Export_batch,
-                    C_id = value.C_id,
+                    Name = value.Name,
                     Use_yn = value.Use_yn,
                     Sort = value.Sort,
                     Upd_user = value.Upd_user,
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
                 };
-                _GalDBContext.Export_set_Company.Add(insert);
+                _GalDBContext.Export_set_Other.Add(insert);
                 _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
@@ -353,38 +249,38 @@ namespace MyApi2.Controllers
             }
         }
 
-        // POST api/export_set_company/several
+        // POST api/export_set_other/several
         /*上傳json格式
         [
             {
-                "Export_batch": 2,
-                "C_id": "C000000004",
+                "Export_batch": 1,
+                "Name": "測試",
                 "Use_yn": false,
                 "Sort": 0
             },
             {
-                "Export_batch": 2,
-                "C_id": "C000000005",
-                "Use_yn": true,
-                "Sort": 1
+                "Export_batch": 1,
+                "Name": "測試123",
+                "Use_yn": false,
+                "Sort": 0
             }
         ]
         */
         [HttpPost("several")]
-        public IActionResult Post([FromBody] List<ExportSetCompanysDto> values)
+        public IActionResult Post([FromBody] List<ExportSetOthersDtos> values)
         {
             try
             {
                 // 儲存每個成功插入的資料的 ID與c_id
                 List<int> insertedIds = new List<int>();
-                List<string> insertedcIds = new List<string>();
+                List<string> insertednames = new List<string>();
 
                 // 遍歷每一筆資料，新增到資料庫中
                 foreach (var value in values)
                 {
-                    var isExists = _GalDBContext.Export_set_Company.Any(
+                    var isExists = _GalDBContext.Export_set_Other.Any(
                         a => a.Export_batch == value.Export_batch &&
-                             a.C_id == value.C_id
+                             a.Name == value.Name
                     );
 
                     if (isExists)
@@ -392,10 +288,10 @@ namespace MyApi2.Controllers
                         return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
                     }
 
-                    Export_set_Company insert = new Export_set_Company
+                    Export_set_Other insert = new Export_set_Other
                     {
                         Export_batch = value.Export_batch,
-                        C_id = value.C_id,
+                        Name = value.Name,
                         Use_yn = value.Use_yn,
                         Sort = value.Sort,
                         Upd_user = value.Upd_user,
@@ -403,17 +299,17 @@ namespace MyApi2.Controllers
                         Create_dt = DateTime.Now,
                     };
 
-                    _GalDBContext.Export_set_Company.Add(insert);
+                    _GalDBContext.Export_set_Other.Add(insert);
                     _GalDBContext.SaveChanges(); // 提交單筆更改，以便生成自動遞增的 ID
                     insertedIds.Add(insert.Id); // 存入新插入的 ID
-                    insertedcIds.Add(value.C_id);
+                    insertednames.Add(value.Name);
                 }
 
                 // 一次性保存所有更改
                 //_GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
-                return Ok(new { message = "Y#資料上傳成功", ids = insertedIds, c_id = insertedcIds });
+                return Ok(new { message = "Y#資料上傳成功", ids = insertedIds, name = insertednames });
             }
             catch (Exception ex)
             {
@@ -422,20 +318,19 @@ namespace MyApi2.Controllers
             }
         }
 
-
-        // PUT api/export_set_company/{id}
+        // PUT api/export_set_other/{id}
         /*上傳json格式
         {
-            "Export_batch": 2,
-            "C_id": "C000000004",
+            "Export_batch": 1,
+            "Name": "測試",
             "Use_yn": false,
             "Sort": 0
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ExportSetCompanysDto value)
+        public IActionResult Put(int id, [FromBody] ExportSetOthersDtos value)
         {
-            var result = (from a in _GalDBContext.Export_set_Company
+            var result = (from a in _GalDBContext.Export_set_Other
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -448,13 +343,13 @@ namespace MyApi2.Controllers
                 try
                 {
                     result.Export_batch = value.Export_batch;
-                    result.C_id = value.C_id;
+                    result.Name = value.Name;
                     result.Use_yn = value.Use_yn;
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
 
-                    _GalDBContext.Export_set_Company.Update(result);
+                    _GalDBContext.Export_set_Other.Update(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
@@ -468,28 +363,28 @@ namespace MyApi2.Controllers
             }
         }
 
-        // PUT api/export_set_company/several
+        // PUT api/export_set_other/several
         /*上傳json格式
         [
             {
-                "id": 1
-                "Sort": 0
+                "id": 1,
+                "Sort": 1
             },
             {
-                "id": 2
-                "Sort": 0
-            },
+                "id": 2,
+                "Sort": 2
+            }
         ]
         */
         [HttpPut("several")]
-        public IActionResult Put([FromBody] List<ExportSetCompanysDto> values)
+        public IActionResult Put([FromBody] List<ExportSetOthersDtos> values)
         {
             try
             {
                 // 遍歷每一筆資料，新增到資料庫中
                 foreach (var value in values)
                 {
-                    var result = (from a in _GalDBContext.Export_set_Company
+                    var result = (from a in _GalDBContext.Export_set_Other
                                   where a.Id == value.Id
                                   select a).SingleOrDefault();
 
@@ -503,7 +398,7 @@ namespace MyApi2.Controllers
                         result.Upd_user = value.Upd_user;
                         result.Upd_date = DateTime.Now;
 
-                        _GalDBContext.Export_set_Company.Update(result);
+                        _GalDBContext.Export_set_Other.Update(result);
                     }
                 }
                 // 一次性保存所有更改
@@ -519,11 +414,11 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/export_set_company/{id}
+        // DELETE api/export_set_other/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _GalDBContext.Export_set_Company
+            var result = (from a in _GalDBContext.Export_set_Other
                           where a.Id == id
                           select a).SingleOrDefault();
 
@@ -535,25 +430,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    var result3 = (from c in _GalDBContext.Export_set_Product
-                                  join b in _GalDBContext.Export_set_Product_series on c.ESPS_id equals b.Id
-                                  where b.ESC_id == id
-                                  select c).Distinct();
-                    if (result3.Any())
-                    {
-                        _GalDBContext.Export_set_Product.RemoveRange(result3);
-                    }
-
-                    var result2 = (from b in _GalDBContext.Export_set_Product_series
-                                  where b.ESC_id == id
-                                  select b).Distinct();
-
-                    if (result2.Any())
-                    {
-                        _GalDBContext.Export_set_Product_series.RemoveRange(result2);
-                    }
-
-                    _GalDBContext.Export_set_Company.Remove(result);
+                    _GalDBContext.Export_set_Other.Remove(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
@@ -582,11 +459,11 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/export_set_company/deletebybatch/{batch}
+        // DELETE api/export_set_other/deletebybatch/{batch}
         [HttpDelete("deletebybatch/{batch}")]
         public IActionResult DeleteByBatch(int batch)
         {
-            var result = (from a in _GalDBContext.Export_set_Company
+            var result = (from a in _GalDBContext.Export_set_Other
                           where a.Export_batch == batch
                           select a).Distinct();
 
@@ -598,27 +475,27 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    var result3 = (from c in _GalDBContext.Export_set_Product
-                                   join b in _GalDBContext.Export_set_Product_series on c.ESPS_id equals b.Id
-                                   join a in _GalDBContext.Export_set_Company on b.ESC_id equals a.Id
+                    var result3 = (from c in _GalDBContext.Export_set_Other_Product
+                                   join b in _GalDBContext.Export_set_Other_series on c.ESOS_id equals b.Id
+                                   join a in _GalDBContext.Export_set_Other on b.ESO_id equals a.Id
                                    where a.Export_batch == batch
                                    select c).Distinct();
                     if (result3.Any())
                     {
-                        _GalDBContext.Export_set_Product.RemoveRange(result3);
+                        _GalDBContext.Export_set_Other_Product.RemoveRange(result3);
                     }
 
-                    var result2 = (from b in _GalDBContext.Export_set_Product_series
-                                   join a in _GalDBContext.Export_set_Company on b.ESC_id equals a.Id
+                    var result2 = (from b in _GalDBContext.Export_set_Other_series
+                                   join a in _GalDBContext.Export_set_Other on b.ESO_id equals a.Id
                                    where a.Export_batch == batch
                                    select b).Distinct();
 
                     if (result2.Any())
                     {
-                        _GalDBContext.Export_set_Product_series.RemoveRange(result2);
+                        _GalDBContext.Export_set_Other_series.RemoveRange(result2);
                     }
 
-                    _GalDBContext.Export_set_Company.RemoveRange(result);
+                    _GalDBContext.Export_set_Other.RemoveRange(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息

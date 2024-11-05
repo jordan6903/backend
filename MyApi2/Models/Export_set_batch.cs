@@ -18,4 +18,6 @@ public partial class Export_set_batch
     public DateTime? Create_dt { get; set; }
 
     public virtual ICollection<Export_set_Company> Export_set_Company { get; set; } = new List<Export_set_Company>();
+
+    public virtual ICollection<Export_set_Other> Export_set_Other { get; set; } = new List<Export_set_Other>();
 }

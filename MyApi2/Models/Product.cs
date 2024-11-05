@@ -31,6 +31,8 @@ public partial class Product
 
     public virtual Company C_idNavigation { get; set; } = null!;
 
+    public virtual ICollection<Export_set_Other_Product> Export_set_Other_Product { get; set; } = new List<Export_set_Other_Product>();
+
     public virtual ICollection<Export_set_Product> Export_set_Product { get; set; } = new List<Export_set_Product>();
 
     public virtual ICollection<Product_Pic> Product_Pic { get; set; } = new List<Product_Pic>();
