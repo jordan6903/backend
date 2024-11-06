@@ -256,19 +256,52 @@ namespace MyApi2.Controllers
         [HttpGet("getbycompanytt/{id}")]
         public ActionResult<IEnumerable<ProductsViewsDto>> GetByCompanyTT(string id)
         {
+            //var result = from a in _GalDBContext.Product
+            //             join b in _GalDBContext.Company on a.C_id equals b.C_id
+            //             join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
+            //             join d1 in
+            //                 (from prd in _GalDBContext.Product_Release_day
+            //                  group prd by prd.P_id into g
+            //                  select new
+            //                  {
+            //                      P_id = g.Key,
+            //                      Sale_Date = g.Min(x => x.Sale_Date)
+            //                  }) on a.P_id equals d1.P_id
+            //             join d in _GalDBContext.Product_Release_day
+            //                 on new { d1.P_id, d1.Sale_Date } equals new { d.P_id, d.Sale_Date }
+            //             orderby a.C_id, a.P_id
+            //             select new
+            //             {
+            //                 Id = a.Id,
+            //                 P_id = a.P_id,
+            //                 C_id = a.C_id,
+            //                 Name = a.Name,
+            //                 P_CName = a.C_Name,
+            //                 C_Name = b.Name,
+            //                 Content = a.Content,
+            //                 Content_style = a.Content_style,
+            //                 Play_time = a.Play_time,
+            //                 Remark = a.Remark,
+            //                 Sale_date = d.Sale_Date,
+            //                 Upd_user = a.Upd_user,
+            //                 Upd_date = a.Upd_date,
+            //                 Create_dt = a.Create_dt,
+            //                 Company_name = b.Name,
+            //                 eso_chk = false,
+            //                 TT_type = TT.Select(c => new ProductsViews2Dto
+            //                 {
+            //                     Type_id = c.Type_id,
+            //                     Type_Name = (from d in _GalDBContext.Translation_team_type
+            //                                  where c.Type_id == d.Type_id
+            //                                  select d.Name).FirstOrDefault(),
+            //                 })
+            //             };
+
             var result = from a in _GalDBContext.Product
                          join b in _GalDBContext.Company on a.C_id equals b.C_id
                          join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
-                         join d1 in
-                             (from prd in _GalDBContext.Product_Release_day
-                              group prd by prd.P_id into g
-                              select new
-                              {
-                                  P_id = g.Key,
-                                  Sale_Date = g.Min(x => x.Sale_Date)
-                              }) on a.P_id equals d1.P_id
-                         join d in _GalDBContext.Product_Release_day
-                             on new { d1.P_id, d1.Sale_Date } equals new { d.P_id, d.Sale_Date }
+                         join d in _GalDBContext.Product_Release_day on a.P_id equals d.P_id
+                         where d.Official_First == true
                          orderby a.C_id, a.P_id
                          select new
                          {
@@ -317,19 +350,51 @@ namespace MyApi2.Controllers
         [HttpGet("getforother")]
         public ActionResult<IEnumerable<ProductsViewsDto>> GetForOther()
         {
+            //var result = from a in _GalDBContext.Product
+            //             join b in _GalDBContext.Company on a.C_id equals b.C_id
+            //             join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
+            //             join d1 in
+            //                 (from prd in _GalDBContext.Product_Release_day
+            //                  group prd by prd.P_id into g
+            //                  select new
+            //                  {
+            //                      P_id = g.Key,
+            //                      Sale_Date = g.Min(x => x.Sale_Date)
+            //                  }) on a.P_id equals d1.P_id
+            //             join d in _GalDBContext.Product_Release_day
+            //                 on new { d1.P_id, d1.Sale_Date } equals new { d.P_id, d.Sale_Date }
+            //             orderby a.C_id, a.P_id
+            //             select new
+            //             {
+            //                 Id = a.Id,
+            //                 P_id = a.P_id,
+            //                 C_id = a.C_id,
+            //                 Name = a.Name,
+            //                 P_CName = a.C_Name,
+            //                 C_Name = b.Name,
+            //                 Content = a.Content,
+            //                 Content_style = a.Content_style,
+            //                 Play_time = a.Play_time,
+            //                 Remark = a.Remark,
+            //                 Sale_date = d.Sale_Date,
+            //                 Upd_user = a.Upd_user,
+            //                 Upd_date = a.Upd_date,
+            //                 Create_dt = a.Create_dt,
+            //                 Company_name = b.Name,
+            //                 TT_type = TT.Select(c => new ProductsViews2Dto
+            //                 {
+            //                     Type_id = c.Type_id,
+            //                     Type_Name = (from d in _GalDBContext.Translation_team_type
+            //                                  where c.Type_id == d.Type_id
+            //                                  select d.Name).FirstOrDefault(),
+            //                 })
+            //             };
+
             var result = from a in _GalDBContext.Product
                          join b in _GalDBContext.Company on a.C_id equals b.C_id
                          join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
-                         join d1 in
-                             (from prd in _GalDBContext.Product_Release_day
-                              group prd by prd.P_id into g
-                              select new
-                              {
-                                  P_id = g.Key,
-                                  Sale_Date = g.Min(x => x.Sale_Date)
-                              }) on a.P_id equals d1.P_id
-                         join d in _GalDBContext.Product_Release_day
-                             on new { d1.P_id, d1.Sale_Date } equals new { d.P_id, d.Sale_Date }
+                         join d in _GalDBContext.Product_Release_day on a.P_id equals d.P_id
+                         where d.Official_First == true
                          orderby a.C_id, a.P_id
                          select new
                          {

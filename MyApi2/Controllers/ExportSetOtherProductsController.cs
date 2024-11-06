@@ -24,6 +24,7 @@ namespace MyApi2.Controllers
         {
             var result = from a in _GalDBContext.Export_set_Other_Product
                          join a1 in _GalDBContext.Product on a.P_id equals a1.P_id
+                         join a2 in _GalDBContext.Company on a1.C_id equals a2.C_id
                          join b in _GalDBContext.Export_set_Other_series on a.ESOS_id equals b.Id
                          orderby b.ESO_id, a.ESOS_id, a.Sort
                          select new
@@ -33,6 +34,8 @@ namespace MyApi2.Controllers
                              esop_id = a.Id,
                              P_id = a.P_id,
                              P_Name = a1.Name,
+                             C_id = a2.C_id,
+                             C_Name = a2.Name,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
                              esp_chk = false,

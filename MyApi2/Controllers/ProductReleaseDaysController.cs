@@ -37,6 +37,7 @@ namespace MyApi2.Controllers
                              Name = a.Name,
                              Sale_Date = a.Sale_Date,
                              Presale_Date = a.Presale_Date,
+                             Official_First = a.Official_First,
                              Price = a.Price,
                              Voice_id = a.Voice_id,
                              Voice_Name = c.Name,
@@ -116,6 +117,7 @@ namespace MyApi2.Controllers
                              Name = a.Name,
                              Sale_Date = a.Sale_Date,
                              Presale_Date = a.Presale_Date,
+                             Official_First = a.Official_First,
                              Price = a.Price,
                              Voice_id = a.Voice_id,
                              Voice_Name = c.Name,
@@ -163,6 +165,7 @@ namespace MyApi2.Controllers
                              Name = a.Name,
                              Sale_Date = a.Sale_Date,
                              Presale_Date = a.Presale_Date,
+                             Official_First = a.Official_First,
                              Price = a.Price,
                              Voice_id = a.Voice_id,
                              Voice_Name = c.Name,
@@ -224,6 +227,7 @@ namespace MyApi2.Controllers
                     Name = value.Name,
                     Sale_Date = value.Sale_Date,
                     Presale_Date = value.Presale_Date,
+                    Official_First = value.Official_First,
                     Price = value.Price,
                     Voice_id = value.Voice_id,
                     Currency_id = value.Currency_id,
@@ -296,6 +300,7 @@ namespace MyApi2.Controllers
                     result.Name = value.Name;
                     result.Sale_Date = value.Sale_Date;
                     result.Presale_Date = value.Presale_Date;
+                    result.Official_First = value.Official_First;
                     result.Price = value.Price;
                     result.Voice_id = value.Voice_id;
                     result.Currency_id = value.Currency_id;

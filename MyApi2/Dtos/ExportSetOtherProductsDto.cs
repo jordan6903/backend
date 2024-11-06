@@ -14,6 +14,10 @@
 
         public string? P_Name { get; set; }
 
+        public string? C_id { get; set; }
+
+        public string? C_Name { get; set; }
+
         public bool? Use_yn { get; set; }
 
         public short? Sort { get; set; }

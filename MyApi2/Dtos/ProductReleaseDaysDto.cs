@@ -14,6 +14,8 @@
 
         public string? Presale_Date { get; set; }
 
+        public bool? Official_First { get; set; }
+
         public decimal? Price { get; set; }
 
         public byte? Voice_id { get; set; }
