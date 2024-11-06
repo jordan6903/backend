@@ -24,6 +24,8 @@
 
         public bool? esp_chk { get; set; }
 
+        public string? Sale_Date { get; set; }
+
         public DateTime? Upd_date { get; set; }
 
         public string? Upd_user { get; set; }
