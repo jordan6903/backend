@@ -24,17 +24,18 @@ namespace MyApi2.Controllers
         public ActionResult<IEnumerable<ExportViews1_1Dtos>> Get1_1(int id)
         {
             var result = from a in _GalDBContext.Export_set_Company
-                         join a1 in _GalDBContext.Company on a.C_id equals a1.C_id
                          join b in _GalDBContext.Export_set_Product_series on a.Id equals b.ESC_id
                          join c in _GalDBContext.Export_set_Product on b.Id equals c.ESPS_id
+                         join c1 in _GalDBContext.Product on c.P_id equals c1.P_id
+                         join c2 in _GalDBContext.Company on c1.C_id equals c2.C_id
                          orderby a.Sort, b.Sort, c.Sort
                          select new
                          {
                              Id = a.Id,
                              Export_batch = a.Export_batch,
                              C_id = a.C_id,
-                             C_Name = a1.Name,
-                             C_Name_origin = a1.Name_origin,
+                             C_Name = c2.Name,
+                             C_Name_origin = c2.Name_origin,
                              esc_Sort = a.Sort,
                              esps_id = b.Id,
                              esps_Name = b.Name,

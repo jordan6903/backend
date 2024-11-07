@@ -14,6 +14,8 @@
 
         public short? Sort { get; set; }
 
+        public string? Title { get; set; }
+
         public bool? DragShow { get; set; }
 
         public string? Series_data { get; set; }

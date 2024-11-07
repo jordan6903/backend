@@ -21,6 +21,8 @@ public partial class Export_set_Company
 
     public DateTime? Create_dt { get; set; }
 
+    public string? Title { get; set; }
+
     public virtual Company C_idNavigation { get; set; } = null!;
 
     public virtual Export_set_batch Export_batchNavigation { get; set; } = null!;

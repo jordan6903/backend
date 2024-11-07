@@ -32,6 +32,7 @@ namespace MyApi2.Controllers
                              C_id = a.C_id,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
+                             Title = a.Title,
                              Series_data = "",
                              snumber = 0,
                              pnumber = 0,
@@ -82,6 +83,7 @@ namespace MyApi2.Controllers
                              C_Name = b.Name,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
+                             Title = a.Title,
                              DragShow = false,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
@@ -130,6 +132,7 @@ namespace MyApi2.Controllers
                              C_Name = b.Name,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
+                             Title = a.Title,
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
@@ -163,6 +166,7 @@ namespace MyApi2.Controllers
                              C_Name = a1.Name,
                              Use_yn = a.Use_yn,
                              Sort = a.Sort,
+                             Title = a.Title,
                              Repeat_chk = true,
                              Count_chk = false,
                              Count_export = 0,
@@ -336,6 +340,7 @@ namespace MyApi2.Controllers
                     C_id = value.C_id,
                     Use_yn = value.Use_yn,
                     Sort = value.Sort,
+                    Title = value.Title,
                     Upd_user = value.Upd_user,
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
@@ -398,6 +403,7 @@ namespace MyApi2.Controllers
                         C_id = value.C_id,
                         Use_yn = value.Use_yn,
                         Sort = value.Sort,
+                        Title = value.Title,
                         Upd_user = value.Upd_user,
                         Upd_date = DateTime.Now,
                         Create_dt = DateTime.Now,
@@ -451,6 +457,7 @@ namespace MyApi2.Controllers
                     result.C_id = value.C_id;
                     result.Use_yn = value.Use_yn;
                     result.Sort = value.Sort;
+                    result.Title = value.Title;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
 
@@ -499,6 +506,7 @@ namespace MyApi2.Controllers
                     }
                     else
                     {
+                        result.Use_yn = value.Use_yn;
                         result.Sort = value.Sort;
                         result.Upd_user = value.Upd_user;
                         result.Upd_date = DateTime.Now;

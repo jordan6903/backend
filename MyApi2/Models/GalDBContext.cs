@@ -276,6 +276,7 @@ public partial class GalDBContext : DbContext
         {
             entity.Property(e => e.C_id).HasMaxLength(10);
             entity.Property(e => e.Create_dt).HasColumnType("datetime");
+            entity.Property(e => e.Title).HasMaxLength(100);
             entity.Property(e => e.Upd_date).HasColumnType("datetime");
             entity.Property(e => e.Upd_user).HasMaxLength(32);
 

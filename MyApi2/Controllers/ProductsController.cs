@@ -413,6 +413,7 @@ namespace MyApi2.Controllers
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
                              Company_name = b.Name,
+                             eso_chk = false,
                              TT_type = TT.Select(c => new ProductsViews2Dto
                              {
                                  Type_id = c.Type_id,
