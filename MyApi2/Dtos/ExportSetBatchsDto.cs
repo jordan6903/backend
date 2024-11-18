@@ -13,5 +13,13 @@
         public string? Upd_user { get; set; }
 
         public DateTime? Create_dt { get; set; }
+
+        public int? Count_export1 { get; set; }
+
+        public int? Count_export2 { get; set; }
+
+        public int? Count_exportALL { get; set; }
+
+        public int? Count_all { get; set; }
     }
 }

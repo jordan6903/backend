@@ -32,6 +32,21 @@ namespace MyApi2.Controllers
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
+
+                             Count_export1 = (from b in _GalDBContext.Export_set_Company
+                                            join c in _GalDBContext.Export_set_Product_series on b.Id equals c.ESC_id
+                                            join d in _GalDBContext.Export_set_Product on c.Id equals d.ESPS_id
+                                            where b.Export_batch == a.Export_batch
+                                            select b).Count(),
+
+                             Count_export2 = (from b in _GalDBContext.Export_set_Other
+                                              join c in _GalDBContext.Export_set_Other_series on b.Id equals c.ESO_id
+                                              join d in _GalDBContext.Export_set_Other_Product on c.Id equals d.ESOS_id
+                                              where b.Export_batch == a.Export_batch
+                                              select b).Count(),
+
+                             Count_exportALL = 0,
+                             Count_all = 0,
                          };
 
             if (searchword != null)

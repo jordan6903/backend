@@ -430,7 +430,27 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _GalDBContext.Export_set_Other.Remove(result);
+                    var result3 = (from c in _GalDBContext.Export_set_Other_Product
+                                   join b in _GalDBContext.Export_set_Other_series on c.ESOS_id equals b.Id
+                                   join a in _GalDBContext.Export_set_Other on b.ESO_id equals a.Id
+                                   where a.Id == id
+                                   select c).Distinct();
+                    if (result3.Any())
+                    {
+                        _GalDBContext.Export_set_Other_Product.RemoveRange(result3);
+                    }
+
+                    var result2 = (from b in _GalDBContext.Export_set_Other_series
+                                   join a in _GalDBContext.Export_set_Other on b.ESO_id equals a.Id
+                                   where a.Id == id
+                                   select b).Distinct();
+
+                    if (result2.Any())
+                    {
+                        _GalDBContext.Export_set_Other_series.RemoveRange(result2);
+                    }
+
+                    _GalDBContext.Export_set_Other.RemoveRange(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息

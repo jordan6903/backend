@@ -27,6 +27,7 @@ namespace MyApi2.Controllers
                          join a2 in _GalDBContext.Company on a1.C_id equals a2.C_id
                          join a3 in _GalDBContext.Product_Release_day on a1.P_id equals a3.P_id
                          join b in _GalDBContext.Export_set_Other_series on a.ESOS_id equals b.Id
+                         join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
                          orderby b.ESO_id, a.ESOS_id, a.Sort
                          select new
                          {
@@ -44,6 +45,13 @@ namespace MyApi2.Controllers
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
+                             TT_type = TT.Select(c => new ProductsViews2Dto
+                             {
+                                 Type_id = c.Type_id,
+                                 Type_Name = (from d in _GalDBContext.Translation_team_type
+                                              where c.Type_id == d.Type_id
+                                              select d.Name).FirstOrDefault(),
+                             }),
                          };
 
             if (id != null)
@@ -67,6 +75,7 @@ namespace MyApi2.Controllers
         {
             var result = from a in _GalDBContext.Export_set_Other_Product
                          join a1 in _GalDBContext.Product on a.P_id equals a1.P_id
+                         join a2 in _GalDBContext.Translation_team on a.P_id equals a2.P_id into TT
                          join b in _GalDBContext.Export_set_Other_series on a.ESOS_id equals b.Id
                          join c in _GalDBContext.Export_set_Other on b.ESO_id equals c.Id
                          orderby b.ESO_id, a.ESOS_id, a.Sort
@@ -83,6 +92,13 @@ namespace MyApi2.Controllers
                              Upd_user = a.Upd_user,
                              Upd_date = a.Upd_date,
                              Create_dt = a.Create_dt,
+                             TT_type = TT.Select(a2 => new ProductsViews2Dto
+                             {
+                                 Type_id = a2.Type_id,
+                                 Type_Name = (from d in _GalDBContext.Translation_team_type
+                                              where a2.Type_id == d.Type_id
+                                              select d.Name).FirstOrDefault(),
+                             })
                          };
 
             if (id != null)

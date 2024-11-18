@@ -31,5 +31,7 @@
         public string? Upd_user { get; set; }
 
         public DateTime? Create_dt { get; set; }
+
+        public ICollection<ProductsViews2Dto>? TT_type { get; set; }
     }
 }
