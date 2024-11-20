@@ -10,6 +10,16 @@
 
         public string C_Name { get; set; } = null!;
 
+        public string? C_Name_origin { get; set; }
+
+        public string? C_Name_short { get; set; }
+
+        public string? C_Intro { get; set; }
+
+        public string? C_Remark { get; set; }
+
+        public string? Url { get; set; }
+
         public bool? Use_yn { get; set; }
 
         public short? Sort { get; set; }
