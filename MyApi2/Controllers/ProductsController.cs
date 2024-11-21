@@ -19,62 +19,6 @@ namespace MyApi2.Controllers
         {
             _GalDBContext = GalDBContext;
         }
-        /*
-        // GET: api/product
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var ls_sql = @"
-                SELECT [A].[C_id],
-	                [A].[Name],
-	                [A].[Name_origin],
-	                [A].[Name_short],
-	                [A1].[C_type_name],
-	                [A].[Intro],
-	                [A].[Remark],
-	                [A].[Sdate],
-	                [A].[Edate],
-	                [B].[P_id],
-	                [B].[Name],
-	                [B].[C_Name]
-                FROM [Company] AS [A]
-                LEFT JOIN [Company_type] AS [A1] ON [A].[C_type] = [A1].[C_type]
-                INNER JOIN [Product] AS [B] ON [B].[C_id] = [A].[C_id]
-
-                order by [A].[C_id], [B].[P_id];
-                ";
-            var device = _GalDBContext.Product.FromSqlRaw(ls_sql);
-
-            if (device == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(device);
-        }
-
-        // GET api/product/{id}
-        [HttpGet("{id}")]
-        public IActionResult Get(string id)
-        {
-            var device = _GalDBContext.Device
-                    .FromSqlRaw("SELECT Device_id,FullName,ShortName FROM Device WHERE device_id = {0}", id)
-                    .Select(d => new
-                    {
-                        d.Device_id,
-                        d.FullName,
-                        d.ShortName,
-                    })
-                    .FirstOrDefault();
-
-            if (device == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(device);
-        }
-        */
 
         // GET: api/product
         [HttpGet]
@@ -750,7 +694,38 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _GalDBContext.Product.Remove(result);
+                    //Staff
+                    var result2 = (from a in _GalDBContext.Staff where a.P_id == id select a).Distinct();
+                    if (result2.Any()) { _GalDBContext.Staff.RemoveRange(result2); }
+
+                    //Product_Pic
+                    var result3 = (from a in _GalDBContext.Product_Pic where a.P_id == id select a).Distinct();
+                    if (result3.Any()) { _GalDBContext.Product_Pic.RemoveRange(result3); }
+
+                    //Product_Website
+                    var result4 = (from a in _GalDBContext.Product_Website where a.P_id == id select a).Distinct();
+                    if (result4.Any()) { _GalDBContext.Product_Website.RemoveRange(result4); }
+
+                    //Product_score
+                    var result5 = (from a in _GalDBContext.Product_score where a.P_id == id select a).Distinct();
+                    if (result5.Any()) { _GalDBContext.Product_score.RemoveRange(result5); }
+
+                    //Product_relation
+                    var result6 = (from a in _GalDBContext.Product_relation 
+                                   where a.P_id == id || a.P_id_to == id
+                                   select a).Distinct();
+                    if (result6.Any()) { _GalDBContext.Product_relation.RemoveRange(result6); }
+
+                    //Product_type
+                    var result7 = (from a in _GalDBContext.Product_type where a.P_id == id select a).Distinct();
+                    if (result7.Any()) { _GalDBContext.Product_type.RemoveRange(result7); }
+
+                    //Product_Release_day
+                    var result8 = (from a in _GalDBContext.Product_Release_day where a.P_id == id select a).Distinct();
+                    if (result8.Any()) { _GalDBContext.Product_Release_day.RemoveRange(result8); }
+
+
+                    _GalDBContext.Product.RemoveRange(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息

@@ -21,6 +21,10 @@ public partial class Export_set_Product_series
 
     public DateTime? Create_dt { get; set; }
 
+    public string? Add_word { get; set; }
+
+    public bool? Add_word_Use_yn { get; set; }
+
     public virtual Export_set_Company ESC { get; set; } = null!;
 
     public virtual ICollection<Export_set_Product> Export_set_Product { get; set; } = new List<Export_set_Product>();

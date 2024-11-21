@@ -184,6 +184,8 @@ namespace MyApi2.Controllers
                                  Use_yn = b.Use_yn, 
                                  Sort = b.Sort,
                                  P_data = "",
+                                 Add_word = b.Add_word,
+                                 Add_word_Use_yn = b.Add_word_Use_yn,
                              }).ToList(),
                          };
 

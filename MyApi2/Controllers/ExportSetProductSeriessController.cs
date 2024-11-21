@@ -37,10 +37,45 @@ namespace MyApi2.Controllers
                              Upd_user = b.Upd_user,
                              Upd_date = b.Upd_date,
                              Create_dt = b.Create_dt,
+                             Add_word = b.Add_word,
+                             Add_word_Use_yn = b.Add_word_Use_yn,
                          };
 
             result = result.Where(
                 a => a.esc_id == id
+            );
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        // GET: api/export_set_product_series/getbyid/{id}
+        [HttpGet("getbyid/{id}")]
+        public ActionResult<IEnumerable<ExportSetProductSeriesDto>> GetById(int id)
+        {
+            var result = from a in _GalDBContext.Export_set_Product_series
+                         orderby a.Sort
+                         select new
+                         {
+                             esc_id = a.ESC_id,
+                             esps_Id = a.Id,
+                             Name = a.Name,
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Product_data = "",
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                             Add_word = a.Add_word,
+                             Add_word_Use_yn = a.Add_word_Use_yn,
+                         };
+
+            result = result.Where(
+                a => a.esps_Id == id
             );
 
             if (result == null)
@@ -68,6 +103,8 @@ namespace MyApi2.Controllers
                              Upd_user = b.Upd_user,
                              Upd_date = b.Upd_date,
                              Create_dt = b.Create_dt,
+                             Add_word = b.Add_word,
+                             Add_word_Use_yn = b.Add_word_Use_yn,
                          };
 
             if (result == null)
@@ -98,6 +135,52 @@ namespace MyApi2.Controllers
                     Name = value.Name,
                     Use_yn = value.Use_yn,
                     Sort = value.Sort,
+                    Add_word = "",
+                    Add_word_Use_yn = true,
+                    Upd_user = value.Upd_user,
+                    Upd_date = DateTime.Now,
+                    Create_dt = DateTime.Now,
+                };
+                _GalDBContext.Export_set_Product_series.Add(insert);
+                _GalDBContext.SaveChanges();
+
+                // 取得自動產生的 ID
+                long newId = insert.Id;
+
+                // 回傳成功訊息和新 ID
+                return Ok(new { message = "Y#資料上傳成功", id = newId });
+            }
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳詳細的錯誤訊息
+                return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
+            }
+        }
+
+        // POST api/export_set_product_series/copy
+        /*上傳json格式
+        {
+            "ESC_id": 2,
+            "Name" : "test",
+            "Use_yn": false,
+            "Sort": 0,
+            "Add_word": "",
+            "Add_word_Use_yn": true
+        }
+        */
+        [HttpPost("copy")]
+        public IActionResult PostCopy([FromBody] ExportSetProductSeriesDto value)
+        {
+            try
+            {
+                Export_set_Product_series insert = new Export_set_Product_series
+                {
+                    ESC_id = value.esc_id,
+                    Name = value.Name,
+                    Use_yn = value.Use_yn,
+                    Sort = value.Sort,
+                    Add_word = value.Add_word,
+                    Add_word_Use_yn = value.Add_word_Use_yn,
                     Upd_user = value.Upd_user,
                     Upd_date = DateTime.Now,
                     Create_dt = DateTime.Now,
@@ -146,6 +229,49 @@ namespace MyApi2.Controllers
                     result.Name = value.Name;
                     result.Use_yn = value.Use_yn;
                     result.Sort = value.Sort;
+                    result.Upd_user = value.Upd_user;
+                    result.Upd_date = DateTime.Now;
+
+                    _GalDBContext.Export_set_Product_series.Update(result);
+                    _GalDBContext.SaveChanges();
+
+                    // 回傳成功訊息
+                    return Ok(new { message = "Y#資料更新成功" });
+                }
+                catch (Exception ex)
+                {
+                    // 捕捉錯誤並回傳詳細的錯誤訊息
+                    return BadRequest(new { message = "N#資料更新失敗", error = ex.Message });
+                }
+            }
+        }
+
+        // PUT api/export_set_product_series/putaddword/{id}
+        /*上傳json格式
+        {
+            "ESC_id": 2,
+            "Name" : "test",
+            "Use_yn": false,
+            "Sort": 0
+        }
+        */
+        [HttpPut("putaddword/{id}")]
+        public IActionResult PutAddword(int id, [FromBody] ExportSetProductSeriesDto value)
+        {
+            var result = (from a in _GalDBContext.Export_set_Product_series
+                          where a.Id == id
+                          select a).SingleOrDefault();
+
+            if (result == null)
+            {
+                return NotFound(new { message = "N#資料更新失敗，未搜尋到該id" });
+            }
+            else
+            {
+                try
+                {
+                    result.Add_word = value.Add_word;
+                    result.Add_word_Use_yn = value.Add_word_Use_yn;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
 

@@ -118,39 +118,37 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        //// GET api/export_set_product/{id}
-        //[HttpGet("{id}")]
-        //public ActionResult<IEnumerable<ExportSetProductsDto>> GetSingle(int id)
-        //{
-        //    var result = from a in _GalDBContext.Export_set_Product
-        //                 orderby a.Export_batch
-        //                 select new
-        //                 {
-        //                     Id = a.Id,
-        //                     Export_batch = a.Export_batch,
-        //                     C_id = a.C_id,
-        //                     P_id = a.P_id,
-        //                     Use_yn = a.Use_yn,
-        //                     Sort = a.Sort,
-        //                     Upd_user = a.Upd_user,
-        //                     Upd_date = a.Upd_date,
-        //                     Create_dt = a.Create_dt,
-        //                 };
+        // GET api/export_set_product/deletechk/{id}
+        [HttpGet("deletechk/{id}")]
+        public ActionResult<IEnumerable<ExportSetProductsDto>> DeleteChk(string id)
+        {
+            var result = from a in _GalDBContext.Export_set_Product
+                         select new
+                         {
+                             Id = a.Id,
+                             esps_id = a.ESPS_id,
+                             P_id = a.P_id,
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
 
-        //    if (id != null)
-        //    {
-        //        result = result.Where(
-        //            a => a.Id == id
-        //        );
-        //    }
+            if (id != null)
+            {
+                result = result.Where(
+                    a => a.P_id == id
+                );
+            }
 
-        //    if (result == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (result == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
 
         // POST api/export_set_product
         /*上傳json格式

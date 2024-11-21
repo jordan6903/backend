@@ -326,6 +326,7 @@ public partial class GalDBContext : DbContext
 
         modelBuilder.Entity<Export_set_Other_series>(entity =>
         {
+            entity.Property(e => e.Add_word).HasMaxLength(4000);
             entity.Property(e => e.Create_dt).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Upd_date).HasColumnType("datetime");
@@ -358,6 +359,7 @@ public partial class GalDBContext : DbContext
 
         modelBuilder.Entity<Export_set_Product_series>(entity =>
         {
+            entity.Property(e => e.Add_word).HasMaxLength(4000);
             entity.Property(e => e.Create_dt).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Upd_date).HasColumnType("datetime");

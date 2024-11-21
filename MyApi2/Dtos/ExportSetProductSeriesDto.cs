@@ -19,5 +19,9 @@
         public string? Upd_user { get; set; }
 
         public DateTime? Create_dt { get; set; }
+
+        public string? Add_word { get; set; }
+
+        public bool? Add_word_Use_yn { get; set; }
     }
 }

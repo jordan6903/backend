@@ -81,6 +81,24 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/translation_team_info/getmaxtid
+        [HttpGet("getmaxtid")]
+        public ActionResult<string> GetMaxTid()
+        {
+            try
+            {
+                var maxTid = _GalDBContext.Translation_team_info
+                            .Max(t => t.T_id);
+
+                return Ok(maxTid);
+            }
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳詳細的錯誤訊息
+                return Ok(0);
+            }
+        }
+
         // POST api/translation_team_info
         /*上傳json格式
         {

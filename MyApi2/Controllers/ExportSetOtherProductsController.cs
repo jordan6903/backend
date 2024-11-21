@@ -116,6 +116,37 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/export_set_other_product/deletechk/{id}
+        [HttpGet("deletechk/{id}")]
+        public ActionResult<IEnumerable<ExportSetOtherProductsDto>> DeleteChk(string id)
+        {
+            var result = from a in _GalDBContext.Export_set_Other_Product
+                         select new
+                         {
+                             esos_id = a.ESOS_id,
+                             P_id = a.P_id,
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(
+                    a => a.P_id == id
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/export_set_other_product
         /*上傳json格式
         {

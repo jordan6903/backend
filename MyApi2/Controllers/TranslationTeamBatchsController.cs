@@ -98,6 +98,35 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET api/translation_team_batch/deletechk/{id}
+        [HttpGet("deletechk/{id}")]
+        public ActionResult<IEnumerable<TranslationTeamBatchsDto>> DeleteChk(string id)
+        {
+            var result = from a in _GalDBContext.Translation_team_batch
+                         orderby a.P_id, a.T_batch
+                         select new
+                         {
+                             Id = a.Id,
+                             TT_id = a.TT_id,
+                             P_id = a.P_id,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(a => a.P_id == id);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/translation_team_batch
         /*上傳json格式
         {

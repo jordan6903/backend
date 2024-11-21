@@ -306,6 +306,33 @@ namespace MyApi2.Controllers
             }
         }
 
+        // GET api/translation_team/deletechk/{id}
+        [HttpGet("deletechk/{id}")]
+        public ActionResult<IEnumerable<TranslationTeamsDto>> DeleteChk(string id)
+        {
+            var result = from a in _GalDBContext.Translation_team
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             Type_id = a.Type_id,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(
+                    a => a.P_id == id
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/translation_team
         /*上傳json格式
         {
