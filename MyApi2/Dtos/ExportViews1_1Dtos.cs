@@ -51,5 +51,9 @@ namespace MyApi2.Dtos
         public string? url4 { get; set; }
 
         public string? pic { get; set; }
+
+        public short? picw { get; set; }
+
+        public short? pich { get; set; }
     }
 }

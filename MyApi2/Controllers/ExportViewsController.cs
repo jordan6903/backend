@@ -54,7 +54,9 @@ namespace MyApi2.Controllers
                              url2 = "",
                              url3 = "",
                              url4 = "",
-                             pic = ""
+                             pic = "",
+                             picw = 0,
+                             pich = 0
                          };
 
             if (id != null)
