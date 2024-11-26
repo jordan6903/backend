@@ -108,6 +108,104 @@ namespace MyApi2.Controllers
         }
 
         // GET: api/translation_team
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<TranslationTeamsDto>> mainpage(string? c_search, string? p_search, string? t_search, int? type_id, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Translation_team on a.P_id equals b.P_id into TT
+                         join c in _GalDBContext.Company on a.C_id equals c.C_id
+                         orderby a.C_id, a.P_id
+                         select new
+                         {
+                             P_id = a.P_id,
+                             P_Name = a.Name,
+                             P_CName = a.C_Name,
+                             C_id = a.C_id,
+                             C_Name = c.Name,
+                             T_batch_data_show = "",
+                             Url_data_show = "",
+                             T_batch_data = TT.Select(b => new TTviewsDto1
+                             {
+                                 Id = b.Id,
+                                 T_batch = b.T_batch,
+                                 Type_id = b.Type_id,
+                                 Remark = b.Remark,
+                                 Type_Name = (from c in _GalDBContext.Translation_team_type
+                                              where c.Type_id == b.Type_id
+                                              select c.Name).FirstOrDefault(),
+                                 TT_info = (from d in _GalDBContext.Translation_team_batch
+                                            where b.Id == d.TT_id
+                                            select new TTviewsDto2
+                                            {
+                                                Id = d.Id,
+                                                TT_Id = d.TT_id,
+                                                T_id = d.T_id,
+                                                T_Name = (from e in _GalDBContext.Translation_team_info
+                                                          where e.T_id == d.T_id
+                                                          select e.Name).FirstOrDefault(),
+                                                P_id = "",
+                                                T_batch = 0
+                                            }).ToList()
+                             }).ToList(),
+                         };
+
+            if (c_search != null)
+            {
+                result = result.Where(
+                    a => a.C_id.Contains(c_search) ||
+                         a.C_Name.Contains(c_search)
+                );
+            }
+
+            if (p_search != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(p_search) ||
+                         a.P_Name.Contains(p_search) ||
+                         a.P_CName.Contains(p_search)
+                );
+            }
+
+            var resultList = result.AsEnumerable().Where(a => a.T_batch_data != null && a.T_batch_data.Any()); //過濾掉空集合
+
+            if (t_search != null)
+            {
+                resultList = resultList.Where(
+                    a => a.T_batch_data.Any(
+                        b => b.TT_info != null && b.TT_info.Any(
+                            c => (c.T_id != null && c.T_id.Contains(t_search)) ||
+                                 (c.T_Name != null && c.T_Name.Contains(t_search)))
+                        )
+                );
+            }
+
+            if (type_id != null)
+            {
+                resultList = resultList.Where(
+                    a => a.T_batch_data.Any(b => b.Type_id == type_id)
+                );
+            }
+
+            if (resultList == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = resultList.Count(); // 總記錄數
+            var data = resultList.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+
+            //return Ok(resultList.Take(300));
+        }
+
+        // GET: api/translation_team
         [HttpGet]
         [Route("normal")]
         public ActionResult<IEnumerable<TranslationTeamsDto>> Getnormal(string? searchword, string? searchword2, int? type_id)

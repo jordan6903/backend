@@ -105,6 +105,45 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/company_relation
+        [HttpGet("getbycid")]
+        public ActionResult<IEnumerable<CompanyRelationsDto>> GetByCid(string id)
+        {
+            var result = from a in _GalDBContext.Company_relation
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
+                         join c in _GalDBContext.Company on a.C_id_to equals c.C_id
+                         join d in _GalDBContext.Company_relation_info on a.Relation_id equals d.Relation_id
+                         orderby a.C_id, a.Relation_id
+                         select new
+                         {
+                             Id = a.Id,
+                             C_id = a.C_id,
+                             C_Name = b.Name,
+                             C_id_to = a.C_id_to,
+                             C_Name_to = c.Name,
+                             Relation_id = a.Relation_id,
+                             Relation_Name = d.Name,
+                             Content = a.Content,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(
+                    a => a.C_id == id
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // POST api/company_relation
         /*上傳json格式
         {

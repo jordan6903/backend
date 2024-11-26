@@ -66,6 +66,63 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/company
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<CompanysDto>> mainpage(string? searchword, int? C_type, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Company
+                         join b in _GalDBContext.Company_type on a.C_type equals b.C_type
+                         orderby a.C_type, a.C_id
+                         select new
+                         {
+                             Id = a.Id,
+                             C_id = a.C_id,
+                             C_type = a.C_type,
+                             Name = a.Name,
+                             Name_origin = a.Name_origin,
+                             Name_short = a.Name_short,
+                             Intro = a.Intro,
+                             Remark = a.Remark,
+                             Sdate = a.Sdate,
+                             Edate = a.Edate,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                             C_type_name = b.C_type_name,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.C_id.Contains(searchword) ||
+                         a.Name.Contains(searchword) ||
+                         a.Name_origin.Contains(searchword) ||
+                         a.Name_short.Contains(searchword)
+                );
+            }
+
+            if (C_type != null)
+            {
+                result = result.Where(a => a.C_type == C_type);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET api/company/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<CompanysDto>> GetSingle(string id)
@@ -214,7 +271,6 @@ namespace MyApi2.Controllers
                     result.Edate = value.Edate;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Company.Update(result);
                     _GalDBContext.SaveChanges();

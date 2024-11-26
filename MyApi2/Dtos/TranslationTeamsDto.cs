@@ -33,5 +33,9 @@
         public DateTime? Create_dt { get; set; }
 
         public ICollection<TTviewsDto1>? T_batch_data { get; set; }
+
+        public string? T_batch_data_show { get; set; }
+
+        public string? Url_data_show { get; set; }
     }
 }

@@ -118,6 +118,64 @@ namespace MyApi2.Controllers
             return Ok(result.Take(300));
         }
 
+        // GET: api/product/limit
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<ProductsDto>> mainpage(string? searchword, string? searchword2, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Company on a.C_id equals b.C_id
+                         orderby a.C_id, a.P_id
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             C_id = a.C_id,
+                             Name = a.Name,
+                             C_Name = a.C_Name,
+                             Content = a.Content,
+                             Content_style = a.Content_style,
+                             Play_time = a.Play_time,
+                             Remark = a.Remark,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                             Company_name = b.Name,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(searchword) ||
+                         a.Name.Contains(searchword) ||
+                         a.C_Name.Contains(searchword)
+                );
+            }
+
+            if (searchword2 != null)
+            {
+                result = result.Where(
+                    a => a.C_id.Contains(searchword2) ||
+                         a.Company_name.Contains(searchword2)
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET api/company/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductsDto>> GetSingle(string id)

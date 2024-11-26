@@ -40,7 +40,7 @@ namespace MyApi2.Controllers
             {
                 result = result.Where(
                     a => a.FullName.Contains(searchword) ||
-                         a.ShortName.Contains(searchword) || 
+                         a.ShortName.Contains(searchword) ||
                          a.Currency_id.Contains(searchword)
                 );
             }
@@ -63,6 +63,62 @@ namespace MyApi2.Controllers
             }
 
             return Ok(result);
+        }
+
+        // GET: api/currency
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<CurrencysDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Currency
+                         orderby a.Sort
+                         select new
+                         {
+                             Currency_id = a.Currency_id,
+                             FullName = a.FullName,
+                             ShortName = a.ShortName,
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.FullName.Contains(searchword) ||
+                         a.ShortName.Contains(searchword) || 
+                         a.Currency_id.Contains(searchword)
+                );
+            }
+
+            if (UseYN != null)
+            {
+                if (UseYN == "Y")
+                {
+                    result = result.Where(a => a.Use_yn == true);
+                }
+                else if (UseYN == "N")
+                {
+                    result = result.Where(a => a.Use_yn == false);
+                }
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
         }
 
         // GET api/currency/{id}
@@ -175,7 +231,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Currency.Update(result);
                     _GalDBContext.SaveChanges();

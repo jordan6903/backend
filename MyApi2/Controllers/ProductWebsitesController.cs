@@ -78,6 +78,46 @@ namespace MyApi2.Controllers
             return Ok(result.Take(500));
         }
 
+        // GET: api/product_website/getfortt
+        [HttpGet("getfortt")]
+        public ActionResult<IEnumerable<ProductWebsiteViewsDto>> GetForTT(string? searchword)
+        {
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Product_Website on a.P_id equals b.P_id into Url
+                         orderby a.P_id
+                         select new
+                         {
+                             P_id = a.P_id,
+                             P_Name = a.Name,
+                             Url_data = Url.Select(b => new ProductWebsiteViews2Dto
+                             {
+                                 Id = b.Id,
+                                 Type_id = b.Type_id,
+                                 Type_Name = (from c in _GalDBContext.Website_Type
+                                              where c.Type_id == b.Type_id
+                                              select c.Name).FirstOrDefault(),
+                                 Name = b.Name,
+                                 Url = b.Url,
+                                 Remark = b.Remark,
+                             }).ToList(),
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(searchword) ||
+                         a.P_Name.Contains(searchword)
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         // GET api/product_website/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductWebsitesDto>> Get(string id)
