@@ -216,6 +216,91 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/export_set_company/viewmainpage
+        [HttpGet("viewmainpage/{id}")]
+        public ActionResult<IEnumerable<ExportViews>> GetViewmainpage(int id, string? searchword, string? UseYN, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Export_set_Company
+                         join a1 in _GalDBContext.Company on a.C_id equals a1.C_id
+                         join b in _GalDBContext.Export_set_Product_series on a.Id equals b.ESC_id into Series
+                         orderby a.Export_batch, a.Sort
+                         select new
+                         {
+                             Id = a.Id,
+                             Export_batch = a.Export_batch,
+                             C_id = a.C_id,
+                             C_Name = a1.Name,
+                             C_Name_origin = a1.Name_origin,
+                             C_Name_short = a1.Name_short,
+                             C_Intro = a1.Intro,
+                             C_Remark = a1.Remark,
+                             Url = "",
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Title = a.Title,
+                             Repeat_chk = true,
+                             Count_chk = false,
+                             Count_export = 0,
+                             Count_exportall = 0,
+                             Count_all = 0,
+                             Series_data = Series.Select(b => new ExportViews2
+                             {
+                                 Id = b.Id,
+                                 Name = b.Name,
+                                 Use_yn = b.Use_yn,
+                                 Sort = b.Sort,
+                                 P_data = "",
+                                 Add_word = b.Add_word,
+                                 Add_word_Use_yn = b.Add_word_Use_yn,
+                             }).ToList(),
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(
+                    a => a.Export_batch == id
+                );
+            }
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.C_id.Contains(searchword) ||
+                         a.C_Name.Contains(searchword) ||
+                         a.C_Name_origin.Contains(searchword) ||
+                         a.C_Name_short.Contains(searchword)
+                );
+            }
+
+            if (UseYN != null)
+            {
+                if (UseYN == "Y")
+                {
+                    result = result.Where(a => a.Use_yn == true);
+                }
+                else if (UseYN == "N")
+                {
+                    result = result.Where(a => a.Use_yn == false);
+                }
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET: api/export_set_company/viewp
         [HttpGet("viewp/{id}")]
         public ActionResult<IEnumerable<ExportViewsP>> GetViewP(int id, string? UseYN)

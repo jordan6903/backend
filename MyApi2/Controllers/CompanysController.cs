@@ -66,7 +66,7 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET: api/company
+        // GET: api/company/mainpage
         [HttpGet("mainpage")]
         public ActionResult<IEnumerable<CompanysDto>> mainpage(string? searchword, int? C_type, int page = 1, int pageSize = 10)
         {

@@ -153,6 +153,72 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/export_set_other/viewmainpage
+        [HttpGet("viewmainpage/{id}")]
+        public ActionResult<IEnumerable<ExportViewsOther>> GetViewmainpage(int id, string? UseYN, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Export_set_Other
+                         join b in _GalDBContext.Export_set_Other_series on a.Id equals b.ESO_id into Series
+                         orderby a.Export_batch, a.Sort
+                         select new
+                         {
+                             Id = a.Id,
+                             Export_batch = a.Export_batch,
+                             Name = a.Name,
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Count_chk = true,
+                             Count_export = 0,
+                             Count_exportall = 0,
+                             Count_all = 0,
+                             Series_data = Series.Select(b => new ExportViews2Other
+                             {
+                                 Id = b.Id,
+                                 Name = b.Name,
+                                 Use_yn = b.Use_yn,
+                                 Sort = b.Sort,
+                                 P_data = "",
+                                 Add_word = b.Add_word,
+                                 Add_word_Use_yn = b.Add_word_Use_yn,
+                             }).ToList(),
+                         };
+
+            if (id != null)
+            {
+                result = result.Where(
+                    a => a.Export_batch == id
+                );
+            }
+
+            if (UseYN != null)
+            {
+                if (UseYN == "Y")
+                {
+                    result = result.Where(a => a.Use_yn == true);
+                }
+                else if (UseYN == "N")
+                {
+                    result = result.Where(a => a.Use_yn == false);
+                }
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET: api/export_set_other/viewp
         [HttpGet("viewp/{id}")]
         public ActionResult<IEnumerable<ExportViewsPOther>> GetViewP(int id, string? UseYN)

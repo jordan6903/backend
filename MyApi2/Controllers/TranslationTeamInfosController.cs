@@ -51,6 +51,48 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/translation_team_info/mainpage
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<TranslationTeamInfosDto>> mainpage(string? searchword, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Translation_team_info
+                         orderby a.T_id
+                         select new
+                         {
+                             Id = a.Id,
+                             T_id = a.T_id,
+                             Name = a.Name,
+                             Content = a.Content,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.T_id.Contains(searchword) ||
+                         a.Name.Contains(searchword)
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET api/translation_team_info/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<TranslationTeamInfosDto>> GetSingle(string id)
