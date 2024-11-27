@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -78,6 +79,51 @@ namespace MyApi2.Controllers
             }
 
             return Ok(result.Take(500));
+        }
+
+        // GET: api/product_pic/getformainpage
+        [HttpGet("getformainpage")]
+        public ActionResult<IEnumerable<ProductPicsDto>> GetForMainpage(string? searchword)
+        {
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Product_Pic on a.P_id equals b.P_id into Pic
+                         orderby a.P_id
+                         select new
+                         {
+                             P_id = a.P_id,
+                             P_Name = a.Name,
+                             Pic_data = Pic.Select(b => new ProductPicViews2Dto
+                             {
+                                 Id = b.Id,
+                                 Type_id = b.Type_id,
+                                 Type_Name = (from c in _GalDBContext.Website_Type
+                                              where c.Type_id == b.Type_id
+                                              select c.Name).FirstOrDefault(),
+                                 Name = b.Name,
+                                 Url = b.Url,
+                                 width = b.width,
+                                 height = b.height,
+                                 Remark = b.Remark,
+                                 Use_yn = b.Use_yn,
+                                 Sort = b.Sort,
+                                 Upd_date = b.Upd_date,
+                             }).ToList(),
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(searchword) ||
+                         a.P_Name.Contains(searchword)
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         // GET api/product_pic/{id}

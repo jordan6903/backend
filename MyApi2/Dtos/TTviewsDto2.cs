@@ -13,5 +13,7 @@
         public string? P_id { get; set; }
 
         public byte? T_batch { get; set; }
+
+        public DateTime? Upd_date { get; set; }
     }
 }

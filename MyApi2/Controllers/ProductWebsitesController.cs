@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -78,9 +79,9 @@ namespace MyApi2.Controllers
             return Ok(result.Take(500));
         }
 
-        // GET: api/product_website/getfortt
-        [HttpGet("getfortt")]
-        public ActionResult<IEnumerable<ProductWebsiteViewsDto>> GetForTT(string? searchword)
+        // GET: api/product_website/getformainpage
+        [HttpGet("getformainpage")]
+        public ActionResult<IEnumerable<ProductWebsiteViewsDto>> GetForMainpage(string? searchword)
         {
             var result = from a in _GalDBContext.Product
                          join b in _GalDBContext.Product_Website on a.P_id equals b.P_id into Url
@@ -99,6 +100,7 @@ namespace MyApi2.Controllers
                                  Name = b.Name,
                                  Url = b.Url,
                                  Remark = b.Remark,
+                                 Upd_date = b.Upd_date,
                              }).ToList(),
                          };
 

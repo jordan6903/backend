@@ -6,6 +6,7 @@ using MyApi2.Models;
 using System.Data.Common;
 using System.Linq;
 using System.Xml.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -107,23 +108,28 @@ namespace MyApi2.Controllers
             return Ok(resultList.Take(300));
         }
 
-        // GET: api/translation_team
+        // GET: api/translation_team/mainpage
         [HttpGet("mainpage")]
         public ActionResult<IEnumerable<TranslationTeamsDto>> mainpage(string? c_search, string? p_search, string? t_search, int? type_id, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Product
                          join b in _GalDBContext.Translation_team on a.P_id equals b.P_id into TT
                          join c in _GalDBContext.Company on a.C_id equals c.C_id
+                         join d in _GalDBContext.Product_Release_day on a.P_id equals d.P_id
+                         where d.Official_First == true
                          orderby a.C_id, a.P_id
                          select new
                          {
                              P_id = a.P_id,
                              P_Name = a.Name,
                              P_CName = a.C_Name,
+                             Sale_Date = d.Sale_Date,
                              C_id = a.C_id,
                              C_Name = c.Name,
                              T_batch_data_show = "",
                              Url_data_show = "",
+                             Pic_data_show = "",
+                             Upd_date_show = "",
                              T_batch_data = TT.Select(b => new TTviewsDto1
                              {
                                  Id = b.Id,
@@ -144,7 +150,8 @@ namespace MyApi2.Controllers
                                                           where e.T_id == d.T_id
                                                           select e.Name).FirstOrDefault(),
                                                 P_id = "",
-                                                T_batch = 0
+                                                T_batch = 0,
+                                                Upd_date = d.Upd_date,
                                             }).ToList()
                              }).ToList(),
                          };
@@ -201,11 +208,102 @@ namespace MyApi2.Controllers
                 TotalRecords = totalRecords, // 總記錄數
                 Data = data                 // 分頁資料
             });
-
-            //return Ok(resultList.Take(300));
         }
 
-        // GET: api/translation_team
+        // GET: api/translation_team/mainpage_recent
+        [HttpGet("mainpage_recent")]
+        public ActionResult<IEnumerable<TranslationTeamsDto>> mainpage_recent(string? c_search, string? p_search, string? t_search, int? type_id)
+        {
+            var result = from a in _GalDBContext.Product
+                         join b in _GalDBContext.Translation_team on a.P_id equals b.P_id into TT
+                         join c in _GalDBContext.Company on a.C_id equals c.C_id
+                         join d in _GalDBContext.Product_Release_day on a.P_id equals d.P_id
+                         where d.Official_First == true
+                         orderby a.C_id, a.P_id
+                         select new
+                         {
+                             P_id = a.P_id,
+                             P_Name = a.Name,
+                             P_CName = a.C_Name,
+                             Sale_Date = d.Sale_Date,
+                             C_id = a.C_id,
+                             C_Name = c.Name,
+                             T_batch_data_show = "",
+                             Url_data_show = "",
+                             Pic_data_show = "",
+                             Upd_date_show = "",
+                             T_batch_data = TT.Select(b => new TTviewsDto1
+                             {
+                                 Id = b.Id,
+                                 T_batch = b.T_batch,
+                                 Type_id = b.Type_id,
+                                 Remark = b.Remark,
+                                 Type_Name = (from c in _GalDBContext.Translation_team_type
+                                              where c.Type_id == b.Type_id
+                                              select c.Name).FirstOrDefault(),
+                                 TT_info = (from d in _GalDBContext.Translation_team_batch
+                                            where b.Id == d.TT_id
+                                            select new TTviewsDto2
+                                            {
+                                                Id = d.Id,
+                                                TT_Id = d.TT_id,
+                                                T_id = d.T_id,
+                                                T_Name = (from e in _GalDBContext.Translation_team_info
+                                                          where e.T_id == d.T_id
+                                                          select e.Name).FirstOrDefault(),
+                                                P_id = "",
+                                                T_batch = 0,
+                                                Upd_date = d.Upd_date,
+                                            }).ToList()
+                             }).ToList(),
+                         };
+
+            if (c_search != null)
+            {
+                result = result.Where(
+                    a => a.C_id.Contains(c_search) ||
+                         a.C_Name.Contains(c_search)
+                );
+            }
+
+            if (p_search != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(p_search) ||
+                         a.P_Name.Contains(p_search) ||
+                         a.P_CName.Contains(p_search)
+                );
+            }
+
+            var resultList = result.AsEnumerable().Where(a => a.T_batch_data != null && a.T_batch_data.Any()); //過濾掉空集合
+
+            if (t_search != null)
+            {
+                resultList = resultList.Where(
+                    a => a.T_batch_data.Any(
+                        b => b.TT_info != null && b.TT_info.Any(
+                            c => (c.T_id != null && c.T_id.Contains(t_search)) ||
+                                 (c.T_Name != null && c.T_Name.Contains(t_search)))
+                        )
+                );
+            }
+
+            if (type_id != null)
+            {
+                resultList = resultList.Where(
+                    a => a.T_batch_data.Any(b => b.Type_id == type_id)
+                );
+            }
+
+            if (resultList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(resultList);
+        }
+
+        // GET: api/translation_team/normal
         [HttpGet]
         [Route("normal")]
         public ActionResult<IEnumerable<TranslationTeamsDto>> Getnormal(string? searchword, string? searchword2, int? type_id)
