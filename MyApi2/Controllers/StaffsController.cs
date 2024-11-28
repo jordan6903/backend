@@ -68,6 +68,64 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/staff/mainpage
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<StaffsDto>> mainpage(string? searchword, int? staff_typeid, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Staff
+                         join b in _GalDBContext.Product on a.P_id equals b.P_id
+                         join c in _GalDBContext.Staff_info on a.Staff_id equals c.Staff_id
+                         join d in _GalDBContext.Staff_type on a.Staff_typeid equals d.Staff_typeid
+                         orderby a.P_id, a.Staff_typeid
+                         select new
+                         {
+                             Id = a.Id,
+                             P_id = a.P_id,
+                             P_Name = b.Name,
+                             Staff_id = a.Staff_id,
+                             Staff_Name = c.Name,
+                             Staff_typeid = a.Staff_typeid,
+                             Staff_type_Name = d.Name,
+                             Remark = a.Remark,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.P_id.Contains(searchword) ||
+                         a.P_Name.Contains(searchword) ||
+                         a.Staff_id.Contains(searchword) ||
+                         a.Staff_Name.Contains(searchword)
+                );
+            }
+
+            if (staff_typeid != null)
+            {
+                result = result.Where(
+                    a => a.Staff_typeid == staff_typeid
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET api/staff/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<StaffsDto>> GetSingle(int? id)

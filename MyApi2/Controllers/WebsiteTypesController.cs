@@ -64,6 +64,61 @@ namespace MyApi2.Controllers
             return Ok(result.Take(500));
         }
 
+        // GET: api/website_type/mainpage
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<WebsiteTypesDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Website_Type
+                         orderby a.Sort
+                         select new
+                         {
+                             Type_id = a.Type_id,
+                             Name = a.Name,
+                             Remark = a.Remark,
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.Name.Contains(searchword) ||
+                         a.Type_id.Contains(searchword)
+                );
+            }
+
+            if (UseYN != null)
+            {
+                if (UseYN == "Y")
+                {
+                    result = result.Where(a => a.Use_yn == true);
+                }
+                else if (UseYN == "N")
+                {
+                    result = result.Where(a => a.Use_yn == false);
+                }
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET api/website_type/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<WebsiteTypesDto>> GetSingle(string id)

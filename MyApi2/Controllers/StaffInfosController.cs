@@ -52,6 +52,49 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/staff_info/mainpage
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<StaffInfoDto>> mainpage(string? searchword, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Staff_info
+                         orderby a.Id
+                         select new
+                         {
+                             Id = a.Id,
+                             Staff_id = a.Staff_id,
+                             Name = a.Name,
+                             Content = a.Content,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.Name.Contains(searchword) ||
+                         a.Content.Contains(searchword) ||
+                         a.Staff_id.Contains(searchword)
+                );
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET api/staff_info/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<StaffInfoDto>> GetSingle(string id)

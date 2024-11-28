@@ -78,6 +78,75 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
+        // GET: api/product_type_info/mainpage
+        [HttpGet("mainpage")]
+        public ActionResult<IEnumerable<ProductTypeInfosDto>> mainpage(string? searchword, string? UseYN, int? P_type, int page = 1, int pageSize = 10)
+        {
+            var result = from a in _GalDBContext.Product_type_info
+                         join b in _GalDBContext.Product_type_class on a.P_type_class equals b.P_type_class
+                         orderby a.P_type_class, a.Sort
+                         select new
+                         {
+                             P_type_id = a.P_type_id,
+                             P_type_class = a.P_type_class,
+                             P_type_name = b.Name,
+                             FullName = a.FullName,
+                             ShortName = a.ShortName,
+                             Content = a.Content,
+                             FullName_JP = a.FullName_JP,
+                             FullName_EN = a.FullName_EN,
+                             Use_yn = a.Use_yn,
+                             Sort = a.Sort,
+                             Upd_user = a.Upd_user,
+                             Upd_date = a.Upd_date,
+                             Create_dt = a.Create_dt,
+                         };
+
+            if (searchword != null)
+            {
+                result = result.Where(
+                    a => a.FullName.Contains(searchword) ||
+                         a.FullName_JP.Contains(searchword) ||
+                         a.FullName_EN.Contains(searchword) ||
+                         a.ShortName.Contains(searchword) ||
+                         a.P_type_id.Contains(searchword)
+                );
+            }
+
+            if (UseYN != null)
+            {
+                if (UseYN == "Y")
+                {
+                    result = result.Where(a => a.Use_yn == true);
+                }
+                else if (UseYN == "N")
+                {
+                    result = result.Where(a => a.Use_yn == false);
+                }
+            }
+
+            if (P_type != null)
+            {
+                result = result.Where(a => a.P_type_class == P_type);
+            }
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            // 分頁處理
+            var totalRecords = result.Count(); // 總記錄數
+            var data = result.Skip((page - 1) * pageSize).Take(pageSize).ToList(); // 分頁數據
+
+            // 回傳資料
+            return Ok(new
+            {
+                TotalRecords = totalRecords, // 總記錄數
+                Data = data                 // 分頁資料
+            });
+        }
+
         // GET api/product_type_info/{id}
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<ProductTypeInfosDto>> GetSingle(string id)

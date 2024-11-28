@@ -7,54 +7,30 @@ using MyApi2.Models;
 
 namespace MyApi2.Controllers
 {
-    [Route("api/export_set_batch")]
+    [Route("api/export_set_date")]
     [ApiController]
-    public class ExportSetBatchsController : ControllerBase
+    public class ExportSetDatesController : ControllerBase
     {
         private readonly GalDBContext _GalDBContext;
 
-        public ExportSetBatchsController(GalDBContext GalDBContext)
+        public ExportSetDatesController(GalDBContext GalDBContext)
         {
             _GalDBContext = GalDBContext;
         }
 
-        // GET: api/export_set_batch
+        // GET: api/export_set_date
         [HttpGet]
-        public ActionResult<IEnumerable<ExportSetBatchsDto>> Get(string? searchword, string? UseYN)
+        public ActionResult<IEnumerable<ExportSetDatesDto>> Get(string? UseYN)
         {
-            var result = from a in _GalDBContext.Export_set_batch
-                         orderby a.Export_batch
+            var result = from a in _GalDBContext.Export_set_date
+                         orderby a.Date_mark descending
                          select new
                          {
-                             Export_batch = a.Export_batch,
-                             Content = a.Content,
+                             Id = a.Id,
+                             Name = a.Name,
+                             Date_mark = a.Date_mark,
                              Use_yn = a.Use_yn,
-                             Upd_user = a.Upd_user,
-                             Upd_date = a.Upd_date,
-                             Create_dt = a.Create_dt,
-
-                             Count_export1 = (from b in _GalDBContext.Export_set_Company
-                                            join c in _GalDBContext.Export_set_Product_series on b.Id equals c.ESC_id
-                                            join d in _GalDBContext.Export_set_Product on c.Id equals d.ESPS_id
-                                            where b.Export_batch == a.Export_batch
-                                            select b).Count(),
-
-                             Count_export2 = (from b in _GalDBContext.Export_set_Other
-                                              join c in _GalDBContext.Export_set_Other_series on b.Id equals c.ESO_id
-                                              join d in _GalDBContext.Export_set_Other_Product on c.Id equals d.ESOS_id
-                                              where b.Export_batch == a.Export_batch
-                                              select b).Count(),
-
-                             Count_exportALL = 0,
-                             Count_all = 0,
                          };
-
-            if (searchword != null)
-            {
-                result = result.Where(
-                    a => a.Content.Contains(searchword)
-                );
-            }
 
             if (UseYN != null)
             {
@@ -76,27 +52,22 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // GET api/export_set_batch/{id}
+        // GET api/export_set_date/{id}
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<ExportSetBatchsDto>> GetSingle(int id)
+        public ActionResult<IEnumerable<ExportSetDatesDto>> Get(int id)
         {
-            var result = from a in _GalDBContext.Export_set_batch
-                         orderby a.Export_batch
+            var result = from a in _GalDBContext.Export_set_date
                          select new
                          {
-                             Export_batch = a.Export_batch,
-                             Content = a.Content,
+                             Id = a.Id,
+                             Name = a.Name,
+                             Date_mark = a.Date_mark,
                              Use_yn = a.Use_yn,
-                             Upd_user = a.Upd_user,
-                             Upd_date = a.Upd_date,
-                             Create_dt = a.Create_dt,
                          };
 
             if (id != null)
             {
-                result = result.Where(
-                    a => a.Export_batch == id
-                );
+                result = result.Where(a => a.Id == id);
             }
 
             if (result == null)
@@ -107,38 +78,45 @@ namespace MyApi2.Controllers
             return Ok(result);
         }
 
-        // POST api/export_set_batch
+        // GET api/export_set_date/getlast
+        [HttpGet("getlast")]
+        public ActionResult<DateTime> GetLast()
+        {
+            try
+            {
+                var result = _GalDBContext.Export_set_date
+                            .Where(t => t.Use_yn == true)
+                            .Max(t => t.Date_mark);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳詳細的錯誤訊息
+                return Ok(0);
+            }
+        }
+
+        // POST api/export_set_date
         /*上傳json格式
         {
-            "Export_batch": 3,
-            "Content": "test",
-            "Use_yn": false
+            "Name": "test",
+            "Date_mark": "2024-11-28T09:00:38.463",
+            "use_yn": true
         }
         */
         [HttpPost]
-        public IActionResult Post([FromBody] ExportSetBatchsDto value)
+        public IActionResult Post([FromBody] ExportSetDatesDto value)
         {
-            var isExists = _GalDBContext.Export_set_batch.Any(
-                    a => a.Export_batch == value.Export_batch
-                );
-
-            if (isExists)
-            {
-                return Ok(new { message = "N#資料上傳失敗, 已有相同代碼" });
-            }
-
             try
             {
-                Export_set_batch insert = new Export_set_batch
+                Export_set_date insert = new Export_set_date
                 {
-                    Export_batch = value.Export_batch,
-                    Content = value.Content,
+                    Name = value.Name,
+                    Date_mark = value.Date_mark,
                     Use_yn = value.Use_yn,
-                    Upd_user = value.Upd_user,
-                    Upd_date = DateTime.Now,
-                    Create_dt = DateTime.Now,
                 };
-                _GalDBContext.Export_set_batch.Add(insert);
+                _GalDBContext.Export_set_date.Add(insert);
                 _GalDBContext.SaveChanges();
 
                 // 回傳成功訊息
@@ -149,21 +127,22 @@ namespace MyApi2.Controllers
                 // 捕捉錯誤並回傳詳細的錯誤訊息
                 return BadRequest(new { message = "N#資料上傳失敗", error = ex.Message });
             }
+
         }
 
-        // PUT api/export_set_batch/{id}
+        // PUT api/export_set_date/{id}
         /*上傳json格式
         {
-            "Export_batch": 3,
-            "Content": "test",
-            "Use_yn": false
+            "Name": "test",
+            "Date_mark": "2024-11-28T09:00:38.463",
+            "use_yn": true
         }
         */
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ExportSetBatchsDto value)
+        public IActionResult Put(int id, [FromBody] ExportSetDatesDto value)
         {
-            var result = (from a in _GalDBContext.Export_set_batch
-                          where a.Export_batch == id
+            var result = (from a in _GalDBContext.Export_set_date
+                          where a.Id == id
                           select a).SingleOrDefault();
 
             if (result == null)
@@ -174,12 +153,11 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    result.Content = value.Content;
+                    result.Name = value.Name;
+                    result.Date_mark = value.Date_mark;
                     result.Use_yn = value.Use_yn;
-                    result.Upd_user = value.Upd_user;
-                    result.Upd_date = DateTime.Now;
 
-                    _GalDBContext.Export_set_batch.Update(result);
+                    _GalDBContext.Export_set_date.Update(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息
@@ -193,12 +171,12 @@ namespace MyApi2.Controllers
             }
         }
 
-        // DELETE api/export_set_batch/{id}
+        // DELETE api/export_set_date/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = (from a in _GalDBContext.Export_set_batch
-                          where a.Export_batch == id
+            var result = (from a in _GalDBContext.Export_set_date
+                          where a.Id == id
                           select a).SingleOrDefault();
 
             if (result == null)
@@ -209,7 +187,7 @@ namespace MyApi2.Controllers
             {
                 try
                 {
-                    _GalDBContext.Export_set_batch.Remove(result);
+                    _GalDBContext.Export_set_date.Remove(result);
                     _GalDBContext.SaveChanges();
 
                     // 回傳成功訊息

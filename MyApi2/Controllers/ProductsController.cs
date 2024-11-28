@@ -118,7 +118,7 @@ namespace MyApi2.Controllers
             return Ok(result.Take(300));
         }
 
-        // GET: api/product/limit
+        // GET: api/product/mainpage
         [HttpGet("mainpage")]
         public ActionResult<IEnumerable<ProductsDto>> mainpage(string? searchword, string? searchword2, int page = 1, int pageSize = 10)
         {

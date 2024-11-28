@@ -45,6 +45,8 @@ public partial class GalDBContext : DbContext
 
     public virtual DbSet<Export_set_batch> Export_set_batch { get; set; }
 
+    public virtual DbSet<Export_set_date> Export_set_date { get; set; }
+
     public virtual DbSet<Export_type> Export_type { get; set; }
 
     public virtual DbSet<Permission_set> Permission_set { get; set; }
@@ -380,6 +382,12 @@ public partial class GalDBContext : DbContext
             entity.Property(e => e.Create_dt).HasColumnType("datetime");
             entity.Property(e => e.Upd_date).HasColumnType("datetime");
             entity.Property(e => e.Upd_user).HasMaxLength(32);
+        });
+
+        modelBuilder.Entity<Export_set_date>(entity =>
+        {
+            entity.Property(e => e.Date_mark).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Export_type>(entity =>
