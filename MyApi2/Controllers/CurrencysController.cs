@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/currency
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<CurrencysDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Currency
@@ -67,6 +69,7 @@ namespace MyApi2.Controllers
 
         // GET: api/currency
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<CurrencysDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Currency
@@ -123,6 +126,7 @@ namespace MyApi2.Controllers
 
         // GET api/currency/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<CurrencysDto>> Get(string id)
         {
             var result = from a in _GalDBContext.Currency
@@ -163,6 +167,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] CurrencysDto value)
         {
             var isExists = _GalDBContext.Currency.Any(a => a.Currency_id == value.Currency_id);
@@ -210,6 +215,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] CurrencysDto value)
         {
             var result = (from a in _GalDBContext.Currency
@@ -248,6 +254,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/currency/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Currency

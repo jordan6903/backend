@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/account_info
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<AccountInfosDto>> Get(string? searchword)
         {
             var result = from a in _GalDBContext.Account_info
