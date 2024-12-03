@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/voice_type
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<VoiceTypesDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Voice_type
@@ -66,6 +68,7 @@ namespace MyApi2.Controllers
 
         // GET: api/voice_type
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<VoiceTypesDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Voice_type
@@ -121,6 +124,7 @@ namespace MyApi2.Controllers
 
         // GET api/voice_type/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<VoiceTypesDto>> Get(int id)
         {
             var result = from a in _GalDBContext.Voice_type
@@ -161,6 +165,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] VoiceTypesDto value)
         {
             var isExists = _GalDBContext.Voice_type.Any(a => a.Voice_id == value.Voice_id);
@@ -208,6 +213,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] VoiceTypesDto value)
         {
             var result = (from a in _GalDBContext.Voice_type
@@ -246,6 +252,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/voice_type/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Voice_type

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/company
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<CompanysDto>> Get(string? searchword, int? C_type)
         {
             var result = from a in _GalDBContext.Company
@@ -68,6 +70,7 @@ namespace MyApi2.Controllers
 
         // GET: api/company/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<CompanysDto>> mainpage(string? searchword, int? C_type, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Company
@@ -125,6 +128,7 @@ namespace MyApi2.Controllers
 
         // GET api/company/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<CompanysDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Company
@@ -163,6 +167,7 @@ namespace MyApi2.Controllers
 
         // GET: api/company/getnewcid
         [HttpGet("getnewcid")]
+        [Authorize]
         public ActionResult<string> GetNewcid()
         {
             var result = (from a in _GalDBContext.Company
@@ -192,6 +197,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] CompanysDto value)
         {
             var isExists = _GalDBContext.Company.Any(a => a.C_id == value.C_id);
@@ -246,6 +252,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] CompanysDto value)
         {
             var result = (from a in _GalDBContext.Company
@@ -288,6 +295,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/company/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Company

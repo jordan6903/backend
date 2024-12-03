@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/translation_team_info
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamInfosDto>> Get(string? searchword)
         {
             var result = from a in _GalDBContext.Translation_team_info
@@ -53,6 +55,7 @@ namespace MyApi2.Controllers
 
         // GET: api/translation_team_info/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamInfosDto>> mainpage(string? searchword, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Translation_team_info
@@ -95,6 +98,7 @@ namespace MyApi2.Controllers
 
         // GET api/translation_team_info/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamInfosDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Translation_team_info
@@ -125,6 +129,7 @@ namespace MyApi2.Controllers
 
         // GET api/translation_team_info/getmaxtid
         [HttpGet("getmaxtid")]
+        [Authorize]
         public ActionResult<string> GetMaxTid()
         {
             try
@@ -150,6 +155,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] TranslationTeamInfosDto value)
         {
             var isExists = _GalDBContext.Translation_team_info.Any(a => a.T_id == value.T_id);
@@ -192,6 +198,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] TranslationTeamInfosDto value)
         {
             var result = (from a in _GalDBContext.Translation_team_info
@@ -211,7 +218,6 @@ namespace MyApi2.Controllers
                     result.Content = value.Content;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Translation_team_info.Update(result);
                     _GalDBContext.SaveChanges();
@@ -229,6 +235,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/translation_team_info/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Translation_team_info

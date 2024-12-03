@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
@@ -22,6 +23,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsDto>> Get(string? searchword, string? searchword2)
         {
             var result = from a in _GalDBContext.Product
@@ -71,6 +73,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product/limit
         [HttpGet("limit")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsDto>> GetLimit(string? searchword, string? searchword2)
         {
             var result = from a in _GalDBContext.Product
@@ -120,6 +123,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsDto>> mainpage(string? searchword, string? searchword2, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Product
@@ -178,6 +182,7 @@ namespace MyApi2.Controllers
 
         // GET api/company/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Product
@@ -215,6 +220,7 @@ namespace MyApi2.Controllers
 
         // GET api/product/GetByCompany/{id}
         [HttpGet("getbycompany/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsDto>> GetByCompany(string id)
         {
             var result = from a in _GalDBContext.Product
@@ -256,49 +262,9 @@ namespace MyApi2.Controllers
 
         // GET api/product/GetByCompanytt/{id}
         [HttpGet("getbycompanytt/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsViewsDto>> GetByCompanyTT(string id)
         {
-            //var result = from a in _GalDBContext.Product
-            //             join b in _GalDBContext.Company on a.C_id equals b.C_id
-            //             join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
-            //             join d1 in
-            //                 (from prd in _GalDBContext.Product_Release_day
-            //                  group prd by prd.P_id into g
-            //                  select new
-            //                  {
-            //                      P_id = g.Key,
-            //                      Sale_Date = g.Min(x => x.Sale_Date)
-            //                  }) on a.P_id equals d1.P_id
-            //             join d in _GalDBContext.Product_Release_day
-            //                 on new { d1.P_id, d1.Sale_Date } equals new { d.P_id, d.Sale_Date }
-            //             orderby a.C_id, a.P_id
-            //             select new
-            //             {
-            //                 Id = a.Id,
-            //                 P_id = a.P_id,
-            //                 C_id = a.C_id,
-            //                 Name = a.Name,
-            //                 P_CName = a.C_Name,
-            //                 C_Name = b.Name,
-            //                 Content = a.Content,
-            //                 Content_style = a.Content_style,
-            //                 Play_time = a.Play_time,
-            //                 Remark = a.Remark,
-            //                 Sale_date = d.Sale_Date,
-            //                 Upd_user = a.Upd_user,
-            //                 Upd_date = a.Upd_date,
-            //                 Create_dt = a.Create_dt,
-            //                 Company_name = b.Name,
-            //                 eso_chk = false,
-            //                 TT_type = TT.Select(c => new ProductsViews2Dto
-            //                 {
-            //                     Type_id = c.Type_id,
-            //                     Type_Name = (from d in _GalDBContext.Translation_team_type
-            //                                  where c.Type_id == d.Type_id
-            //                                  select d.Name).FirstOrDefault(),
-            //                 })
-            //             };
-
             var result = from a in _GalDBContext.Product
                          join b in _GalDBContext.Company on a.C_id equals b.C_id
                          join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
@@ -350,48 +316,9 @@ namespace MyApi2.Controllers
 
         // GET api/product/getforother
         [HttpGet("getforother")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsViewsDto>> GetForOther()
         {
-            //var result = from a in _GalDBContext.Product
-            //             join b in _GalDBContext.Company on a.C_id equals b.C_id
-            //             join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
-            //             join d1 in
-            //                 (from prd in _GalDBContext.Product_Release_day
-            //                  group prd by prd.P_id into g
-            //                  select new
-            //                  {
-            //                      P_id = g.Key,
-            //                      Sale_Date = g.Min(x => x.Sale_Date)
-            //                  }) on a.P_id equals d1.P_id
-            //             join d in _GalDBContext.Product_Release_day
-            //                 on new { d1.P_id, d1.Sale_Date } equals new { d.P_id, d.Sale_Date }
-            //             orderby a.C_id, a.P_id
-            //             select new
-            //             {
-            //                 Id = a.Id,
-            //                 P_id = a.P_id,
-            //                 C_id = a.C_id,
-            //                 Name = a.Name,
-            //                 P_CName = a.C_Name,
-            //                 C_Name = b.Name,
-            //                 Content = a.Content,
-            //                 Content_style = a.Content_style,
-            //                 Play_time = a.Play_time,
-            //                 Remark = a.Remark,
-            //                 Sale_date = d.Sale_Date,
-            //                 Upd_user = a.Upd_user,
-            //                 Upd_date = a.Upd_date,
-            //                 Create_dt = a.Create_dt,
-            //                 Company_name = b.Name,
-            //                 TT_type = TT.Select(c => new ProductsViews2Dto
-            //                 {
-            //                     Type_id = c.Type_id,
-            //                     Type_Name = (from d in _GalDBContext.Translation_team_type
-            //                                  where c.Type_id == d.Type_id
-            //                                  select d.Name).FirstOrDefault(),
-            //                 })
-            //             };
-
             var result = from a in _GalDBContext.Product
                          join b in _GalDBContext.Company on a.C_id equals b.C_id
                          join c in _GalDBContext.Translation_team on a.P_id equals c.P_id into TT
@@ -422,6 +349,7 @@ namespace MyApi2.Controllers
                                  Type_Name = (from d in _GalDBContext.Translation_team_type
                                               where c.Type_id == d.Type_id
                                               select d.Name).FirstOrDefault(),
+                                 Upd_date = c.Upd_date,
                              })
                          };
 
@@ -531,6 +459,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product
         [HttpGet("View1")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductsView1Dto>> GetView1(string? searchword, string? searchword2)
         {
             var result = from a in _GalDBContext.Product
@@ -615,6 +544,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product/getnewpid
         [HttpGet("getnewpid")]
+        [Authorize]
         public ActionResult<string> GetNewpid(string searchword)
         {
             var result = (from a in _GalDBContext.Product
@@ -644,6 +574,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ProductsDto value)
         {
             var isExists = _GalDBContext.Product.Any(a => a.P_id == value.P_id);
@@ -696,6 +627,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] ProductsDto value)
         {
             var result = (from a in _GalDBContext.Product
@@ -720,7 +652,6 @@ namespace MyApi2.Controllers
                     result.Remark = value.Remark;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Product.Update(result);
                     _GalDBContext.SaveChanges();
@@ -738,6 +669,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/product/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Product

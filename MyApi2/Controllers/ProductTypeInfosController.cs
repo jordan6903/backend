@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_type_info
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ProductTypeInfosDto>> Get(string? searchword, string? UseYN, int? P_type)
         {
             var result = from a in _GalDBContext.Product_type_info
@@ -80,6 +82,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_type_info/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductTypeInfosDto>> mainpage(string? searchword, string? UseYN, int? P_type, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Product_type_info
@@ -149,6 +152,7 @@ namespace MyApi2.Controllers
 
         // GET api/product_type_info/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductTypeInfosDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Product_type_info
@@ -199,6 +203,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ProductTypeInfosDto value)
         {
             var isExists = _GalDBContext.Product_type_info.Any(a => a.P_type_id == value.P_type_id);
@@ -253,6 +258,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] ProductTypeInfosDto value)
         {
             var result = (from a in _GalDBContext.Product_type_info
@@ -278,7 +284,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Product_type_info.Update(result);
                     _GalDBContext.SaveChanges();
@@ -296,6 +301,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/product_type_info/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Product_type_info

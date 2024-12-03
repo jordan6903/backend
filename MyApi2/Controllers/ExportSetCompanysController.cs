@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -21,6 +22,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_company
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetCompanysDto>> Get(int? id, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_Company
@@ -70,6 +72,7 @@ namespace MyApi2.Controllers
 
         // GET api/export_set_company/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetCompanysDto>> GetSingle(int id, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_Company
@@ -119,6 +122,7 @@ namespace MyApi2.Controllers
 
         // GET api/export_set_company/GetById/{id}
         [HttpGet("getbyid/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetCompanysDto>> GetById(int id)
         {
             var result = from a in _GalDBContext.Export_set_Company
@@ -152,6 +156,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_company/view
         [HttpGet("view/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViews>> GetView(int id, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_Company
@@ -218,6 +223,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_company/viewmainpage
         [HttpGet("viewmainpage/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViews>> GetViewmainpage(int id, string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Export_set_Company
@@ -303,6 +309,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_company/viewp
         [HttpGet("viewp/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViewsP>> GetViewP(int id, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_Product
@@ -354,6 +361,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_company/viewcount/{id}
         [HttpGet("viewcount/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViewsCount>> GetViewCount(int id)
         {
             var result = from a in _GalDBContext.Export_set_Company
@@ -412,6 +420,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ExportSetCompanysDto value)
         {
             var isExists = _GalDBContext.Export_set_Company.Any(
@@ -468,6 +477,7 @@ namespace MyApi2.Controllers
         ]
         */
         [HttpPost("several")]
+        [Authorize]
         public IActionResult Post([FromBody] List<ExportSetCompanysDto> values)
         {
             try
@@ -531,6 +541,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ExportSetCompanysDto value)
         {
             var result = (from a in _GalDBContext.Export_set_Company
@@ -581,6 +592,7 @@ namespace MyApi2.Controllers
         ]
         */
         [HttpPut("several")]
+        [Authorize]
         public IActionResult Put([FromBody] List<ExportSetCompanysDto> values)
         {
             try
@@ -621,6 +633,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_company/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Export_set_Company
@@ -684,6 +697,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_company/deletebybatch/{batch}
         [HttpDelete("deletebybatch/{batch}")]
+        [Authorize]
         public IActionResult DeleteByBatch(int batch)
         {
             var result = (from a in _GalDBContext.Export_set_Company

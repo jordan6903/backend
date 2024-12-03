@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/company_pic
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<CompanyPicsDto>> Get(string? searchword, string? UseYN, string? type_id)
         {
             var result = from a in _GalDBContext.Company_Pic
@@ -82,6 +84,7 @@ namespace MyApi2.Controllers
 
         // GET api/company_pic/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<CompanyPicsDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Company_Pic
@@ -135,6 +138,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] CompanyPicsDto value)
         {
             try
@@ -182,6 +186,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] CompanyPicsDto value)
         {
             var result = (from a in _GalDBContext.Company_Pic
@@ -207,7 +212,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Company_Pic.Update(result);
                     _GalDBContext.SaveChanges();
@@ -225,6 +229,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/company_pic/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Company_Pic

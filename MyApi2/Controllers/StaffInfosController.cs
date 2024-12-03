@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/staff_info
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<StaffInfoDto>> Get(string? searchword)
         {
             var result = from a in _GalDBContext.Staff_info
@@ -54,6 +56,7 @@ namespace MyApi2.Controllers
 
         // GET: api/staff_info/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<StaffInfoDto>> mainpage(string? searchword, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Staff_info
@@ -97,6 +100,7 @@ namespace MyApi2.Controllers
 
         // GET api/staff_info/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<StaffInfoDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Staff_info
@@ -127,6 +131,7 @@ namespace MyApi2.Controllers
 
         // GET api/staff_info/getmaxstaffid
         [HttpGet("getmaxstaffid")]
+        [Authorize]
         public ActionResult<string> GetMaxStaffId()
         {
             var result = (from a in _GalDBContext.Staff_info
@@ -150,6 +155,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] StaffInfoDto value)
         {
             var isExists = _GalDBContext.Staff_info.Any(a => a.Staff_id == value.Staff_id);
@@ -193,6 +199,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] StaffInfoDto value)
         {
             var result = (from a in _GalDBContext.Staff_info
@@ -212,7 +219,6 @@ namespace MyApi2.Controllers
                     result.Content = value.Content;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Staff_info.Update(result);
                     _GalDBContext.SaveChanges();
@@ -230,6 +236,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/staff_info/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Staff_info

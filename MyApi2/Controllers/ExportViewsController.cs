@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyApi2.Dtos;
 using MyApi2.Models;
 using System.Xml.Linq;
@@ -21,6 +22,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_view/get1_1
         [HttpGet("get1_1")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViews1_1Dtos>> Get1_1(int id)
         {
             var result = from a in _GalDBContext.Export_set_Company
@@ -76,30 +78,9 @@ namespace MyApi2.Controllers
 
         // GET: api/export_view/get1_2
         [HttpGet("get1_2")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViews1_2Dtos>> Get1_2()
         {
-            //var result = from a in _GalDBContext.Export_set_Product
-            //             join a1 in _GalDBContext.Product on a.P_id equals a1.P_id
-            //             join c1 in
-            //                 (from prd in _GalDBContext.Product_Release_day
-            //                  group prd by prd.P_id into g
-            //                  select new
-            //                  {
-            //                      P_id = g.Key,
-            //                      Sale_Date = g.Min(x => x.Sale_Date)
-            //                  }) on a.P_id equals c1.P_id
-            //             join c in _GalDBContext.Product_Release_day
-            //                 on new { c1.P_id, c1.Sale_Date } equals new { c.P_id, c.Sale_Date }
-            //             join d in _GalDBContext.Translation_team on a.P_id equals d.P_id
-            //             orderby a.Sort
-            //             select new
-            //             {
-            //                 esp_id = a.Id,
-            //                 P_id = a.P_id,
-            //                 P_Name = a1.Name,
-            //                 P_CName = a1.C_Name,
-            //                 Sale_Date = c.Sale_Date,
-            //             };
             var result = from a in _GalDBContext.Export_set_Product
                          join a1 in _GalDBContext.Product on a.P_id equals a1.P_id
                          join c in _GalDBContext.Product_Release_day on a.P_id equals c.P_id
@@ -124,31 +105,6 @@ namespace MyApi2.Controllers
             }
 
             return Ok(distinctResult);
-        }
-
-        // GET api/export_view/5
-        [HttpGet("{id}")]
-        public string GetSingle(int id)
-        {
-            return "value";
-        }
-
-        // POST api/export_view
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/export_view/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/export_view/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

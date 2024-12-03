@@ -141,7 +141,6 @@ namespace MyApi2.Controllers
                     result.Remark = value.Remark;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Permission_set.Update(result);
                     _GalDBContext.SaveChanges();

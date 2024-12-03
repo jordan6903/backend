@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/rating_type
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<RatingTypesDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Rating_type
@@ -67,6 +69,7 @@ namespace MyApi2.Controllers
 
         // GET: api/rating_type
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<RatingTypesDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Rating_type
@@ -123,6 +126,7 @@ namespace MyApi2.Controllers
 
         // GET api/rating_type/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<RatingTypesDto>> Get(int id)
         {
             var result = from a in _GalDBContext.Rating_type
@@ -165,6 +169,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] RatingTypesDto value)
         {
             var isExists = _GalDBContext.Rating_type.Any(a => a.Rating_type1 == value.Rating_type);
@@ -214,6 +219,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] RatingTypesDto value)
         {
             var result = (from a in _GalDBContext.Rating_type
@@ -253,6 +259,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/rating_type/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Rating_type

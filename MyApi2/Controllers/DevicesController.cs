@@ -3,6 +3,7 @@ using MyApi2.Models;
 using MyApi2.Dtos;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyApi2.Controllers
 {
@@ -18,6 +19,7 @@ namespace MyApi2.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<DevicesDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Device
@@ -65,6 +67,7 @@ namespace MyApi2.Controllers
         }
 
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<DevicesDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Device
@@ -122,6 +125,7 @@ namespace MyApi2.Controllers
 
         // GET api/device
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<DevicesDto>> Get(string id)
         {
             var result = from a in _GalDBContext.Device
@@ -165,6 +169,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] Device value)
         {
             var isExists = _GalDBContext.Device.Any(a => a.Device_id == value.Device_id);
@@ -214,6 +219,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] Device value)
         {
             var result = (from a in _GalDBContext.Device
@@ -252,6 +258,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/device/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Device

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_score
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ProductScoresDto>> Get(string? searchword, int? type_id)
         {
             var result = from a in _GalDBContext.Product_score
@@ -64,6 +66,7 @@ namespace MyApi2.Controllers
 
         // GET api/product_score/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<StaffsDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Product_score
@@ -107,6 +110,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ProductScoresDto value)
         {
             var isExists = _GalDBContext.Product_score.Any(
@@ -152,6 +156,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ProductScoresDto value)
         {
             var result = (from a in _GalDBContext.Product_score
@@ -171,7 +176,6 @@ namespace MyApi2.Controllers
                     result.Score = value.Score;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Product_score.Update(result);
                     _GalDBContext.SaveChanges();
@@ -189,6 +193,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/product_score/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Product_score

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/company_type
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<CompanyTypesDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Company_type
@@ -65,6 +67,7 @@ namespace MyApi2.Controllers
 
         // GET api/company_type/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<CompanyTypesDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Company_type
@@ -105,6 +108,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] CompanyTypesDto value)
         {
             var isExists = _GalDBContext.Company_type.Any(a => a.C_type == value.C_type);
@@ -152,6 +156,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] CompanyTypesDto value)
         {
             var result = (from a in _GalDBContext.Company_type
@@ -173,7 +178,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Company_type.Update(result);
                     _GalDBContext.SaveChanges();
@@ -191,6 +195,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/company_type/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Company_type

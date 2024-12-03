@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_batch
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetBatchsDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_batch
@@ -78,6 +80,7 @@ namespace MyApi2.Controllers
 
         // GET api/export_set_batch/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetBatchsDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Export_set_batch
@@ -116,6 +119,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ExportSetBatchsDto value)
         {
             var isExists = _GalDBContext.Export_set_batch.Any(
@@ -160,6 +164,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ExportSetBatchsDto value)
         {
             var result = (from a in _GalDBContext.Export_set_batch
@@ -195,6 +200,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_batch/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Export_set_batch

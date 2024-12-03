@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_date
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetDatesDto>> Get(string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_date
@@ -54,6 +56,7 @@ namespace MyApi2.Controllers
 
         // GET api/export_set_date/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetDatesDto>> Get(int id)
         {
             var result = from a in _GalDBContext.Export_set_date
@@ -80,6 +83,7 @@ namespace MyApi2.Controllers
 
         // GET api/export_set_date/getlast
         [HttpGet("getlast")]
+        [Authorize]
         public ActionResult<DateTime> GetLast()
         {
             try
@@ -106,6 +110,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ExportSetDatesDto value)
         {
             try
@@ -139,6 +144,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ExportSetDatesDto value)
         {
             var result = (from a in _GalDBContext.Export_set_date
@@ -173,6 +179,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_date/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Export_set_date

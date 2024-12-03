@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -21,6 +22,7 @@ namespace MyApi2.Controllers
 
         // GET: api/staff
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<StaffsDto>> Get(string? searchword, int? staff_typeid)
         {
             var result = from a in _GalDBContext.Staff
@@ -70,6 +72,7 @@ namespace MyApi2.Controllers
 
         // GET: api/staff/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<StaffsDto>> mainpage(string? searchword, int? staff_typeid, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Staff
@@ -128,6 +131,7 @@ namespace MyApi2.Controllers
 
         // GET api/staff/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<StaffsDto>> GetSingle(int? id)
         {
             var result = from a in _GalDBContext.Staff
@@ -167,6 +171,7 @@ namespace MyApi2.Controllers
 
         // GET api/staff/getbypid
         [HttpGet("getbypid")]
+        [Authorize]
         public ActionResult<IEnumerable<StaffsDto>> GetByPid(string id)
         {
             var result = from a in _GalDBContext.Staff
@@ -214,6 +219,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] StaffsDto value)
         {
             try
@@ -251,6 +257,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] StaffsDto value)
         {
             var result = (from a in _GalDBContext.Staff
@@ -271,7 +278,6 @@ namespace MyApi2.Controllers
                     result.Remark = value.Remark;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Staff.Update(result);
                     _GalDBContext.SaveChanges();
@@ -289,6 +295,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/staff/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Staff

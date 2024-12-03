@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOthersDtos>> Get(int? id, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_Other
@@ -68,6 +70,7 @@ namespace MyApi2.Controllers
 
         // GET api/export_set_other/{id}
         [HttpGet("getbyid/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOthersDtos>> GetById(int id)
         {
             var result = from a in _GalDBContext.Export_set_Other
@@ -98,6 +101,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other/view
         [HttpGet("view/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViewsOther>> GetView(int id, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_Other
@@ -155,6 +159,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other/viewmainpage
         [HttpGet("viewmainpage/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViewsOther>> GetViewmainpage(int id, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Export_set_Other
@@ -221,6 +226,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other/viewp
         [HttpGet("viewp/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportViewsPOther>> GetViewP(int id, string? UseYN)
         {
             var result = from a in _GalDBContext.Export_set_Other_Product
@@ -280,6 +286,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ExportSetOthersDtos value)
         {
             var isExists = _GalDBContext.Export_set_Other.Any(
@@ -335,6 +342,7 @@ namespace MyApi2.Controllers
         ]
         */
         [HttpPost("several")]
+        [Authorize]
         public IActionResult Post([FromBody] List<ExportSetOthersDtos> values)
         {
             try
@@ -396,6 +404,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ExportSetOthersDtos value)
         {
             var result = (from a in _GalDBContext.Export_set_Other
@@ -445,6 +454,7 @@ namespace MyApi2.Controllers
         ]
         */
         [HttpPut("several")]
+        [Authorize]
         public IActionResult Put([FromBody] List<ExportSetOthersDtos> values)
         {
             try
@@ -484,6 +494,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_other/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Export_set_Other
@@ -549,6 +560,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_other/deletebybatch/{batch}
         [HttpDelete("deletebybatch/{batch}")]
+        [Authorize]
         public IActionResult DeleteByBatch(int batch)
         {
             var result = (from a in _GalDBContext.Export_set_Other

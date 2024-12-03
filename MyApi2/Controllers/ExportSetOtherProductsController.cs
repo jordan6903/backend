@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other_product
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOtherProductsDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Export_set_Other_Product
@@ -71,6 +73,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other_product/getbybatch
         [HttpGet("getbybatch")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOtherProductsDto>> GetByBatch(int id)
         {
             var result = from a in _GalDBContext.Export_set_Other_Product
@@ -118,6 +121,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other_product/deletechk/{id}
         [HttpGet("deletechk/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOtherProductsDto>> DeleteChk(string id)
         {
             var result = from a in _GalDBContext.Export_set_Other_Product
@@ -157,6 +161,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ExportSetOtherProductsDto value)
         {
             try
@@ -202,6 +207,7 @@ namespace MyApi2.Controllers
         ]
         */
         [HttpPost("several")]
+        [Authorize]
         public IActionResult Post([FromBody] List<ExportSetOtherProductsDto> values)
         {
             try
@@ -263,6 +269,7 @@ namespace MyApi2.Controllers
         ]
         */
         [HttpPut("several")]
+        [Authorize]
         public IActionResult Put([FromBody] List<ExportSetOtherProductsDto> values)
         {
             try
@@ -303,6 +310,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_other_product/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Export_set_Other_Product

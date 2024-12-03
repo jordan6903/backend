@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_relation_info
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ProductRelationInfosDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Product_relation_info
@@ -65,6 +67,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_relation_info/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductRelationInfosDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Product_relation_info
@@ -119,6 +122,7 @@ namespace MyApi2.Controllers
 
         // GET api/product_relation_info/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductRelationInfosDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Product_relation_info
@@ -159,6 +163,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ProductRelationInfosDto value)
         {
             var isExists = _GalDBContext.Product_relation_info.Any(a => a.Relation_id == value.Relation_id);
@@ -205,6 +210,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ProductRelationInfosDto value)
         {
             var result = (from a in _GalDBContext.Product_relation_info
@@ -226,7 +232,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Product_relation_info.Update(result);
                     _GalDBContext.SaveChanges();
@@ -244,6 +249,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/product_relation_info/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Product_relation_info

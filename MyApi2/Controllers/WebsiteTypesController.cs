@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/website_type
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<WebsiteTypesDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Website_Type
@@ -66,6 +68,7 @@ namespace MyApi2.Controllers
 
         // GET: api/website_type/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<WebsiteTypesDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Website_Type
@@ -121,6 +124,7 @@ namespace MyApi2.Controllers
 
         // GET api/website_type/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<WebsiteTypesDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Website_Type
@@ -161,6 +165,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] WebsiteTypesDto value)
         {
             var isExists = _GalDBContext.Website_Type.Any(a => a.Type_id == value.Type_id);
@@ -208,6 +213,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(string id, [FromBody] WebsiteTypesDto value)
         {
             var result = (from a in _GalDBContext.Website_Type
@@ -229,7 +235,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Website_Type.Update(result);
                     _GalDBContext.SaveChanges();
@@ -247,6 +252,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/website_type/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(string id)
         {
             var result = (from a in _GalDBContext.Website_Type

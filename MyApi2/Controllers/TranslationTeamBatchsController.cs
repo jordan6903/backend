@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -22,6 +23,7 @@ namespace MyApi2.Controllers
 
         // GET: api/translation_team_batch
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamBatchsDto>> Get(string? searchword)
         {
             var result = from a in _GalDBContext.Translation_team_batch
@@ -63,6 +65,7 @@ namespace MyApi2.Controllers
 
         // GET api/translation_team_batch/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamBatchsDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Translation_team_batch
@@ -100,6 +103,7 @@ namespace MyApi2.Controllers
 
         // GET api/translation_team_batch/deletechk/{id}
         [HttpGet("deletechk/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamBatchsDto>> DeleteChk(string id)
         {
             var result = from a in _GalDBContext.Translation_team_batch
@@ -137,6 +141,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] TranslationTeamBatchsDto value)
         {
             var isExists = _GalDBContext.Translation_team_batch.Any(
@@ -184,6 +189,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] TranslationTeamBatchsDto value)
         {
             var result = (from a in _GalDBContext.Translation_team_batch
@@ -204,7 +210,6 @@ namespace MyApi2.Controllers
                     result.T_id = value.T_id;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Translation_team_batch.Update(result);
                     _GalDBContext.SaveChanges();
@@ -222,6 +227,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/translation_team_batch/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Translation_team_batch
@@ -267,6 +273,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/translation_team_batch/deletebyttid/{id}
         [HttpDelete("deletebyttid/{id}")]
+        [Authorize]
         public IActionResult DeleteByTTid(int id)
         {
             var result = (from a in _GalDBContext.Translation_team_batch

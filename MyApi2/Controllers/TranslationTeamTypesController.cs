@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/translation_team_type
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamTypesDto>> Get(string? searchword, string? UseYN)
         {
             var result = from a in _GalDBContext.Translation_team_type
@@ -65,6 +67,7 @@ namespace MyApi2.Controllers
 
         // GET: api/translation_team_type/mainpage
         [HttpGet("mainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamTypesDto>> mainpage(string? searchword, string? UseYN, int page = 1, int pageSize = 10)
         {
             var result = from a in _GalDBContext.Translation_team_type
@@ -119,6 +122,7 @@ namespace MyApi2.Controllers
 
         // GET api/translation_team_type/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<TranslationTeamTypesDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Translation_team_type
@@ -159,6 +163,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] TranslationTeamTypesDto value)
         {
             var isExists = _GalDBContext.Translation_team_type.Any( a => a.Type_id == value.Type_id );
@@ -205,6 +210,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] TranslationTeamTypesDto value)
         {
             var result = (from a in _GalDBContext.Translation_team_type
@@ -226,7 +232,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Translation_team_type.Update(result);
                     _GalDBContext.SaveChanges();
@@ -244,6 +249,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/translation_team_type/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Translation_team_type

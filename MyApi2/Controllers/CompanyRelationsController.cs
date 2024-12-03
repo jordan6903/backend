@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -21,6 +22,7 @@ namespace MyApi2.Controllers
 
         // GET: api/company_relation
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<CompanyRelationsDto>> Get(string? searchword, int? relation_id)
         {
             var result = from a in _GalDBContext.Company_relation
@@ -70,6 +72,7 @@ namespace MyApi2.Controllers
 
         // GET api/company_relation/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<CompanyRelationsDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Company_relation
@@ -107,6 +110,7 @@ namespace MyApi2.Controllers
 
         // GET: api/company_relation
         [HttpGet("getbycid")]
+        [Authorize]
         public ActionResult<IEnumerable<CompanyRelationsDto>> GetByCid(string id)
         {
             var result = from a in _GalDBContext.Company_relation
@@ -154,6 +158,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] CompanyRelationsDto value)
         {
             var isExists = _GalDBContext.Company_relation.Any(
@@ -202,6 +207,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] CompanyRelationsDto value)
         {
             var result = (from a in _GalDBContext.Company_relation
@@ -222,7 +228,6 @@ namespace MyApi2.Controllers
                     result.Content = value.Content;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Company_relation.Update(result);
                     _GalDBContext.SaveChanges();
@@ -240,6 +245,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/company_relation/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Company_relation

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other_series/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOtherSeriesDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Export_set_Other
@@ -54,6 +56,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other_series/getbyid/{id}
         [HttpGet("getbyid/{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOtherSeriesDto>> GetById(int id)
         {
             var result = from a in _GalDBContext.Export_set_Other_series
@@ -87,6 +90,7 @@ namespace MyApi2.Controllers
 
         // GET: api/export_set_other_series/getall
         [HttpGet("getall")]
+        [Authorize]
         public ActionResult<IEnumerable<ExportSetOtherSeriesDto>> GetAll()
         {
             var result = from b in _GalDBContext.Export_set_Other_series
@@ -124,6 +128,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ExportSetOtherSeriesDto value)
         {
             try
@@ -166,6 +171,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost("copy")]
+        [Authorize]
         public IActionResult PostCopy([FromBody] ExportSetOtherSeriesDto value)
         {
             try
@@ -208,6 +214,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ExportSetOtherSeriesDto value)
         {
             var result = (from a in _GalDBContext.Export_set_Other_series
@@ -253,6 +260,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("putaddword/{id}")]
+        [Authorize]
         public IActionResult PutAddword(int id, [FromBody] ExportSetOtherSeriesDto value)
         {
             var result = (from a in _GalDBContext.Export_set_Other_series
@@ -300,6 +308,7 @@ namespace MyApi2.Controllers
         ]
         */
         [HttpPut("several")]
+        [Authorize]
         public IActionResult Put([FromBody] List<ExportSetOtherSeries2Dto> values)
         {
             try
@@ -339,6 +348,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/export_set_other_series/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Export_set_Other_series

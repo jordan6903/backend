@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -20,6 +21,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_release_day
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ProductReleaseDaysDto>> Get(string? searchword, int? voice, string? currency, string? device, int? rating)
         {
             var result = from a in _GalDBContext.Product_Release_day
@@ -100,6 +102,7 @@ namespace MyApi2.Controllers
 
         // GET api/product_release_day/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductReleaseDaysDto>> GetSingle(int id)
         {
             var result = from a in _GalDBContext.Product_Release_day
@@ -148,6 +151,7 @@ namespace MyApi2.Controllers
 
         // GET api/product_release_day/getbypid
         [HttpGet("getbypid")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductReleaseDaysDto>> GetByPid(string id)
         {
             var result = from a in _GalDBContext.Product_Release_day
@@ -210,6 +214,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ProductReleaseDaysDto value)
         {
             var isExists = _GalDBContext.Product_Release_day.Any(a => a.Id == value.Id);
@@ -282,6 +287,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ProductReleaseDaysDto value)
         {
             var result = (from a in _GalDBContext.Product_Release_day
@@ -309,7 +315,6 @@ namespace MyApi2.Controllers
                     result.Rating_id = value.Rating_id;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Product_Release_day.Update(result);
                     _GalDBContext.SaveChanges();
@@ -327,6 +332,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/product_release_day/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Product_Release_day

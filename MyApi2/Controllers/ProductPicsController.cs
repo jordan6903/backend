@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -21,6 +22,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_pic
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ProductPicsDto>> Get(string? searchword, string? UseYN, string? type_id)
         {
             var result = from a in _GalDBContext.Product_Pic
@@ -83,6 +85,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_pic/getformainpage
         [HttpGet("getformainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductPicsDto>> GetForMainpage(string? searchword)
         {
             var result = from a in _GalDBContext.Product
@@ -128,6 +131,7 @@ namespace MyApi2.Controllers
 
         // GET api/product_pic/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductPicsDto>> GetSingle(string id)
         {
             var result = from a in _GalDBContext.Product_Pic
@@ -181,6 +185,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ProductPicsDto value)
         {
             try
@@ -228,6 +233,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ProductPicsDto value)
         {
             var result = (from a in _GalDBContext.Product_Pic
@@ -253,7 +259,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Product_Pic.Update(result);
                     _GalDBContext.SaveChanges();
@@ -271,6 +276,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/product_pic/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Product_Pic

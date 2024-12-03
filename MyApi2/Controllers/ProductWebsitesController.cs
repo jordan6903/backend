@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi2.Dtos;
 using MyApi2.Models;
@@ -21,6 +22,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_website
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<ProductWebsitesDto>> Get(string? searchword, string? UseYN, string? type_id)
         {
             var result = from a in _GalDBContext.Product_Website
@@ -81,6 +83,7 @@ namespace MyApi2.Controllers
 
         // GET: api/product_website/getformainpage
         [HttpGet("getformainpage")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductWebsiteViewsDto>> GetForMainpage(string? searchword)
         {
             var result = from a in _GalDBContext.Product
@@ -122,6 +125,7 @@ namespace MyApi2.Controllers
 
         // GET api/product_website/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<IEnumerable<ProductWebsitesDto>> Get(string id)
         {
             var result = from a in _GalDBContext.Product_Website
@@ -171,6 +175,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] ProductWebsitesDto value)
         {
             try
@@ -214,6 +219,7 @@ namespace MyApi2.Controllers
         }
         */
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Put(int id, [FromBody] ProductWebsitesDto value)
         {
             var result = (from a in _GalDBContext.Product_Website
@@ -237,7 +243,6 @@ namespace MyApi2.Controllers
                     result.Sort = value.Sort;
                     result.Upd_user = value.Upd_user;
                     result.Upd_date = DateTime.Now;
-                    result.Create_dt = DateTime.Now;
 
                     _GalDBContext.Product_Website.Update(result);
                     _GalDBContext.SaveChanges();
@@ -255,6 +260,7 @@ namespace MyApi2.Controllers
 
         // DELETE api/product_website/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var result = (from a in _GalDBContext.Product_Website
